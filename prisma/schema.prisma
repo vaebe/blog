@@ -8,20 +8,34 @@ datasource db {
 }
 
 model Article {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  isDeleted   Int?      @default(0)
-  userId      Int
-  title       String    
-  content     String
-  classify    String    
-  coverImg    String    
-  summary     String    
-  views       Int       @default(1)
-  likes       Int       @default(1)
-  favorites   Int       @default(1)
-  showNumber  Int       @default(1)
-  status      String    
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  title      String
+  content    String
+  classify   String
+  coverImg   String
+  summary    String
+  views      Int       @default(1)
+  likes      Int       @default(1)
+  favorites  Int       @default(1)
+  showNumber Int       @default(1)
+  status     String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+  isDeleted  Int?      @default(0)
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  nickName  String
+  account   String    @unique
+  password  String
+  role      String
+  homepage  String
+  avatar    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  isDeleted Int?      @default(0)
 }
