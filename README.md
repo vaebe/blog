@@ -15,3 +15,11 @@ npx prisma migrate dev --name update_string_fields
 ```bash
 npx prisma generate
 ```
+
+## ui
+
+添加组件
+
+```bash
+npx shadcn-ui@latest add button
+```
