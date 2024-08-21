@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
-
-const defaultImg = 'https://p3-xtjj-sign.byteimg.com/tos-cn-i-73owjymdk6/4af0d3c574644fe0b49afc70d7b49260~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5ZSQ6K-X:q75.awebp?rk3s=f64ab15b&x-expires=1724809262&x-signature=gGiA1puP828uatVz8vNPsrVAZSE%3D'
-
+import Image from 'next/image'
+import articleThumbnail from '@/public/TANSHI.jpg'
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState([])
@@ -47,7 +46,7 @@ export default function ArticlesPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-3xl font-bold mb-8">文章列表</h1>
-      
+
       {/* 搜索栏 */}
       <form onSubmit={handleSearch} className="mb-8">
         <div className="flex">
@@ -58,9 +57,9 @@ export default function ArticlesPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button 
+          <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-[100px] bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             搜索
           </button>
@@ -88,7 +87,11 @@ export default function ArticlesPage() {
         <div className="space-y-8">
           {articles.map(article => (
             <article key={article.id} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-              <img src={article.image || defaultImg} alt={article.title} className="w-full h-48 object-center" />
+
+              <Image
+                src={article.image || articleThumbnail} alt={article.title} className="w-full h-48 object-center"
+              />
+
               <div className="p-6">
                 <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
                 <p className="text-gray-500 dark:text-gray-400 mb-4">{article.excerpt}</p>
