@@ -3,6 +3,13 @@
 import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 import './globals.css'
+import { Inter as FontSans } from "next/font/google"
+import { cn } from "@/lib/utils"
+
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
 
 export default function RootLayout({
   children,
@@ -25,7 +32,11 @@ export default function RootLayout({
 
   return (
     <html lang="zh">
-      <body className="min-h-screen flex flex-col bg-gradient-to-b from-gray-100 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100">
+      <body
+        className={cn(
+          "min-h-screen flex flex-col bg-gradient-to-b from-gray-100 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100",
+          fontSans.variable
+        )}>
         <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <h1 className="text-3xl font-bold">vaebe</h1>
