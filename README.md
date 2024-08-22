@@ -4,6 +4,8 @@
 
 ## prisma
 
+prisma 不支持 `.env.local` 类型的文件
+
 生成数据库迁移
 
 ```bash
