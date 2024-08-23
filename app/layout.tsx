@@ -2,6 +2,7 @@
 
 import './globals.css'
 import 'bytemd/dist/index.css'
+import 'juejin-markdown-themes/dist/juejin.css'
 import { Inter as FontSans } from "next/font/google"
 import { cn } from "@/lib/utils"
 import LayoutHeader from '@/components/layout/header'
