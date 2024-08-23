@@ -13,23 +13,27 @@ export default function Component() {
   const [value, setValue] = useState('')
 
   // 上传文件多个
-const uploadImages = async (files) => {
-  let resultData = [];
+  const uploadImages = async (files: any[]) => {
+    let resultData = [];
 
-  for (const item of files) {
-    const formData = new FormData();
-    formData.append('file', item);
-    // const res = await uploadFile(formData);
-    // if (res.code === 0) {
-    //   resultData.push({
-    //     url: res.data,
-    //     alt: item.name,
-    //     title: item.name
-    //   });
-    // }
-  }
-  return resultData;
-};
+    for (const item of files) {
+      const formData = new FormData();
+      formData.append('file', item);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      }) as any
+
+      if (res?.code === 0) {
+        resultData.push({
+          url: res?.data,
+          alt: item.name,
+          title: item.name
+        });
+      }
+    }
+    return resultData;
+  };
 
   return (
     <div className='overflow-hidden h-[100vh]'>
