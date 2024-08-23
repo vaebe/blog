@@ -16,18 +16,17 @@ export default function Component({ params }: { params: { id: string } }) {
 
   const [article, setArticle] = useState<Article>()
 
-  async function getData() {
-    const res = await fetch(`http://localhost:3000/api/articles/details?id=${params.id}`)
-    if (!res.ok) {
-      throw new Error('获取文章失败')
-    }
-    const data = await res.json()
-    setArticle(data.data)
-  }
-
   useEffect(() => {
+    async function getData() {
+      const res = await fetch(`http://localhost:3000/api/articles/details?id=${params.id}`)
+      if (!res.ok) {
+        throw new Error('获取文章失败')
+      }
+      const data = await res.json()
+      setArticle(data.data)
+    }
     getData()
-  }, [])
+  }, [params.id])
 
   return (
     <Card className="max-w-4xl mx-auto my-10 sm:px-6 lg:px-8">
