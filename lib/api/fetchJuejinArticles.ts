@@ -1,0 +1,3 @@
+export function fetchJuejinArticles () {
+  return []
+}
