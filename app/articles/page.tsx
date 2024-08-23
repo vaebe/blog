@@ -2,21 +2,21 @@
 
 import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
-import Image from 'next/image'
 import articleThumbnail from '@/public/TANSHI.jpg'
+import { Article } from '@prisma/client';
 
 export default function ArticlesPage() {
-  const [articles, setArticles] = useState([])
+  const [articles, setArticles] = useState<Article[]>([])
   const [totalPages, setTotalPages] = useState(1)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const fetchArticles = async () => {
       setLoading(true)
-      setError(null)
+      setError('')
 
       try {
         const res = await fetch(`http://localhost:3000/api/articles/list?page=${currentPage}&searchTerm=${searchTerm}`)
@@ -29,7 +29,7 @@ export default function ArticlesPage() {
         setTotalPages(data.totalPages || 1)
       } catch (err) {
         console.error(err)
-        setError(err.message)
+        setError('获取列表数据失败!')
       } finally {
         setLoading(false)
       }
@@ -38,7 +38,7 @@ export default function ArticlesPage() {
     fetchArticles()
   }, [currentPage, searchTerm])
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any) => {
     e.preventDefault()
     setCurrentPage(1)
   }
@@ -88,21 +88,19 @@ export default function ArticlesPage() {
           {articles.map(article => (
             <article key={article.id} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
 
-              <Image
-                src={article.image || articleThumbnail} alt={article.title} className="w-full h-48 object-center"
-              />
+              <img src={article.coverImg || articleThumbnail} alt={article.title} className="w-full h-48 object-cover" />
 
               <div className="p-6">
                 <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
-                <p className="text-gray-500 dark:text-gray-400 mb-4">{article.excerpt}</p>
+                <p className="text-gray-500 dark:text-gray-400 mb-4">{article.summary}</p>
                 <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
                   <span>{new Date(article.createdAt).toLocaleDateString()}</span>
-                  <span>{article.readTime || '5 分钟'}</span>
+                  <span>5 分钟</span>
                   <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
-                    {article.category || '未分类'}
+                  未分类
                   </span>
                 </div>
-                <a href={`/articles/${article.id}`} className="mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+                <a href={`/article/${article.id}`} className="mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline">
                   阅读更多 <Icon icon="ph:arrow-right-bold" className="ml-2 h-4 w-4" />
                 </a>
               </div>
