@@ -38,10 +38,9 @@ export default function AboutMe() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          {/* 保留之前的个人信息部分 */}
           <div className="text-center mb-12">
             <img
-              src="/placeholder.svg?height=150&width=150"
+              src="https://avatars.githubusercontent.com/u/52314078?v=4"
               alt="头像"
               className="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-blue-500 dark:border-blue-400"
             />
@@ -50,7 +49,7 @@ export default function AboutMe() {
           </div>
 
           <div className="space-y-8">
-            {/* 保留之前的"关于我"部分 */}
+     
             <section className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
               <h2 className="text-2xl font-semibold mb-4 flex items-center">
                 <Icon icon="mdi:account" className="mr-2 text-blue-500 dark:text-blue-400" />
@@ -63,7 +62,6 @@ export default function AboutMe() {
               </p>
             </section>
 
-            {/* 新增的技术栈部分 */}
             <section className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
               <h2 className="text-2xl font-semibold mb-4 flex items-center">
                 <Icon icon="mdi:code-tags" className="mr-2 text-blue-500 dark:text-blue-400" />
@@ -84,7 +82,6 @@ export default function AboutMe() {
               </div>
             </section>
 
-            {/* 保留之前的最新文章部分 */}
             <section className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
               <h2 className="text-2xl font-semibold mb-4 flex items-center">
                 <Icon icon="mdi:pencil" className="mr-2 text-blue-500 dark:text-blue-400" />
@@ -110,7 +107,6 @@ export default function AboutMe() {
               </ul>
             </section>
 
-            {/* 保留之前的GitHub项目部分 */}
             <section className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
               <h2 className="text-2xl font-semibold mb-4 flex items-center">
                 <Icon icon="mdi:github" className="mr-2 text-blue-500 dark:text-blue-400" />
@@ -139,7 +135,6 @@ export default function AboutMe() {
               </ul>
             </section>
 
-            {/* 保留之前的相关链接部分 */}
             <section className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
               <h2 className="text-2xl font-semibold mb-4 flex items-center">
                 <Icon icon="mdi:link" className="mr-2 text-blue-500 dark:text-blue-400" />
