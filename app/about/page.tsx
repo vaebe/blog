@@ -4,18 +4,20 @@ import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 
 // 假设这些类型和函数已在其他地方定义
-import { fetchJuejinArticles, fetchGithubRepos } from '@/lib/api'
-import type { JuejinArticle, GithubRepo } from '@/types'
+import { fetchGithubRepos } from '@/lib/api'
+import type { GithubRepo } from '@/types'
+
+import { LatestArticles } from './latestArticles'
 
 export default function AboutMe() {
-  const [articles, setArticles] = useState<JuejinArticle[]>([])
+
   const [repos, setRepos] = useState<GithubRepo[]>([])
 
   useEffect(() => {
     const loadData = async () => {
-      const articlesData = await fetchJuejinArticles()
+
       const reposData = await fetchGithubRepos()
-      setArticles(articlesData)
+
       setRepos(reposData)
     }
     loadData()
@@ -49,14 +51,14 @@ export default function AboutMe() {
           </div>
 
           <div className="space-y-8">
-     
+
             <section className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
               <h2 className="text-2xl font-semibold mb-4 flex items-center">
                 <Icon icon="mdi:account" className="mr-2 text-blue-500 dark:text-blue-400" />
                 关于我
               </h2>
               <p className="text-gray-700 dark:text-gray-300">
-                你好！我是vaebe，一名热衷于创造全栈开发者。我喜欢探索新技术，解决复杂问题，
+                你好！我是vaebe，一名全栈开发者。我喜欢探索新技术，解决复杂问题，
                 并且热衷于在掘金分享我的技术见解。在GitHub上，我积极参与开源项目，不断提升自己的编程技能。
                 欢迎访问我的掘金主页和GitHub主页，了解更多关于我的信息！
               </p>
@@ -82,30 +84,7 @@ export default function AboutMe() {
               </div>
             </section>
 
-            <section className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
-              <h2 className="text-2xl font-semibold mb-4 flex items-center">
-                <Icon icon="mdi:pencil" className="mr-2 text-blue-500 dark:text-blue-400" />
-                最新文章
-              </h2>
-              <ul className="space-y-4">
-                {articles.slice(0, 5).map((article) => (
-                  <li key={article.id} className="border-b border-gray-200 dark:border-gray-700 pb-2">
-                    <a
-                      href={article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-blue-500 dark:hover:text-blue-400"
-                    >
-                      {article.title}
-                    </a>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      <Icon icon="mdi:eye" className="inline mr-1" /> {article.viewCount}
-                      <Icon icon="mdi:thumb-up" className="inline mx-1 ml-3" /> {article.likeCount}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <LatestArticles></LatestArticles>
 
             <section className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
               <h2 className="text-2xl font-semibold mb-4 flex items-center">
