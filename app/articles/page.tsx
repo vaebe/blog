@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
-import articleThumbnail from '@/public/TANSHI.jpg'
 import { Article } from '@prisma/client';
 
 export default function ArticlesPage() {
@@ -12,6 +11,8 @@ export default function ArticlesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const articleThumbnail = '/images/logo.png'
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -97,7 +98,7 @@ export default function ArticlesPage() {
                   <span>{new Date(article.createdAt).toLocaleDateString()}</span>
                   <span>5 分钟</span>
                   <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
-                  未分类
+                    未分类
                   </span>
                 </div>
                 <a href={`/article/${article.id}`} className="mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline">

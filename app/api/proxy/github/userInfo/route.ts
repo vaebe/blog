@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export async function Get() {
+export async function GET() {
   const url = `https://api.github.com/users/${process.env.NEXT_PUBLIC_GITHUB_USER_NAME}`;
 
   try {
