@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import LayoutHeader from '@/components/layout/header'
 import LayoutFooter from '@/components/layout/footer'
 import { ThemeProvider } from 'next-themes'
+import { SessionProvider } from "next-auth/react";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -22,15 +23,19 @@ export default function RootLayout({ children, }: { children: React.ReactNode })
           "min-h-screen flex flex-col bg-gradient-to-b from-gray-100 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100",
           fontSans.variable
         )}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <LayoutHeader></LayoutHeader>
+        <SessionProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
 
-          <main className="flex-grow">
-            {children}
-          </main>
+            <LayoutHeader></LayoutHeader>
 
-          <LayoutFooter></LayoutFooter>
-        </ThemeProvider>
+            <main className="flex-grow">
+              {children}
+            </main>
+
+            <LayoutFooter></LayoutFooter>
+          </ThemeProvider>
+        </SessionProvider>
+
       </body>
     </html>
   )
