@@ -4,23 +4,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Icon } from '@iconify/react'
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
+import { signIn, signOut ,useSession} from "next-auth/react";
 
 export default function Component() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
-
-  if (!mounted) return null
+  const { data: session, status } = useSession();
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-800 rounded-xl shadow-2xl transition-colors duration-300">
         <div className="text-center">
           <Icon icon="mdi:login" className="mx-auto text-6xl text-blue-500 dark:text-blue-400" />
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">登录您的账户</h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">登录</h2>
         </div>
         <form className="mt-8 space-y-6">
           <div className="space-y-4">
@@ -63,12 +57,27 @@ export default function Component() {
           </div>
 
           <div>
-            <Button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600">
+            <Button type="submit"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600"
+            >
               登录
             </Button>
           </div>
         </form>
+
+        <Button
+          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600"
+          onClick={() => {
+            signIn('github');
+          }}
+        >
+          Github 登录
+        </Button>
+
+        {JSON.stringify(session)}
+
       </div>
+
     </div>
   )
 }
