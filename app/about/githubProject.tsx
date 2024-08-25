@@ -1,23 +1,25 @@
 import { SectionContainer } from './sectionContainer'
-import {useState,useEffect} from "react"
+import { useState, useEffect } from "react"
 import { Icon } from '@iconify/react'
 
-import { fetchGithubPinnedRepos } from '@/lib/api'
-import type {  GithubPinnedRepoInfo} from '@/lib/api'
+import { fetchGithubPinnedRepos ,fetchGithubUserInfo} from '@/lib/api'
+import type { GithubPinnedRepoInfo,GithubUserInfo } from '@/lib/api'
 
 export function GithubProject() {
   const [repos, setRepos] = useState<GithubPinnedRepoInfo[]>([])
+  const [githubUserInfo,setGithubUserInfo] = useState<GithubUserInfo>()
 
   useEffect(() => {
     const loadData = async () => {
-
       const reposData = await fetchGithubPinnedRepos()
+      reposData && setRepos(reposData)
 
-      setRepos(reposData)
+      const userInfo  = await fetchGithubUserInfo()
+      setGithubUserInfo(userInfo)
     }
     loadData()
   }, [])
-  
+
   return (
     <SectionContainer title='GitHub 项目' titleIcon='mdi:github'>
       <ul className="space-y-4">
