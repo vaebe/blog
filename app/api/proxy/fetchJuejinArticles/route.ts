@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-
-  console.log(req.body, '-=-=-=-=-=-=')
-
   try {
     const res = await fetch('https://api.juejin.cn/content_api/v1/article/query_list', {
       method: 'POST',
