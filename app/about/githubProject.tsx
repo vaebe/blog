@@ -2,16 +2,16 @@ import { SectionContainer } from './sectionContainer'
 import {useState,useEffect} from "react"
 import { Icon } from '@iconify/react'
 
-import { fetchGithubRepos } from '@/lib/api'
-import type { GithubRepo } from '@/types'
+import { fetchGithubPinnedRepos } from '@/lib/api'
+import type {  GithubPinnedRepoInfo} from '@/lib/api'
 
 export function GithubProject() {
-  const [repos, setRepos] = useState<GithubRepo[]>([])
+  const [repos, setRepos] = useState<GithubPinnedRepoInfo[]>([])
 
   useEffect(() => {
     const loadData = async () => {
 
-      const reposData = await fetchGithubRepos()
+      const reposData = await fetchGithubPinnedRepos()
 
       setRepos(reposData)
     }
@@ -21,7 +21,7 @@ export function GithubProject() {
   return (
     <SectionContainer title='GitHub 项目' titleIcon='mdi:github'>
       <ul className="space-y-4">
-        {repos.slice(0, 5).map((repo) => (
+        {repos.map((repo) => (
           <li key={repo.id} className="border-b border-gray-200 dark:border-gray-700 pb-2">
             <a
               href={repo.url}
@@ -34,9 +34,9 @@ export function GithubProject() {
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {repo.description}
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              <Icon icon="mdi:star" className="inline mr-1" /> {repo.stars}
-              <Icon icon="mdi:source-fork" className="inline mx-1 ml-3" /> {repo.forks}
+            <p className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+              <Icon icon="mdi:star" className="inline mr-1" /> {repo.stargazerCount}
+              <Icon icon="mdi:source-fork" className="inline mx-1 ml-3" /> {repo.forkCount}
             </p>
           </li>
         ))}
