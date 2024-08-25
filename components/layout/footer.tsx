@@ -1,5 +1,8 @@
 'use client'
 export default function RootLayout() {
+
+  const githubUserName = process.env.NEXT_PUBLIC_GITHUB_USER_NAME
+
   return (
     <footer className="bg-gray-800 dark:bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -27,7 +30,8 @@ export default function RootLayout() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-          <p className="text-gray-300">&copy; 2024 我的技术博客。保留所有权利。</p>
+          <a href={`https://github.com/${githubUserName}/blog/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer" className="mr-2 hover:text-blue-500 dark:hover:text-blue-400">Released under the MIT License.</a>
+          <a href={`https://github.com/${githubUserName}`} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 dark:hover:text-blue-400">Copyright © 2024-present {githubUserName}.</a>
         </div>
       </div>
     </footer>
