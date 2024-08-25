@@ -32,9 +32,10 @@ export function LatestArticles() {
             >
               {article.article_info.title}
             </a>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              <Icon icon="mdi:eye" className="inline mr-1" /> {article.article_info.view_count}
-              <Icon icon="mdi:thumb-up" className="inline mx-1 ml-3" /> {article.article_info.digg_count}
+            <p className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+              <Icon icon="mdi:star" className="inline mr-1" /> {article.article_info.collect_count}
+              <Icon icon="mdi:thumb-up" className="inline mx-1" /> {article.article_info.digg_count}
+              <Icon icon="mdi:eye" className="inline mx-1 ml-3" /> {article.article_info.view_count}
             </p>
           </li>
         ))}
