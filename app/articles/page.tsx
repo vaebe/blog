@@ -14,8 +14,6 @@ export default function ArticlesPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const articleThumbnail = '/images/logo.png'
-
   useEffect(() => {
     const fetchArticles = async () => {
       setLoading(true)
@@ -88,7 +86,7 @@ export default function ArticlesPage() {
       {/* 文章列表 */}
       {!loading && !error && (
         <div className="space-y-8">
-          {articles.map(article => (<ArticleCard key={article.id} article={article}></ArticleCard>))}
+          {articles.map(item => (<ArticleCard key={item.id} article={item}></ArticleCard>))}
         </div>
       )}
 
