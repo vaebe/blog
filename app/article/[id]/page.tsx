@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {getApiUrl} from '@/lib/utils'
 
 export default function Component({ params }: { params: { id: string } }) {
 
@@ -18,7 +19,7 @@ export default function Component({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     async function getData() {
-      const res = await fetch(`http://localhost:3000/api/articles/details?id=${params.id}`)
+      const res = await fetch(getApiUrl(`articles/details?id=${params.id}`))
       if (!res.ok) {
         throw new Error('获取文章失败')
       }

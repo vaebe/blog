@@ -1,3 +1,5 @@
+import {getApiUrl} from '@/lib/utils'
+
 export interface ArticleInfo {
   article_id: string
   user_id: string
@@ -72,7 +74,7 @@ export interface JuejinArticlesInfo {
 }
 
 export async function fetchJuejinArticles() {
-  const res = await fetch('http://localhost:3000/api/proxy/fetchJuejinArticles', {
+  const res = await fetch(getApiUrl('proxy/juejin/articles'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

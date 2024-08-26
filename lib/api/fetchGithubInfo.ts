@@ -1,3 +1,5 @@
+import {getApiUrl} from '@/lib/utils'
+
 export interface GithubPinnedRepoInfo {
   id: number
   "name": string,
@@ -12,7 +14,7 @@ export interface GithubPinnedRepoInfo {
 
 export async function fetchGithubPinnedRepos() {
   try {
-    const res = await fetch('http://localhost:3000/api/proxy/github/pinnedRepos')
+    const res = await fetch(getApiUrl('proxy/github/pinnedRepos'))
 
     if (res.ok) {
       const list = await res.json()
@@ -64,7 +66,7 @@ export interface GithubUserInfo {
 
 export async function fetchGithubUserInfo() {
   try {
-    const res = await fetch('http://localhost:3000/api/proxy/github/userInfo')
+    const res = await fetch(getApiUrl('proxy/github/userInfo'))
 
     if (res.ok) {
       const userInfo = await res.json();
