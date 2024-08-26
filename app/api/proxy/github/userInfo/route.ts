@@ -11,7 +11,7 @@ export async function GET() {
     });
 
     if (!response.ok) {
-      throw new Error(`获取 GitHub 用户信息失败: ${response.statusText}`);
+      return NextResponse.json(`获取 GitHub 用户信息失败: ${response.statusText}`, { status: 500 });
     }
 
     const userInfo = await response.json();

@@ -11,43 +11,17 @@ export interface GithubPinnedRepoInfo {
 }
 
 export async function fetchGithubPinnedRepos() {
-  const query = `
-  {
-    user(login: "${process.env.NEXT_PUBLIC_GITHUB_USER_NAME}") {
-      pinnedItems(first: 6, types: [REPOSITORY]) {
-        totalCount
-        edges {
-          node {
-            ... on Repository {
-              id
-              name
-              description
-              url
-              stargazerCount
-              forkCount
-              primaryLanguage {
-                name
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  `;
-
   try {
-    const response = await fetch('https://api.github.com/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_GITHUB_API_TOKEN}`,
-      },
-      body: JSON.stringify({ query }),
-    }).then(res => res.json())
+    const res = await fetch('http://localhost:3000/api/proxy/github/pinnedRepos')
 
-    const list = response?.data?.user?.pinnedItems?.edges?.map((edge: any) => edge.node) || [];
-    return list as GithubPinnedRepoInfo[]
+    if (res.ok) {
+      const list = await res.json()
+
+      console.log(list, '-=-=-=-')
+      return list
+    }
+
+    return []
   } catch (error) {
     console.error('获取 github 仓库信息失败:', error);
   }
@@ -89,21 +63,15 @@ export interface GithubUserInfo {
 }
 
 export async function fetchGithubUserInfo() {
-  const url = `https://api.github.com/users/${process.env.NEXT_PUBLIC_GITHUB_USER_NAME}`;
-
   try {
-    const response = await fetch(url, {
-      headers: {
-        'Accept': 'application/vnd.github.v3+json',
-      },
-    });
+    const res = await fetch('http://localhost:3000/api/proxy/github/userInfo')
 
-    if (!response.ok) {
-      throw new Error(`获取 GitHub 用户信息失败: ${response.statusText}`);
+    if (res.ok) {
+      const userInfo = await res.json();
+      return userInfo;
     }
 
-    const userInfo = await response.json();
-    return userInfo;
+    return {}
   } catch (error) {
     console.error('Failed to fetch user information:', error);
   }
