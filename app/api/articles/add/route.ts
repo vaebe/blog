@@ -8,10 +8,11 @@ const prisma = new PrismaClient();
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { title, content, classify, coverImg, summary, status } = body;
+    const { id, title, content, classify, coverImg, summary, status } = body;
 
     const newArticle = await prisma.article.create({
       data: {
+        id,
         title,
         content,
         classify,
@@ -22,8 +23,9 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(newArticle, { status: 201 });
+    return NextResponse.json(newArticle, { status: 200 });
   } catch (error) {
+    console.log(error, '-=-=--=')
     return NextResponse.json({ error: "Failed to create article" }, { status: 500 });
   }
 }
