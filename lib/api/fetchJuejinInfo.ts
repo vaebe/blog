@@ -74,12 +74,12 @@ export interface JuejinArticlesInfo {
 }
 
 export async function fetchJuejinArticles() {
-  const res = await fetch(getApiUrl('proxy/juejin/articles'), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  }).then(res => res.json())
-  
-  return res as any as JuejinArticlesInfo
+  const res = await fetch(getApiUrl('proxy/juejin/articles'))
+
+  if (!res.ok) {
+    return {} as JuejinArticlesInfo
+  }
+
+  const data = await res.json()
+  return data as any as JuejinArticlesInfo
 }
