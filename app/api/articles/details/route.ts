@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     }
 
     const article = await prisma.article.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: id },
     });
 
     return NextResponse.json({ data: article });
