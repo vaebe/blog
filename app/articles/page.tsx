@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 import { Article } from '@prisma/client';
+import {getApiUrl} from '@/lib/utils'
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<Article[]>([])
@@ -20,7 +21,7 @@ export default function ArticlesPage() {
       setError('')
 
       try {
-        const res = await fetch(`http://localhost:3000/api/articles/list?page=${currentPage}&searchTerm=${searchTerm}`)
+        const res = await fetch(getApiUrl(`articles/list?page=${currentPage}&searchTerm=${searchTerm}`))
         if (!res.ok) {
           throw new Error('获取文章失败')
         }
