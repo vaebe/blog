@@ -16,14 +16,13 @@ export async function fetchGithubPinnedRepos() {
   try {
     const res = await fetch(getApiUrl('proxy/github/pinnedRepos'))
 
-    if (res.ok) {
-      const list = await res.json()
-
-      console.log(list, '-=-=-=-')
-      return list
+    if (!res.ok) {
+      return [] as GithubPinnedRepoInfo[]
+      
     }
 
-    return []
+    const list = await res.json()
+    return list as GithubPinnedRepoInfo[]
   } catch (error) {
     console.error('获取 github 仓库信息失败:', error);
   }
