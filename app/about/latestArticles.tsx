@@ -25,7 +25,7 @@ export function LatestArticles() {
         {articles?.map((article) => (
           <li key={article.article_info.article_id} className="border-b border-gray-200 dark:border-gray-700 pb-2">
             <a
-              href={article.article_info.cover_image}
+              href={`https://juejin.cn/post/${article.article_info.article_id}`}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-blue-500 dark:hover:text-blue-400"
