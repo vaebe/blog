@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Article {
-  id         Int       @id @default(autoincrement())
+  id         String   @id @unique
   userId     Int
   title      String    @db.Text
   content    String    @db.LongText
