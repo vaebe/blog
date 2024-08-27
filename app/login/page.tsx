@@ -4,10 +4,26 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Icon } from '@iconify/react'
-import { signIn, signOut ,useSession} from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useState } from "react"
 
 export default function Component() {
   const { data: session, status } = useSession();
+  const [account, setAccount] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const res = await signIn("credentials", {
+      redirect: false,
+      account,
+      password,
+    });
+
+    if (res?.error) {
+
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
@@ -33,6 +49,8 @@ export default function Component() {
                   required
                   className="pl-10 block w-full sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   placeholder="请输入用户名"
+                  value={account}
+                  onChange={(e) => setAccount(e.target.value)}
                 />
               </div>
             </div>
@@ -51,13 +69,16 @@ export default function Component() {
                   required
                   className="pl-10 block w-full sm:text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   placeholder="请输入密码"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>
           </div>
 
           <div>
-            <Button type="submit"
+            <Button
+              onClick={handleSubmit}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600"
             >
               登录
@@ -73,11 +94,7 @@ export default function Component() {
         >
           Github 登录
         </Button>
-
-        {JSON.stringify(session)}
-
       </div>
-
     </div>
   )
 }
