@@ -8,11 +8,11 @@ datasource db {
 }
 
 model Article {
-  id         String   @id @unique
+  id         String    @id @unique
   userId     Int
   title      String    @db.Text
   content    String    @db.LongText
-  classify   String?    @db.Text
+  classify   String?   @db.Text
   coverImg   String    @db.Text
   summary    String    @db.Text
   views      Int       @default(1)
@@ -21,21 +21,22 @@ model Article {
   showNumber Int       @default(1)
   status     String    @db.Text
   createdAt  DateTime  @default(now())
-  updatedAt  DateTime?  @updatedAt
+  updatedAt  DateTime? @updatedAt
   deletedAt  DateTime?
   isDeleted  Int?      @default(0)
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  nickName  String?    @db.Text
-  account   String    @unique
-  password  String    @db.Text
-  role      String?    @db.Text
-  homepage  String?    @db.Text
-  avatar    String?    @db.Text
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?  @updatedAt
-  deletedAt DateTime?
-  isDeleted Int?      @default(0)
+  id          String    @id @unique
+  nickName    String?   @db.Text
+  account     String    @unique
+  password    String?   @db.Text
+  role        String?   @db.Text
+  homepage    String?   @db.Text
+  avatar      String?   @db.Text
+  accountType String    @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  deletedAt   DateTime?
+  isDeleted   Int?      @default(0)
 }
