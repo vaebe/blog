@@ -9,17 +9,15 @@ import { BaseLoading } from '@/components/base-loading'
 
 function ArticleCard({ article }: { article: Article }) {
   return (
-
-    <Card className="flex flex-col">
+    <Card>
       <CardHeader>
-        <CardTitle className="line-clamp-2 h-14">{article.title}</CardTitle>
+        <CardTitle >
+          <p className="line-clamp-1">{article.title}</p>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="line-clamp-3">{article.summary}</p>
+      <CardContent >
+        <p className="line-clamp-2"> {article.summary}</p>
       </CardContent>
-      <CardFooter>
-        <Button variant="outline" className="w-full">查看更多</Button>
-      </CardFooter>
     </Card>
   )
 }
@@ -43,29 +41,28 @@ export function LatestArticles() {
           }
 
           setArticles(res.data.articles || [])
-        }).catch((err) => {
+        })
+        .catch((err) => {
           console.error(err)
           setError('获取列表数据失败!')
-        }).finally(() => {
+        })
+        .finally(() => {
           setLoading(false)
         })
     }
-
 
     fetchArticles()
   }, [])
 
   return (
-    <div >
-      <h2 className="text-3xl font-extrabold mb-8">最新文章</h2>
-
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <>
+      <div className="grid gap-6">
         {articles.map((item) => (<ArticleCard key={item.id} article={item}></ArticleCard>))}
       </div>
 
       <BaseLoading isLoading={isLoading} />
 
       {error && <p className="text-center my-10 text-lg">{error}</p>}
-    </div>
+    </>
   )
 }
