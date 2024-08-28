@@ -20,14 +20,14 @@ export default function ArticlesPage() {
       setError('')
 
       try {
-        const res = await fetch(getApiUrl(`articles/list?page=${currentPage}&searchTerm=${searchTerm}`))
-        if (!res.ok) {
-          throw new Error('获取文章失败')
+        const res = await fetch(getApiUrl(`articles/list?page=${currentPage}&pageSize=${6}&searchTerm=${searchTerm}`)).then(res => res.json())
+        if (res.code !== 0) {
+          setError('获取列表数据失败!')
+          return
         }
-        const data = await res.json()
 
-        setArticles(data.articles || [])
-        setTotalPages(data.totalPages || 1)
+        setArticles(res.data.articles || [])
+        setTotalPages(res.data.totalPages || 1)
       } catch (err) {
         console.error(err)
         setError('获取列表数据失败!')
