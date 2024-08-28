@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { useEffect, useState } from 'react'
 import { getApiUrl } from '@/lib/utils'
 import { Article } from '@prisma/client'
+import { BaseLoading } from '@/components/base-loading'
 
 function ArticleCard({ article }: { article: Article }) {
   return (
@@ -26,25 +27,30 @@ function ArticleCard({ article }: { article: Article }) {
 export function LatestArticles() {
   const [articles, setArticles] = useState<Article[]>([])
   const [error, setError] = useState('')
+  const [isLoading, setLoading] = useState(false)
 
   useEffect(() => {
-    const fetchArticles = async () => {
+    function fetchArticles() {
       setError('')
+      setLoading(true)
 
-      try {
-        const res = await fetch(getApiUrl(`articles/list`))
-        if (!res.ok) {
-          throw new Error('获取文章失败')
-        }
-        const data = await res.json()
+      fetch(getApiUrl(`articles/list?pageSize=6`))
+        .then(res => res.json())
+        .then(res => {
+          if (res.code !== 0) {
+            setError('获取列表数据失败!')
+            return
+          }
 
-        setArticles(data.articles || [])
-
-      } catch (err) {
-        console.error(err)
-        setError('获取列表数据失败!')
-      }
+          setArticles(res.data.articles || [])
+        }).catch((err) => {
+          console.error(err)
+          setError('获取列表数据失败!')
+        }).finally(() => {
+          setLoading(false)
+        })
     }
+
 
     fetchArticles()
   }, [])
@@ -52,9 +58,14 @@ export function LatestArticles() {
   return (
     <div >
       <h2 className="text-3xl font-extrabold mb-8">最新文章</h2>
+
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {articles.map((item) => (<ArticleCard key={item.id} article={item}></ArticleCard>))}
       </div>
+
+      <BaseLoading isLoading={isLoading} />
+
+      {error && <p className="text-center my-10 text-lg">{error}</p>}
     </div>
   )
 }
