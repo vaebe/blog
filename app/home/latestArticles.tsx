@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { getApiUrl } from '@/lib/utils'
 import { Article } from '@prisma/client'
 import { Icon } from '@iconify/react'
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
+import Link from 'next/link'
 
 function ArticleCard({ article }: { article: Article }) {
   return (
@@ -82,10 +82,12 @@ export function LatestArticles() {
         </div>
       </AnimatePresence>
       <div className="text-center">
-        <Button variant="outline" size="lg">
-          查看更多
-          <Icon icon="mdi:arrow-right" className="ml-2 w-5 h-5" />
-        </Button>
+        <Link href="/articles">
+          <Button variant="outline" size="lg">
+            查看更多
+            <Icon icon="mdi:arrow-right" className="ml-2 w-5 h-5" />
+          </Button>
+        </Link>
       </div>
     </div>
   )
