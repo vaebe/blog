@@ -1,68 +1,122 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { getApiUrl } from '@/lib/utils'
 import { Article } from '@prisma/client'
-import { BaseLoading } from '@/components/base-loading'
+import { Icon } from '@iconify/react'
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
 
 function ArticleCard({ article }: { article: Article }) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle >
-          <p className="line-clamp-1">{article.title}</p>
-        </CardTitle>
-      </CardHeader>
-      <CardContent >
-        <p className="line-clamp-2"> {article.summary}</p>
-      </CardContent>
-    </Card>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300">
+        <CardHeader>
+          <CardTitle className="line-clamp-2 h-14 text-lg">
+            {article.title}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex-grow">
+          <p className="line-clamp-3 text-sm text-gray-600 dark:text-gray-300">
+            {article.summary}
+          </p>
+        </CardContent>
+      </Card>
+    </motion.div>
   )
 }
 
 export function LatestArticles() {
   const [articles, setArticles] = useState<Article[]>([])
   const [error, setError] = useState('')
-  const [isLoading, setLoading] = useState(false)
+  const [isLoading, setLoading] = useState(true)
 
   useEffect(() => {
-    function fetchArticles() {
-      setError('')
-      setLoading(true)
+    async function fetchArticles() {
+      try {
+        setError('')
+        setLoading(true)
+        const response = await fetch(getApiUrl(`articles/list?pageSize=6`))
+        const res = await response.json()
 
-      fetch(getApiUrl(`articles/list?pageSize=6`))
-        .then(res => res.json())
-        .then(res => {
-          if (res.code !== 0) {
-            setError('获取列表数据失败!')
-            return
-          }
+        if (res.code !== 0) {
+          throw new Error('获取列表数据失败!')
+        }
 
-          setArticles(res.data.articles || [])
-        })
-        .catch((err) => {
-          console.error(err)
-          setError('获取列表数据失败!')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
+        setArticles(res.data.articles || [])
+      } catch (err) {
+        console.error(err)
+        setError('获取列表数据失败!')
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchArticles()
   }, [])
 
+  if (isLoading) {
+    return <ArticlesSkeleton />
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />
+  }
+
   return (
-    <>
-      <div className="grid gap-6">
-        {articles.map((item) => (<ArticleCard key={item.id} article={item}></ArticleCard>))}
+    <div className="space-y-8">
+      <h2 className="text-3xl font-bold text-center mb-6">最新文章</h2>
+      <AnimatePresence>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {articles.map((item) => (
+            <ArticleCard key={item.id} article={item} />
+          ))}
+        </div>
+      </AnimatePresence>
+      <div className="text-center">
+        <Button variant="outline" size="lg">
+          查看更多
+          <Icon icon="mdi:arrow-right" className="ml-2 w-5 h-5" />
+        </Button>
       </div>
+    </div>
+  )
+}
 
-      <BaseLoading isLoading={isLoading} />
+function ArticlesSkeleton() {
+  return (
+    <div className="space-y-8">
+      <Skeleton className="h-10 w-48 mx-auto mb-6" />
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {[...Array(6)].map((_, i) => (
+          <Card key={i} className="h-48">
+            <CardHeader>
+              <Skeleton className="h-6 w-3/4" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-5/6" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  )
+}
 
-      {error && <p className="text-center my-10 text-lg">{error}</p>}
-    </>
+function ErrorMessage({ message }: { message: string }) {
+  return (
+    <div className="text-center py-10">
+      <Icon icon="mdi:alert-circle" className="w-16 h-16 text-red-500 mx-auto mb-4" />
+      <p className="text-xl font-semibold text-red-600">{message}</p>
+    </div>
   )
 }
