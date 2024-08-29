@@ -67,7 +67,7 @@ export function ArchiveInfo() {
   }
 
   return (
-    <div>
+    <div className='w-full'>
       <h2 className="text-3xl font-extrabold my-8 text-center">归档信息</h2>
 
       <YearSelector years={years} selectedYear={selectedYear} onSelectYear={setSelectedYear} />

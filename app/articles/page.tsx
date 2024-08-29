@@ -1,10 +1,172 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Icon } from '@iconify/react'
-import { Article } from '@prisma/client';
+import { Article } from '@prisma/client'
 import { getApiUrl } from '@/lib/utils'
 import { ArticleCard } from '@/components/article-card'
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
+
+// SearchBar component
+interface SearchBarProps {
+  onSearch: (term: string) => void
+}
+
+function SearchBar({ onSearch }: SearchBarProps) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const debouncedSearchTerm = useDebounce(searchTerm, 300)
+
+  useEffect(() => {
+    onSearch(debouncedSearchTerm)
+  }, [debouncedSearchTerm, onSearch])
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSearch(searchTerm)
+  }
+
+  return (
+    <Card className="mb-8">
+      <CardContent className="pt-6">
+        <form onSubmit={handleSearch} className="flex space-x-2">
+          <Input
+            type="text"
+            placeholder="搜索文章..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="flex-grow"
+          />
+          <Button type="submit">
+            搜索
+            <Icon icon="mdi:magnify" className="ml-2 w-5 h-5" />
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Pagination component
+interface PaginationProps {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+}
+
+function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+  return (
+    <div className="mt-8 flex justify-center items-center space-x-4">
+      <Button
+        onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
+        disabled={currentPage === 1}
+        variant="outline"
+      >
+        <Icon icon="mdi:chevron-left" className="mr-2 w-5 h-5" />
+        上一页
+      </Button>
+      <span className="text-gray-600 dark:text-gray-400">第 {currentPage} 页，共 {totalPages} 页</span>
+      <Button
+        onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
+        disabled={currentPage === totalPages}
+        variant="outline"
+      >
+        下一页
+        <Icon icon="mdi:chevron-right" className="ml-2 w-5 h-5" />
+      </Button>
+    </div>
+  )
+}
+
+function LoadingState() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="space-y-4"
+    >
+      {[...Array(3)].map((_, index) => (
+        <Card key={index}>
+          <CardContent className="p-4">
+            <Skeleton className="h-6 w-2/3 mb-2" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full mt-2" />
+          </CardContent>
+        </Card>
+      ))}
+    </motion.div>
+  )
+}
+
+function ErrorState({ message }: { message: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="text-center py-10"
+    >
+      <Icon icon="mdi:alert-circle" className="w-16 h-16 mx-auto text-red-500 mb-4" />
+      <p className="text-xl font-semibold text-red-600 dark:text-red-400">{message}</p>
+    </motion.div>
+  )
+}
+
+function ArticleList({ articles }: { articles: Article[] }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="space-y-6"
+    >
+      {articles.map(item => (
+        <motion.div
+          key={item.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ArticleCard article={item} />
+        </motion.div>
+      ))}
+    </motion.div>
+  )
+}
+
+function NoResults() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="text-center py-10"
+    >
+      <Icon icon="mdi:file-document-outline" className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+      <p className="text-xl font-semibold text-gray-600 dark:text-gray-400">没有找到相关文章</p>
+    </motion.div>
+  )
+}
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<Article[]>([])
@@ -14,109 +176,83 @@ export default function ArticlesPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      setLoading(true)
-      setError('')
+  const fetchArticles = useCallback(async () => {
+    setLoading(true)
+    setError('')
 
-      try {
-        const res = await fetch(getApiUrl(`articles/list?page=${currentPage}&pageSize=${6}&searchTerm=${searchTerm}`)).then(res => res.json())
-        if (res.code !== 0) {
-          setError('获取列表数据失败!')
-          return
-        }
-
-        setArticles(res.data.articles || [])
-        setTotalPages(res.data.totalPages || 1)
-      } catch (err) {
-        console.error(err)
-        setError('获取列表数据失败!')
-      } finally {
-        setLoading(false)
+    try {
+      const res = await fetch(getApiUrl(`articles/list?page=${currentPage}&pageSize=${6}&searchTerm=${searchTerm}`))
+      const data = await res.json()
+      
+      if (data.code !== 0) {
+        throw new Error('获取列表数据失败!')
       }
-    }
 
-    fetchArticles()
+      setArticles(data.data.articles || [])
+      setTotalPages(data.data.totalPages || 1)
+    } catch (err) {
+      console.error(err)
+      setError('获取列表数据失败!')
+    } finally {
+      setLoading(false)
+    }
   }, [currentPage, searchTerm])
 
-  const handleSearch = (e: any) => {
-    e.preventDefault()
+  useEffect(() => {
+    fetchArticles()
+  }, [fetchArticles])
+
+  const handleSearch = useCallback((term: string) => {
+    setSearchTerm(term)
     setCurrentPage(1)
+  }, [])
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page)
+  }, [])
+
+  const renderContent = () => {
+    if (loading) {
+      return <LoadingState />
+    }
+    if (error) {
+      return <ErrorState message={error} />
+    }
+    if (articles.length > 0) {
+      return <ArticleList articles={articles} />
+    }
+    return <NoResults />
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-bold mb-8">文章列表</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <motion.h1 
+        className="text-4xl font-bold mb-8 text-center"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        文章列表
+      </motion.h1>
 
-      {/* 搜索栏 */}
-      <form onSubmit={handleSearch} className="mb-8">
-        <div className="flex">
-          <input
-            type="text"
-            placeholder="搜索文章..."
-            className="w-full px-4 py-2 rounded-l-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="w-[100px] bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            搜索
-          </button>
-        </div>
-      </form>
+      <SearchBar onSearch={handleSearch} />
 
-      {/* 加载状态 */}
-      {loading && (
-        <div className="text-center py-10">
-          <Icon icon="eos-icons:loading" className="w-10 h-10 mx-auto text-blue-500 animate-spin" />
-          <p className="mt-2 text-gray-600 dark:text-gray-400">加载中...</p>
-        </div>
-      )}
+      <AnimatePresence mode="wait">
+        {renderContent()}
+      </AnimatePresence>
 
-      {/* 错误状态 */}
-      {error && (
-        <div className="text-center py-10">
-          <Icon icon="clarity:error-standard-line" className="w-10 h-10 mx-auto text-red-500" />
-          <p className="mt-2 text-red-600 dark:text-red-400">{error}</p>
-        </div>
-      )}
-
-      {/* 文章列表 */}
-      {!loading && !error && (
-        <div className="space-y-8">
-          {articles.map(item => (<ArticleCard key={item.id} article={item}></ArticleCard>))}
-        </div>
-      )}
-
-      {/* 分页 */}
       {!loading && !error && articles.length > 0 && (
-        <div className="mt-8 flex justify-center items-center space-x-4">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:text-gray-500"
-          >
-            上一页
-          </button>
-          <span className="text-gray-600 dark:text-gray-400">第 {currentPage} 页，共 {totalPages} 页</span>
-          <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:text-gray-500"
-          >
-            下一页
-          </button>
-        </div>
-      )}
-
-      {/* 无结果提示 */}
-      {!loading && !error && articles.length === 0 && (
-        <div className="text-center py-10">
-          <Icon icon="clarity:no-data-line" className="w-10 h-10 mx-auto text-gray-400" />
-          <p className="mt-2 text-gray-600 dark:text-gray-400">没有找到相关文章</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </motion.div>
       )}
     </div>
   )
