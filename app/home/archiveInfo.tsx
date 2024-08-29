@@ -67,12 +67,12 @@ export function ArchiveInfo() {
   }
 
   return (
-    <div className='w-full'>
+    <div className="space-y-8">
       <h2 className="text-3xl font-extrabold my-8 text-center">归档信息</h2>
 
       <YearSelector years={years} selectedYear={selectedYear} onSelectYear={setSelectedYear} />
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         <motion.div
           key={selectedYear}
           initial={{ opacity: 0, y: 20 }}
@@ -130,8 +130,8 @@ function MonthCard({ item }: { item: StatisticsInfoItem }) {
 
 function ArchiveSkeleton() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <Skeleton className="h-10 w-64 mb-8 mx-auto" />
+    <div className="space-y-8">
+      <Skeleton className="h-10 w-64 my-8 mx-auto" />
       <Skeleton className="h-12 w-full mb-8" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[...Array(6)].map((_, i) => (
