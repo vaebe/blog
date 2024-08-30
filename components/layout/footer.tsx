@@ -1,5 +1,21 @@
 'use client'
-export default function RootLayout() {
+import { routerList } from '@/lib/routers'
+
+function NavList() {
+  return (
+    <ul className="space-y-2">
+      {
+        routerList.map(item => (
+          <li key={item.path}>
+            <a href={item.path} className="text-gray-300 hover:text-white">{item.name}</a>
+          </li>
+        ))
+      }
+    </ul>
+  )
+}
+
+export default function LayoutFooter() {
 
   const githubUserName = process.env.NEXT_PUBLIC_GITHUB_USER_NAME
 
@@ -13,12 +29,7 @@ export default function RootLayout() {
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">快速链接</h3>
-            <ul className="space-y-2">
-              <li><a href="/" className="text-gray-300 hover:text-white">首页</a></li>
-              <li><a href="/articles" className="text-gray-300 hover:text-white">文章</a></li>
-              <li><a href="/about" className="text-gray-300 hover:text-white">关于</a></li>
-              <li><a href="/contact" className="text-gray-300 hover:text-white">联系</a></li>
-            </ul>
+            <NavList></NavList>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">订阅</h3>
