@@ -1,4 +1,4 @@
-import {getApiUrl} from '@/lib/utils'
+import { getApiUrl } from '@/lib/utils'
 
 export interface GithubPinnedRepoInfo {
   id: number
@@ -9,6 +9,7 @@ export interface GithubPinnedRepoInfo {
   "forkCount": number,
   "primaryLanguage": {
     "name": string
+    color: string
   }
 }
 
@@ -18,7 +19,6 @@ export async function fetchGithubPinnedRepos() {
 
     if (!res.ok) {
       return [] as GithubPinnedRepoInfo[]
-      
     }
 
     const list = await res.json()

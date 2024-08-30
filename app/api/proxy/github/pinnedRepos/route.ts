@@ -16,7 +16,8 @@ export async function GET() {
               stargazerCount
               forkCount
               primaryLanguage {
-                name
+                name,
+                color
               }
             }
           }
