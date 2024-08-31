@@ -3,28 +3,9 @@
 import { motion } from 'framer-motion'
 import { Icon } from '@iconify/react'
 import { useState, useEffect } from "react"
-import { fetchGithubUserInfo } from '@/lib/api'
-import type { GithubUserInfo } from '@/lib/api'
+import { fetchGithubUserInfo, fetchJuejinUserInfo } from '@/lib/api'
+import type { GithubUserInfo, JuejinUserInfo } from '@/lib/api'
 import { techIcons, techStackData } from '@/lib/enums'
-
-// 模拟数据
-const mockUserInfo = {
-  name: "张三",
-  avatar: "https://i.pravatar.cc/300",
-  bio: "热爱编程，专注于前端开发和人工智能。喜欢分享技术，热衷于开源社区。",
-  github: {
-    username: "zhangsan",
-    repos: 48,
-    followers: 230,
-    following: 180,
-  },
-  juejin: {
-    username: "张三_前端",
-    articles: 36,
-    likes: 2800,
-    views: 150000,
-  }
-}
 
 function StatItem({ icon, label, value }: { icon: string; label: string; value: number | undefined }) {
   return (
@@ -56,11 +37,15 @@ export function TechnologyStack() {
 
 export function UserProfile() {
   const [githubUserInfo, setGithubUserInfo] = useState<GithubUserInfo>()
+  const [juejinUserInfo, setJuejinUserInfo] = useState<JuejinUserInfo>()
 
   useEffect(() => {
     const loadData = async () => {
       const userInfo = await fetchGithubUserInfo()
       setGithubUserInfo(userInfo)
+
+      const juejin = await fetchJuejinUserInfo()
+      setJuejinUserInfo(juejin)
     }
     loadData()
   }, [])
@@ -88,20 +73,28 @@ export function UserProfile() {
 
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center">
-            <Icon icon="mdi:github" className="mr-2" /> GitHub
-          </h3>
+          <a href="https://github.com/vaebe" target="_blank" rel="noopener noreferrer">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
+              <Icon icon="mdi:github" className="mr-2" /> GitHub
+            </h3>
+          </a>
+
           <StatItem icon="mdi:source-repository" label="仓库" value={githubUserInfo?.public_repos} />
           <StatItem icon="mdi:account-group" label="关注者" value={githubUserInfo?.followers} />
           <StatItem icon="mdi:account-multiple" label="正在关注" value={githubUserInfo?.following} />
         </div>
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center">
-            <Icon icon="simple-icons:juejin" className="mr-2 text-blue-500" /> 掘金
-          </h3>
-          <StatItem icon="mdi:file-document-outline" label="文章" value={mockUserInfo.juejin.articles} />
-          <StatItem icon="mdi:thumb-up" label="获赞" value={mockUserInfo.juejin.likes} />
-          <StatItem icon="mdi:eye" label="阅读量" value={mockUserInfo.juejin.views} />
+
+          <a href="https://juejin.cn/user/712139266339694" target="_blank" rel="noopener noreferrer">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
+              <Icon icon="simple-icons:juejin" className="mr-2 text-blue-500" />
+              掘金
+            </h3>
+          </a>
+
+          <StatItem icon="mdi:file-document-outline" label="文章" value={juejinUserInfo?.post_article_count} />
+          <StatItem icon="mdi:thumb-up" label="获赞" value={juejinUserInfo?.got_digg_count} />
+          <StatItem icon="mdi:eye" label="阅读量" value={juejinUserInfo?.got_view_count} />
         </div>
       </div>
 

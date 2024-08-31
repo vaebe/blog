@@ -83,3 +83,23 @@ export async function fetchJuejinArticles() {
   const data = await res.json()
   return data as any as JuejinArticlesInfo
 }
+
+export interface JuejinUserInfo {
+  user_name: string
+  avatar_large:string
+  power: string
+  description: string
+  followee_count: number
+  follower_count: number
+  post_article_count: number
+  got_digg_count: number
+  got_view_count:number
+}
+
+export async function fetchJuejinUserInfo() {
+  const res = await fetch(getApiUrl('proxy/juejin/userInfo')).then(res => res.json())
+  if (res.code !== 0) {
+    return {} as JuejinUserInfo
+  }
+  return res.data as JuejinUserInfo
+}
