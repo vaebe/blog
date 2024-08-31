@@ -37,10 +37,7 @@ export async function GET() {
       body: JSON.stringify({ query }),
     }).then(res => res.json())
 
-    console.log(response,process.env, process.env.GITHUB_API_TOKEN,'-=1111111111111-=-=-=')
-
     const list = response?.data?.user?.pinnedItems?.edges?.map((edge: any) => edge.node) || [];
-
 
     return NextResponse.json(list, { status: 200 });
   } catch (error) {
