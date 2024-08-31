@@ -6,8 +6,6 @@ export async function GET(req: Request) {
       const { searchParams } = new URL(req.url);
       const cursor = parseInt(searchParams.get('cursor') || '0');
 
-      console.log('12121', cursor)
-
     const res = await fetch('https://api.juejin.cn/content_api/v1/article/query_list', {
       method: 'POST',
       headers: {
