@@ -7,6 +7,7 @@ export async function GET() {
     const response = await fetch(url, {
       headers: {
         'Accept': 'application/vnd.github.v3+json',
+        'Authorization': `Bearer ${process.env.GITHUB_API_TOKEN}`,
       },
     });
 
