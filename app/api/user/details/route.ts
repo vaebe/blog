@@ -4,8 +4,6 @@ import { sendJson } from '@/lib/utils'
 const prisma = new PrismaClient();
 
 export async function GET(req: Request) {
-  console.log(req, '-=-reqdsdasdsadasdsa=-=-')
-
   const url = new URL(req.url);
   const account = url.searchParams.get('account');
 

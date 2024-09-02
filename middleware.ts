@@ -1,12 +1,24 @@
-// middleware.ts
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { withAuth } from "next-auth/middleware"
+const ADMIN_PATHS = ['/api/articles/delete', '/api/articles/add', '/api/articles/update', '/api/user'];
 
-export function middleware(req: NextRequest) {
-  console.log("request:", req.method, req.url);
-  return NextResponse.next();
-}
+export default withAuth(
+  function middleware(req) {
+    console.log("request:", req.method, req.url);
+  },
+  {
+    callbacks: {
+      authorized: function ({ token , req}) {
+        const pathname = req.nextUrl.pathname
+        
+        if (ADMIN_PATHS.some(item => pathname.startsWith(item))) {
+          return token?.role === '00'
+        }
+        return true
+      },
+    },
+  },
+)
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
-}
+  matcher: ['/api/:path*'],
+};
