@@ -8,13 +8,15 @@ datasource db {
 }
 
 model Article {
+  @@map("article")
   id         String    @id @unique
   userId     Int
   title      String    @db.Text
   content    String    @db.LongText
   classify   String?   @db.Text
-  coverImg   String    @db.Text
+  coverImg   String?    @db.Text
   summary    String    @db.Text
+  source     String?    @db.Text // 00 博客创建 01 掘金同步
   views      Int       @default(1)
   likes      Int       @default(1)
   favorites  Int       @default(1)
@@ -27,6 +29,7 @@ model Article {
 }
 
 model User {
+  @@map("user")
   id          String    @id @unique
   nickName    String?   @db.Text
   account     String    @unique

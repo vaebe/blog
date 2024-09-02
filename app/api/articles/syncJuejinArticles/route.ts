@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getApiUrl } from '@/lib/utils'
 import dayjs from 'dayjs'
-
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -16,6 +15,7 @@ async function addArticle(info: any) {
     coverImg: cover_image,
     summary: brief_content,
     status: '',
+    source: '01',
     userId: 1,
     views: view_count,
     likes: digg_count,
