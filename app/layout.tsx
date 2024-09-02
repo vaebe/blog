@@ -9,6 +9,7 @@ import LayoutHeader from '@/components/layout/header'
 import LayoutFooter from '@/components/layout/footer'
 import { ThemeProvider } from 'next-themes'
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "@/components/ui/toaster"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -36,6 +37,7 @@ export default function RootLayout({ children, }: { children: React.ReactNode })
           </ThemeProvider>
         </SessionProvider>
 
+        <Toaster />
       </body>
     </html>
   )
