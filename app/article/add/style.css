@@ -1,0 +1,9 @@
+.bytemd {
+  height: 100vh;
+  border: 0;
+  overflow: hidden;
+}
+
+.article-add-content{
+  height: 100vh;
+}
