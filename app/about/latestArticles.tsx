@@ -7,6 +7,7 @@ import type { JuejinArticle } from '@/lib/api'
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from 'framer-motion'
 import { Skeleton } from '@/components/ui/skeleton'
+import Link from 'next/link'
 
 function NoFound() {
   return (
@@ -52,7 +53,7 @@ function ArticleInfo({ articles }: { articles: JuejinArticle[] }) {
           transition={{ duration: 0.3, delay: index * 0.1 }}
           className="group py-6 first:pt-0 last:pb-0"
         >
-          <a
+          <Link
             href={`https://juejin.cn/post/${article.article_info.article_id}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -78,7 +79,7 @@ function ArticleInfo({ articles }: { articles: JuejinArticle[] }) {
                 {article.article_info.view_count}
               </span>
             </div>
-          </a>
+          </Link>
         </motion.li>
       ))}
     </motion.ul>

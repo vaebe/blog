@@ -1,5 +1,6 @@
 'use client'
 import { routerList } from '@/lib/routers'
+import Link from 'next/link'
 
 function NavList() {
   return (
@@ -7,7 +8,7 @@ function NavList() {
       {
         routerList.map(item => (
           <li key={item.path}>
-            <a href={item.path} className="text-gray-300 hover:text-white">{item.name}</a>
+            <Link href={item.path} className="text-gray-300 hover:text-white">{item.name}</Link>
           </li>
         ))
       }
@@ -41,8 +42,8 @@ export default function LayoutFooter() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-          <a href={`https://github.com/${githubUserName}/blog/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer" className="mr-2 hover:text-blue-500 dark:hover:text-blue-400">Released under the MIT License.</a>
-          <a href={`https://github.com/${githubUserName}`} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 dark:hover:text-blue-400">Copyright © 2024-present {githubUserName}.</a>
+          <Link href={`https://github.com/${githubUserName}/blog/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer" className="mr-2 hover:text-blue-500 dark:hover:text-blue-400">Released under the MIT License.</Link>
+          <Link href={`https://github.com/${githubUserName}`} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 dark:hover:text-blue-400">Copyright © 2024-present {githubUserName}.</Link>
         </div>
       </div>
     </footer>
