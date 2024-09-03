@@ -7,6 +7,8 @@ import { fetchGithubUserInfo, fetchJuejinUserInfo } from '@/lib/api'
 import type { GithubUserInfo, JuejinUserInfo } from '@/lib/api'
 import { techIcons, techStackData } from '@/lib/enums'
 import Link from 'next/link'
+import Image from 'next/image'
+import userIcon from '@/public/user-icon.png'
 
 function StatItem({ icon, label, value }: { icon: string; label: string; value: number | undefined }) {
   return (
@@ -24,11 +26,7 @@ export function TechnologyStack() {
       {techStackData
         .map((tech) => (
           <div key={tech} className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-1">
-            {techIcons[tech] ? (
-              <Icon icon={techIcons[tech]} className="mr-2 w-5 h-5" />
-            ) : (
-              <Icon icon="mdi:code-tags" className="mr-2 w-5 h-5" />
-            )}
+            <Icon icon={techIcons[tech] ? techIcons[tech] : 'mdi:code-tags'} className="mr-2 w-5 h-5" />
             <span>{tech}</span>
           </div>
         ))}
@@ -59,11 +57,16 @@ export function UserProfile() {
       className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
     >
       <div className="flex flex-col md:flex-row md:items-end md:space-x-6">
-        <img
-          src={githubUserInfo?.avatar_url}
+        <Image
+          src={githubUserInfo?.avatar_url ?? userIcon}
           alt={`${githubUserInfo?.login}'s avatar`}
           className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 shadow-lg"
+          width={32}
+          height={32}
+          priority={true} 
+          placeholder='empty'
         />
+
         <div className="mt-4 md:mt-0">
           <h2 className="text-3xl font-bold text-gray-800 dark:text-white">{githubUserInfo?.login}</h2>
           <p className="text-gray-600 dark:text-gray-300 mt-1">
