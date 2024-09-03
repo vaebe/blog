@@ -1,16 +1,15 @@
-import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { sendJson } from '@/lib/utils'
 
 const prisma = new PrismaClient();
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const list = await prisma.$queryRaw<
       { month: string; count: number }[]
     >`
     SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS count
-    FROM Article
+    FROM article
     WHERE isDeleted = 0
     GROUP BY month
     ORDER BY month ASC;
