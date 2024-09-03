@@ -2,6 +2,8 @@ import { Article } from '@prisma/client';
 import { Icon } from '@iconify/react'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { motion } from 'framer-motion'
+import { getArticleDetailsUrl } from '@/lib/utils'
+import Link from 'next/link'
 
 export function ArticleCard({ article }: { article: Article }) {
   return (
@@ -32,9 +34,9 @@ export function ArticleCard({ article }: { article: Article }) {
                 未分类
               </span>
             </div>
-            <a href={`/article/${article.id}`} className="mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+            <Link href={getArticleDetailsUrl(article)} target='_blank' className="mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline">
               阅读更多 <Icon icon="ph:arrow-right-bold" className="ml-2 h-4 w-4" />
-            </a>
+            </Link>
           </div>
         </CardFooter>
       </Card>
