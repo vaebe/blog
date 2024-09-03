@@ -76,7 +76,7 @@ export function LatestArticles() {
       <h2 className="text-3xl font-bold text-center mb-6">最新文章</h2>
       <AnimatePresence>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((item) => (<Link href={getArticleDetailsUrl(item)} target='_blank'><ArticleCard key={item.id} article={item} /></Link>))}
+          {articles.map((item) => (<Link key={item.id} href={getArticleDetailsUrl(item)} target='_blank'><ArticleCard article={item} /></Link>))}
         </div>
       </AnimatePresence>
       <div className="text-center">
