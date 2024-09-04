@@ -1,7 +1,7 @@
 'use client'
 
-import { LatestArticles } from '@/app/home/latestArticles'
-import { ArchiveInfo } from '@/app/home/archiveInfo'
+import { LatestArticles } from '@/app/(base)/home/latestArticles'
+import { ArchiveInfo } from '@/app/(base)/home/archiveInfo'
 
 export default function Component() {
   return (

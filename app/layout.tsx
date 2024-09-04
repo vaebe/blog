@@ -26,14 +26,7 @@ export default function RootLayout({ children, }: { children: React.ReactNode })
         )}>
         <SessionProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-
-            <LayoutHeader></LayoutHeader>
-
-            <main className="flex-grow">
-              {children}
-            </main>
-
-            <LayoutFooter></LayoutFooter>
+            {children}
           </ThemeProvider>
         </SessionProvider>
 
