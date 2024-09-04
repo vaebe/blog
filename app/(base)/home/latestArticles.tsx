@@ -20,12 +20,12 @@ function ArticleCard({ article }: { article: Article }) {
     >
       <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300">
         <CardHeader>
-          <CardTitle className="line-clamp-2 h-14 text-lg">
+          <CardTitle className="line-clamp-1 text-lg">
             {article.title}
           </CardTitle>
         </CardHeader>
         <CardContent className="flex-grow">
-          <p className="line-clamp-3 text-sm text-gray-600 dark:text-gray-300">
+          <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-300">
             {article.summary}
           </p>
         </CardContent>
