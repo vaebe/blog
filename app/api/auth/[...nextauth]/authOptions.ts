@@ -84,8 +84,9 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      session.user.role = token?.role as string
-      return session;
+      const info = {...session}
+      info.user.role = token?.role as string
+      return info;
     },
   },
 }

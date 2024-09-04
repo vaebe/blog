@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/components/hooks/use-toast"
 import { PublishDialog } from './publishDialog'
 import type { PublishData } from './publishDialog'
-import {useRouter} from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 const uploadImages = async (files: File[]) => {
   let resultData = [];
@@ -36,7 +36,7 @@ const uploadImages = async (files: File[]) => {
 };
 
 export default function PublishArticle() {
-  const router = useRouter()
+  const router = useRouter()  
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -51,7 +51,7 @@ export default function PublishArticle() {
       return
     }
 
-    if(!content) {
+    if (!content) {
       toast({ title: "警告", description: "文章内容不能为空", variant: "destructive", })
       return
     }
@@ -70,7 +70,7 @@ export default function PublishArticle() {
           coverImg: info.coverImage ?? 'img',
           summary: info.summary,
         }),
-      }).then(res=> res.json())
+      }).then(res => res.json())
 
       if (res.code === 0) {
         router.push('/articles')
@@ -84,21 +84,18 @@ export default function PublishArticle() {
   };
 
   return (
-    <div>
+    <div className='h-[100vh] overflow-hidden'>
       <header className="flex items-center justify-between border-b">
-        <div className="flex-1">
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="输入文章标题..."
-            className="text-xl font-bold border-none rounded-none shadow-none focus-visible:ring-0"
-          />
-        </div>
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="输入文章标题..."
+          className="text-xl font-bold border-none rounded-none shadow-none focus-visible:ring-0"
+        />
         <Button className="rounded-none shadow-none" onClick={() => setPublishDialogShow(true)}>发布</Button>
       </header>
 
-      <div className='article-add-content'>
-        <Editor
+      <Editor
           value={content}
           locale={zh_Hans}
           plugins={bytemdPlugins}
@@ -107,7 +104,6 @@ export default function PublishArticle() {
           }}
           uploadImages={uploadImages}
         />
-      </div>
 
       <PublishDialog
         isOpen={publishDialogShow}
