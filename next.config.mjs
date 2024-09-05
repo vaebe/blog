@@ -7,10 +7,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
         port: '',
-        pathname: '/u/**',
-      },
-    ],
-  },
-};
+        pathname: '/u/**'
+      }
+    ]
+  }
+}
 
-export default nextConfig;
+export default nextConfig

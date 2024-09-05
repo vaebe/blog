@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react'
 import { SectionContainer } from './sectionContainer'
 import { fetchJuejinArticles } from '@/lib/api'
 import type { JuejinArticle } from '@/lib/api'
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
@@ -63,7 +63,7 @@ function ArticleInfo({ articles }: { articles: JuejinArticle[] }) {
               {article.article_info.title}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
-              {article.article_info.brief_content || "No description available"}
+              {article.article_info.brief_content || 'No description available'}
             </p>
             <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 space-x-4">
               <span className="flex items-center">
@@ -96,7 +96,7 @@ export function LatestArticles() {
         const info = await fetchJuejinArticles()
         setArticles(info.data)
       } catch (error) {
-        console.error("Failed to fetch articles:", error)
+        console.error('Failed to fetch articles:', error)
       } finally {
         setIsLoading(false)
       }
@@ -105,7 +105,7 @@ export function LatestArticles() {
   }, [])
 
   return (
-    <SectionContainer title='最新文章' titleIcon='mdi:pencil'>
+    <SectionContainer title="最新文章" titleIcon="mdi:pencil">
       <AnimatePresence>
         {isLoading ? <LoadingComponent /> : <ArticleInfo articles={articles} />}
       </AnimatePresence>

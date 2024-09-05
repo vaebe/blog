@@ -1,12 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
 import { getApiUrl } from '@/lib/utils'
 import dayjs from 'dayjs'
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 async function addArticle(info: any) {
-  const { article_id, title, cover_image, brief_content, view_count, ctime, collect_count, digg_count } = info.article_info
+  const {
+    article_id,
+    title,
+    cover_image,
+    brief_content,
+    view_count,
+    ctime,
+    collect_count,
+    digg_count
+  } = info.article_info
 
   const data = {
     title: title,
@@ -66,8 +75,8 @@ export async function GET(req: Request) {
 
     getArticles(index)
 
-    return NextResponse.json({}, { status: 200 });
+    return NextResponse.json({}, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch articles" }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch articles' }, { status: 500 })
   }
 }

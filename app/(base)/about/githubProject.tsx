@@ -1,7 +1,7 @@
 'use client'
 
 import { SectionContainer } from './sectionContainer'
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { fetchGithubPinnedRepos } from '@/lib/api'
@@ -59,15 +59,17 @@ function ProjectInfo({ repos }: { repos: GithubPinnedRepoInfo[] }) {
           transition={{ duration: 0.3, delay: index * 0.1 }}
           className="group py-6 first:pt-0 last:pb-0"
         >
-          <Link href={repo.url}
+          <Link
+            href={repo.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="block transition duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg p-4 -m-4">
+            className="block transition duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg p-4 -m-4"
+          >
             <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition duration-300">
               {repo.name}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
-              {repo.description || "No description available"}
+              {repo.description || 'No description available'}
             </p>
             <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 space-x-4">
               <span className="flex items-center">
@@ -80,7 +82,10 @@ function ProjectInfo({ repos }: { repos: GithubPinnedRepoInfo[] }) {
               </span>
               {repo.primaryLanguage && (
                 <span className="flex items-center">
-                  <span className="w-3 h-3 rounded-full mr-1" style={{ backgroundColor: repo.primaryLanguage.color }}  ></span>
+                  <span
+                    className="w-3 h-3 rounded-full mr-1"
+                    style={{ backgroundColor: repo.primaryLanguage.color }}
+                  ></span>
                   {repo.primaryLanguage.name}
                 </span>
               )}
@@ -102,7 +107,7 @@ export function GithubProject() {
         const reposData = await fetchGithubPinnedRepos()
         if (reposData) setRepos(reposData)
       } catch (error) {
-        console.error("Failed to fetch GitHub data:", error)
+        console.error('Failed to fetch GitHub data:', error)
       } finally {
         setIsLoading(false)
       }
@@ -111,7 +116,7 @@ export function GithubProject() {
   }, [])
 
   return (
-    <SectionContainer title='GitHub 项目' titleIcon='mdi:github'>
+    <SectionContainer title="GitHub 项目" titleIcon="mdi:github">
       <AnimatePresence>
         {isLoading ? <LoadingComponent /> : <ProjectInfo repos={repos} />}
       </AnimatePresence>

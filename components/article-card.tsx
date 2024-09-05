@@ -1,6 +1,6 @@
-import { Article } from '@prisma/client';
+import { Article } from '@prisma/client'
 import { Icon } from '@iconify/react'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { motion } from 'framer-motion'
 import { getArticleDetailsUrl } from '@/lib/utils'
 import Link from 'next/link'
@@ -15,18 +15,14 @@ export function ArticleCard({ article }: { article: Article }) {
     >
       <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300">
         <CardHeader>
-          <CardTitle className="line-clamp-2 h-14 text-lg">
-            {article.title}
-          </CardTitle>
+          <CardTitle className="line-clamp-2 h-14 text-lg">{article.title}</CardTitle>
         </CardHeader>
         <CardContent className="flex-grow">
-          <p className="line-clamp-3 text-sm text-gray-600 dark:text-gray-300">
-            {article.summary}
-          </p>
+          <p className="line-clamp-3 text-sm text-gray-600 dark:text-gray-300">{article.summary}</p>
         </CardContent>
 
         <CardFooter>
-          <div className='w-full'>
+          <div className="w-full">
             <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
               <span>{new Date(article.createdAt).toLocaleDateString()}</span>
               <span>5 分钟</span>
@@ -34,7 +30,11 @@ export function ArticleCard({ article }: { article: Article }) {
                 未分类
               </span>
             </div>
-            <Link href={getArticleDetailsUrl(article)} target='_blank' className="mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+            <Link
+              href={getArticleDetailsUrl(article)}
+              target="_blank"
+              className="mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+            >
               阅读更多 <Icon icon="ph:arrow-right-bold" className="ml-2 h-4 w-4" />
             </Link>
           </div>

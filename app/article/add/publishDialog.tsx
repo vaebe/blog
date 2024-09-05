@@ -1,22 +1,28 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/components/hooks/use-toast"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/hooks/use-toast'
 
 interface PublishDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onPublish: (data: PublishData) => void;
+  isOpen: boolean
+  onClose: () => void
+  onPublish: (data: PublishData) => void
 }
 
 export interface PublishData {
-  category: string;
-  coverImage: string;
-  summary: string;
+  category: string
+  coverImage: string
+  summary: string
 }
 
 const categories = ['后端', '前端', 'Android', 'iOS', '人工智能', '开发工具', '代码人生', '阅读']
@@ -28,12 +34,12 @@ export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps
 
   const handlePublish = () => {
     if (!category) {
-      toast({ variant: "destructive", title: "警告", description: "文章分类不能为空", })
+      toast({ variant: 'destructive', title: '警告', description: '文章分类不能为空' })
       return
     }
 
     if (!summary) {
-      toast({ variant: "destructive", title: "警告", description: "文章简介不能为空", })
+      toast({ variant: 'destructive', title: '警告', description: '文章简介不能为空' })
       return
     }
 
@@ -70,7 +76,7 @@ export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps
               {categories.map((cat) => (
                 <Button
                   key={cat}
-                  variant={category === cat ? "default" : "outline"}
+                  variant={category === cat ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setCategory(cat)}
                 >
@@ -80,9 +86,7 @@ export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps
             </div>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="cover">
-              文章封面:
-            </Label>
+            <Label htmlFor="cover">文章封面:</Label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer">
               {coverImage ? (
                 <img src={coverImage} alt="Cover" className="max-w-full h-auto" />
@@ -102,7 +106,9 @@ export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps
                 </label>
               )}
             </div>
-            <p className="text-sm text-gray-500 mt-1">建议尺寸: 192*128px (封面仅展示在首页信息流中)</p>
+            <p className="text-sm text-gray-500 mt-1">
+              建议尺寸: 192*128px (封面仅展示在首页信息流中)
+            </p>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="summary">
@@ -118,7 +124,9 @@ export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>取消</Button>
+          <Button variant="outline" onClick={onClose}>
+            取消
+          </Button>
           <Button onClick={handlePublish}>确定并发布</Button>
         </DialogFooter>
       </DialogContent>

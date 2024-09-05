@@ -1,13 +1,13 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 // PUT: 更新文章
 export async function PUT(req: Request) {
   try {
-    const body = await req.json();
-    const { id, title, content, classify, coverImg, summary, status } = body;
+    const body = await req.json()
+    const { id, title, content, classify, coverImg, summary, status } = body
 
     const updatedArticle = await prisma.article.update({
       where: { id },
@@ -17,12 +17,12 @@ export async function PUT(req: Request) {
         classify,
         coverImg,
         summary,
-        status,
-      },
-    });
+        status
+      }
+    })
 
-    return NextResponse.json(updatedArticle);
+    return NextResponse.json(updatedArticle)
   } catch (error) {
-    return NextResponse.json({ error: "Failed to update article" }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update article' }, { status: 500 })
   }
 }

@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from 'react'
 import { Icon } from '@iconify/react'
 
 interface SectionContainerProps {
@@ -16,5 +16,5 @@ export function SectionContainer({ children, title, titleIcon }: SectionContaine
       </h2>
       {children}
     </section>
-  );
+  )
 }

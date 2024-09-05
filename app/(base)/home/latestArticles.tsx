@@ -5,9 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { getApiUrl, getArticleDetailsUrl } from '@/lib/utils'
 import { Article } from '@prisma/client'
 import { Icon } from '@iconify/react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
 function ArticleCard({ article }: { article: Article }) {
@@ -20,14 +20,10 @@ function ArticleCard({ article }: { article: Article }) {
     >
       <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300">
         <CardHeader>
-          <CardTitle className="line-clamp-1 text-lg">
-            {article.title}
-          </CardTitle>
+          <CardTitle className="line-clamp-1 text-lg">{article.title}</CardTitle>
         </CardHeader>
         <CardContent className="flex-grow">
-          <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-300">
-            {article.summary}
-          </p>
+          <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-300">{article.summary}</p>
         </CardContent>
       </Card>
     </motion.div>
@@ -76,7 +72,11 @@ export function LatestArticles() {
       <h2 className="text-3xl font-bold text-center mb-6">最新文章</h2>
       <AnimatePresence>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((item) => (<Link key={item.id} href={getArticleDetailsUrl(item)} target='_blank'><ArticleCard article={item} /></Link>))}
+          {articles.map((item) => (
+            <Link key={item.id} href={getArticleDetailsUrl(item)} target="_blank">
+              <ArticleCard article={item} />
+            </Link>
+          ))}
         </div>
       </AnimatePresence>
       <div className="text-center">

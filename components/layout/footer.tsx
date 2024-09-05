@@ -5,19 +5,18 @@ import Link from 'next/link'
 function NavList() {
   return (
     <ul className="space-y-2">
-      {
-        routerList.map(item => (
-          <li key={item.path}>
-            <Link href={item.path} className="text-gray-300 hover:text-white">{item.name}</Link>
-          </li>
-        ))
-      }
+      {routerList.map((item) => (
+        <li key={item.path}>
+          <Link href={item.path} className="text-gray-300 hover:text-white">
+            {item.name}
+          </Link>
+        </li>
+      ))}
     </ul>
   )
 }
 
 export default function LayoutFooter() {
-
   const githubUserName = process.env.NEXT_PUBLIC_GITHUB_USER_NAME
 
   return (
@@ -36,14 +35,37 @@ export default function LayoutFooter() {
             <h3 className="text-lg font-semibold mb-4">订阅</h3>
             <p className="text-gray-300 mb-4">及时获取我们的最新文章和新闻。</p>
             <form className="flex">
-              <input type="email" placeholder="输入您的邮箱" className="flex-grow px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">订阅</button>
+              <input
+                type="email"
+                placeholder="输入您的邮箱"
+                className="flex-grow px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                订阅
+              </button>
             </form>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-          <Link href={`https://github.com/${githubUserName}/blog/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer" className="mr-2 hover:text-blue-500 dark:hover:text-blue-400">Released under the MIT License.</Link>
-          <Link href={`https://github.com/${githubUserName}`} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 dark:hover:text-blue-400">Copyright © 2024-present {githubUserName}.</Link>
+          <Link
+            href={`https://github.com/${githubUserName}/blog/blob/main/LICENSE`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mr-2 hover:text-blue-500 dark:hover:text-blue-400"
+          >
+            Released under the MIT License.
+          </Link>
+          <Link
+            href={`https://github.com/${githubUserName}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-blue-500 dark:hover:text-blue-400"
+          >
+            Copyright © 2024-present {githubUserName}.
+          </Link>
         </div>
       </div>
     </footer>
