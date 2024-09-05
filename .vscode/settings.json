@@ -1,0 +1,14 @@
+{
+  "editor.formatOnSave": true, // 启用保存时自动格式化
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // 使用 Prettier 作为默认格式化工具
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "markdown"]
+}
