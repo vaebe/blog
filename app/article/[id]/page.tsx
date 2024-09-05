@@ -1,7 +1,7 @@
 'use client'
 
 import { Viewer } from '@bytemd/react'
-import bytemdPlugins from '@/lib/bytemdPlugins'
+import bytemdPlugins from '@/components/bytemd/bytemdPlugins'
 import { useEffect, useState } from 'react'
 import { Article } from '@prisma/client'
 import './style.css'

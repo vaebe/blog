@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 import './style.css'
-import bytemdPlugins from '@/lib/bytemdPlugins'
+import bytemdPlugins from '@/components/bytemd/bytemdPlugins'
 
 import { Editor } from '@bytemd/react'
 import zh_Hans from 'bytemd/locales/zh_Hans.json'
