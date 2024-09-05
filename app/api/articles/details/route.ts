@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import { sendJson } from '@/lib/utils'
 
 const prisma = new PrismaClient()
 
@@ -9,15 +10,15 @@ export async function GET(req: Request) {
 
   try {
     if (!id) {
-      return NextResponse.json({ error: 'id 不存在' }, { status: 500 })
+      return sendJson({ code: -1, msg: 'id 不存在' })
     }
 
     const article = await prisma.article.findUnique({
       where: { id: id }
     })
 
-    return NextResponse.json({ data: article })
+    return sendJson({ data: article })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch article' }, { status: 500 })
+    return sendJson({ code: -1, msg: 'Failed to fetch article' })
   }
 }
