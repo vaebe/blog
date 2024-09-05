@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState, ChangeEvent } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -50,7 +50,7 @@ export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps
     })
   }
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
       const reader = new FileReader()

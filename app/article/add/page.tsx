@@ -1,39 +1,13 @@
 'use client'
 
-import './style.css'
 import { useState } from 'react'
-import bytemdPlugins from '@/lib/bytemdPlugins'
-import { Editor } from '@bytemd/react'
-import zh_Hans from 'bytemd/locales/zh_Hans.json'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/hooks/use-toast'
-import { PublishDialog } from './publishDialog'
-import type { PublishData } from './publishDialog'
+import { PublishDialog } from '../components/publishDialog'
+import type { PublishData } from '../components/publishDialog'
 import { useRouter } from 'next/navigation'
-
-const uploadImages = async (files: File[]) => {
-  let resultData = []
-
-  for (const item of files) {
-    const formData = new FormData()
-    formData.append('file', item)
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    })
-    const data = await res.json()
-
-    if (data?.code === 0) {
-      resultData.push({
-        url: data?.data,
-        alt: item.name,
-        title: item.name
-      })
-    }
-  }
-  return resultData
-}
+import { BytemdEditor } from '@/components/bytemd/editor'
 
 export default function PublishArticle() {
   const router = useRouter()
@@ -97,15 +71,7 @@ export default function PublishArticle() {
         </Button>
       </header>
 
-      <Editor
-        value={content}
-        locale={zh_Hans}
-        plugins={bytemdPlugins}
-        onChange={(v) => {
-          setContent(v)
-        }}
-        uploadImages={uploadImages}
-      />
+      <BytemdEditor content={content} setContent={setContent}></BytemdEditor>
 
       <PublishDialog
         isOpen={publishDialogShow}
