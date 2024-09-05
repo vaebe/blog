@@ -1,23 +1,23 @@
 'use client'
 
-import React, { useState } from "react"
-import { signIn, useSession } from "next-auth/react"
+import React, { useState } from 'react'
+import { signIn, useSession } from 'next-auth/react'
 import { Icon } from '@iconify/react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useToast } from "@/components/hooks/use-toast"
-import { motion, AnimatePresence } from "framer-motion"
-import { FullScreenLoading } from '@/components/screen-loading';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useToast } from '@/components/hooks/use-toast'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FullScreenLoading } from '@/components/screen-loading'
 
 interface LoginFormProps {
-  onSubmit: (account: string, password: string) => Promise<void>;
-  isLoading: boolean;
+  onSubmit: (account: string, password: string) => Promise<void>
+  isLoading: boolean
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => {
-  const [account, setAccount] = useState("")
-  const [password, setPassword] = useState("")
+  const [account, setAccount] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,7 +48,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => {
           </div>
         </div>
         <div>
-          <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <Label
+            htmlFor="password"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             密码
           </Label>
           <div className="mt-1 relative rounded-md shadow-sm">
@@ -79,7 +82,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => {
             登录中...
           </>
         ) : (
-          "登录"
+          '登录'
         )}
       </Button>
     </form>
@@ -87,8 +90,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => {
 }
 
 interface GithubLoginButtonProps {
-  onClick: () => void;
-  isLoading: boolean;
+  onClick: () => void
+  isLoading: boolean
 }
 
 const GithubLoginButton: React.FC<GithubLoginButtonProps> = ({ onClick, isLoading }) => (
@@ -109,16 +112,16 @@ const LoginPage: React.FC = () => {
 
   const handleCredentialsLogin = async (account: string, password: string) => {
     setIsLoading(true)
-    const res = await signIn("credentials", {
+    const res = await signIn('credentials', {
       redirect: false,
       account,
-      password,
+      password
     })
 
     if (res?.error) {
-      toast({ title: "登录失败", description: "请检查您的用户名和密码", variant: "destructive", })
+      toast({ title: '登录失败', description: '请检查您的用户名和密码', variant: 'destructive' })
     } else {
-      toast({ title: "登录成功", description: "欢迎回来！", })
+      toast({ title: '登录成功', description: '欢迎回来！' })
     }
 
     setIsLoading(false)

@@ -8,7 +8,7 @@ interface FullScreenLoadingProps {
   message?: string
 }
 
-export function FullScreenLoading ({ isLoading, message = 'Loading...' }:FullScreenLoadingProps) {
+export function FullScreenLoading({ isLoading, message = 'Loading...' }: FullScreenLoadingProps) {
   return (
     <AnimatePresence>
       {isLoading && (

@@ -1,4 +1,4 @@
-import {getApiUrl} from '@/lib/utils'
+import { getApiUrl } from '@/lib/utils'
 
 export interface ArticleInfo {
   article_id: string
@@ -63,13 +63,13 @@ export interface Tag {
 }
 
 export interface JuejinArticle {
-  article_info: ArticleInfo 
+  article_info: ArticleInfo
   tags: Tag[]
 }
 
 export interface JuejinArticlesInfo {
-  count: number,
-  cursor: string,
+  count: number
+  cursor: string
   data: JuejinArticle[]
 }
 
@@ -86,18 +86,18 @@ export async function fetchJuejinArticles() {
 
 export interface JuejinUserInfo {
   user_name: string
-  avatar_large:string
+  avatar_large: string
   power: string
   description: string
   followee_count: number
   follower_count: number
   post_article_count: number
   got_digg_count: number
-  got_view_count:number
+  got_view_count: number
 }
 
 export async function fetchJuejinUserInfo() {
-  const res = await fetch(getApiUrl('proxy/juejin/userInfo')).then(res => res.json())
+  const res = await fetch(getApiUrl('proxy/juejin/userInfo')).then((res) => res.json())
   if (res.code !== 0) {
     return {} as JuejinUserInfo
   }

@@ -71,7 +71,15 @@ function UserProfileSkeleton() {
   )
 }
 
-function StatItem({ icon, label, value }: { icon: string; label: string; value: number | undefined }) {
+function StatItem({
+  icon,
+  label,
+  value
+}: {
+  icon: string
+  label: string
+  value: number | undefined
+}) {
   return (
     <div className="flex items-center space-x-2">
       <Icon icon={icon} className="w-5 h-5 text-gray-500 dark:text-gray-400" />
@@ -85,8 +93,14 @@ function TechnologyStack() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {techStackData.map((tech) => (
-        <div key={tech} className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-1">
-          <Icon icon={techIcons[tech] ? techIcons[tech] : 'mdi:code-tags'} className="mr-2 w-5 h-5" />
+        <div
+          key={tech}
+          className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-1"
+        >
+          <Icon
+            icon={techIcons[tech] ? techIcons[tech] : 'mdi:code-tags'}
+            className="mr-2 w-5 h-5"
+          />
           <span>{tech}</span>
         </div>
       ))}
@@ -102,10 +116,7 @@ export function UserProfile() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [github, juejin] = await Promise.all([
-          fetchGithubUserInfo(),
-          fetchJuejinUserInfo()
-        ])
+        const [github, juejin] = await Promise.all([fetchGithubUserInfo(), fetchJuejinUserInfo()])
         setGithubUserInfo(github)
         setJuejinUserInfo(juejin)
       } catch (error) {
@@ -137,14 +148,18 @@ export function UserProfile() {
               className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 shadow-lg"
               width={128}
               height={128}
-              priority={true} 
-              placeholder='empty'
+              priority={true}
+              placeholder="empty"
             />
 
             <div className="mt-4 md:mt-0">
-              <h2 className="text-3xl font-bold text-gray-800 dark:text-white">{githubUserInfo?.login}</h2>
+              <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
+                {githubUserInfo?.login}
+              </h2>
               <p className="text-gray-600 dark:text-gray-300 mt-1">
-                你好！我是vaebe，一名全栈开发者。我喜欢探索新技术，解决复杂问题， 并且热衷于在掘金分享我的技术见解。在GitHub上，我积极参与开源项目，不断提升自己的编程技能。 欢迎访问我的掘金主页和GitHub主页，了解更多关于我的信息！
+                你好！我是vaebe，一名全栈开发者。我喜欢探索新技术，解决复杂问题，
+                并且热衷于在掘金分享我的技术见解。在GitHub上，我积极参与开源项目，不断提升自己的编程技能。
+                欢迎访问我的掘金主页和GitHub主页，了解更多关于我的信息！
               </p>
             </div>
           </div>
@@ -157,19 +172,35 @@ export function UserProfile() {
                 </h3>
               </Link>
 
-              <StatItem icon="mdi:source-repository" label="仓库" value={githubUserInfo?.public_repos} />
+              <StatItem
+                icon="mdi:source-repository"
+                label="仓库"
+                value={githubUserInfo?.public_repos}
+              />
               <StatItem icon="mdi:account-group" label="关注者" value={githubUserInfo?.followers} />
-              <StatItem icon="mdi:account-multiple" label="正在关注" value={githubUserInfo?.following} />
+              <StatItem
+                icon="mdi:account-multiple"
+                label="正在关注"
+                value={githubUserInfo?.following}
+              />
             </div>
             <div className="space-y-4">
-              <Link href="https://juejin.cn/user/712139266339694" target="_blank" rel="noopener noreferrer">
+              <Link
+                href="https://juejin.cn/user/712139266339694"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
                   <Icon icon="simple-icons:juejin" className="mr-2 text-blue-500" />
                   掘金
                 </h3>
               </Link>
 
-              <StatItem icon="mdi:file-document-outline" label="文章" value={juejinUserInfo?.post_article_count} />
+              <StatItem
+                icon="mdi:file-document-outline"
+                label="文章"
+                value={juejinUserInfo?.post_article_count}
+              />
               <StatItem icon="mdi:thumb-up" label="获赞" value={juejinUserInfo?.got_digg_count} />
               <StatItem icon="mdi:eye" label="阅读量" value={juejinUserInfo?.got_view_count} />
             </div>

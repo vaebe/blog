@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'
 import { sendJson } from '@/lib/utils'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const account = url.searchParams.get('account');
+  const url = new URL(req.url)
+  const account = url.searchParams.get('account')
 
   try {
     if (!account) {
@@ -13,8 +13,8 @@ export async function GET(req: Request) {
     }
 
     const user = await prisma.user.findUnique({
-      where: { account: account },
-    });
+      where: { account: account }
+    })
 
     return sendJson({ data: user })
   } catch (error) {

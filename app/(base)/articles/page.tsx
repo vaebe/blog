@@ -6,10 +6,10 @@ import { Icon } from '@iconify/react'
 import { Article } from '@prisma/client'
 import { getApiUrl } from '@/lib/utils'
 import { ArticleCard } from '@/components/article-card'
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
@@ -84,7 +84,9 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         <Icon icon="mdi:chevron-left" className="mr-2 w-5 h-5" />
         上一页
       </Button>
-      <span className="text-gray-600 dark:text-gray-400">第 {currentPage} 页，共 {totalPages} 页</span>
+      <span className="text-gray-600 dark:text-gray-400">
+        第 {currentPage} 页，共 {totalPages} 页
+      </span>
       <Button
         onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
         disabled={currentPage === totalPages}
@@ -140,7 +142,7 @@ function ArticleList({ articles }: { articles: Article[] }) {
       exit={{ opacity: 0 }}
       className="space-y-6"
     >
-      {articles.map(item => (
+      {articles.map((item) => (
         <motion.div
           key={item.id}
           initial={{ opacity: 0, y: 20 }}
@@ -181,9 +183,11 @@ export default function ArticlesPage() {
     setError('')
 
     try {
-      const res = await fetch(getApiUrl(`articles/list?page=${currentPage}&pageSize=${6}&searchTerm=${searchTerm}`))
+      const res = await fetch(
+        getApiUrl(`articles/list?page=${currentPage}&pageSize=${6}&searchTerm=${searchTerm}`)
+      )
       const data = await res.json()
-      
+
       if (data.code !== 0) {
         throw new Error('获取列表数据失败!')
       }
@@ -226,7 +230,7 @@ export default function ArticlesPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <motion.h1 
+      <motion.h1
         className="text-4xl font-bold mb-8 text-center"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -237,16 +241,10 @@ export default function ArticlesPage() {
 
       <SearchBar onSearch={handleSearch} />
 
-      <AnimatePresence mode="wait">
-        {renderContent()}
-      </AnimatePresence>
+      <AnimatePresence mode="wait">{renderContent()}</AnimatePresence>
 
       {!loading && !error && articles.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

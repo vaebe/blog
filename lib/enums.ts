@@ -6,7 +6,7 @@ export const techIcons: Record<string, string> = {
   NextJs: 'logos:nextjs-icon',
   NestJs: 'logos:nestjs',
   Go: 'logos:go',
-  Mysql: 'logos:mysql',
+  Mysql: 'logos:mysql'
 }
 
 export const techStackData = ['TypeScript', 'Vue', 'NuxtJs', 'NextJs', 'NestJs', 'Go', 'Mysql']

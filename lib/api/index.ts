@@ -5,4 +5,10 @@ import type { JuejinArticle, JuejinArticlesInfo, JuejinUserInfo } from './fetchJ
 
 export { fetchGithubPinnedRepos, fetchGithubUserInfo, fetchJuejinArticles, fetchJuejinUserInfo }
 
-export type { JuejinArticle, JuejinArticlesInfo, GithubPinnedRepoInfo, GithubUserInfo, JuejinUserInfo }
+export type {
+  JuejinArticle,
+  JuejinArticlesInfo,
+  GithubPinnedRepoInfo,
+  GithubUserInfo,
+  JuejinUserInfo
+}

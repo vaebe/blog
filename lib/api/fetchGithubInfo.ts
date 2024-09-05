@@ -2,13 +2,13 @@ import { getApiUrl } from '@/lib/utils'
 
 export interface GithubPinnedRepoInfo {
   id: number
-  "name": string,
-  "description": string,
-  "url": string,
-  "stargazerCount": number,
-  "forkCount": number,
-  "primaryLanguage": {
-    "name": string
+  name: string
+  description: string
+  url: string
+  stargazerCount: number
+  forkCount: number
+  primaryLanguage: {
+    name: string
     color: string
   }
 }
@@ -24,7 +24,7 @@ export async function fetchGithubPinnedRepos() {
     const list = await res.json()
     return list as GithubPinnedRepoInfo[]
   } catch (error) {
-    console.error('获取 github 仓库信息失败:', error);
+    console.error('获取 github 仓库信息失败:', error)
   }
 }
 
@@ -68,13 +68,12 @@ export async function fetchGithubUserInfo() {
     const res = await fetch(getApiUrl('proxy/github/userInfo'))
 
     if (res.ok) {
-      const userInfo = await res.json();
-      return userInfo;
+      const userInfo = await res.json()
+      return userInfo
     }
 
     return {}
   } catch (error) {
-    console.error('Failed to fetch user information:', error);
+    console.error('Failed to fetch user information:', error)
   }
 }
-

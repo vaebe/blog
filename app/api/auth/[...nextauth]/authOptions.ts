@@ -1,9 +1,9 @@
-import type { AuthOptions } from "next-auth"
-import GitHubProvider from 'next-auth/providers/github';
-import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
+import type { AuthOptions } from 'next-auth'
+import GitHubProvider from 'next-auth/providers/github'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 const AUTH_GITHUB_CLIENT_ID = process.env.AUTH_GITHUB_CLIENT_ID
 const AUTH_GITHUB_CLIENT_SECRET = process.env.AUTH_GITHUB_CLIENT_SECRET
@@ -23,9 +23,9 @@ async function upsertUser(profile: any) {
         accountType: '01', // '00 账号密码 01 github'
         role: '01', // 角色: 00 admin 01 普通用户
         homepage: html_url,
-        avatar: avatar_url,
-      },
-    });
+        avatar: avatar_url
+      }
+    })
   } catch (error) {
     console.log(error)
   }
@@ -34,27 +34,27 @@ async function upsertUser(profile: any) {
 export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        account: { label: "Account", type: "text" },
-        password: { label: "Password", type: "password" }
+        account: { label: 'Account', type: 'text' },
+        password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
         // 校验用户信息
         const user = await prisma.user.findUnique({
-          where: { account: credentials?.account, password: credentials?.password },
-        });
+          where: { account: credentials?.account, password: credentials?.password }
+        })
 
         return { id: user!.id, name: user?.nickName, email: user?.account, image: user?.avatar }
-      },
+      }
     }),
     GitHubProvider({
       clientId: AUTH_GITHUB_CLIENT_ID ?? '',
-      clientSecret: AUTH_GITHUB_CLIENT_SECRET ?? '',
+      clientSecret: AUTH_GITHUB_CLIENT_SECRET ?? ''
     })
   ],
   pages: {
-    signIn: '/login',
+    signIn: '/login'
   },
   session: {
     // strategy: "jwt",
@@ -66,7 +66,7 @@ export const authOptions: AuthOptions = {
       if (account?.provider === 'github') {
         upsertUser(profile)
       }
-      return true;
+      return true
     },
     async redirect({ baseUrl }) {
       return baseUrl
@@ -74,19 +74,19 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         const userInfo = await prisma.user.findUnique({
-          where: { account: user.email as string },
-        });
+          where: { account: user.email as string }
+        })
 
         if (userInfo) {
-          token.role = userInfo.role;
+          token.role = userInfo.role
         }
       }
-      return token;
+      return token
     },
     async session({ session, token }) {
-      const info = {...session}
+      const info = { ...session }
       info.user.role = token?.role as string
-      return info;
-    },
-  },
+      return info
+    }
+  }
 }

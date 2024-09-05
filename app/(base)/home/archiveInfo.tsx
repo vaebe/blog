@@ -7,9 +7,9 @@ import 'dayjs/locale/zh-cn'
 import { Icon } from '@iconify/react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface StatisticsInfoItem {
   month: string
@@ -22,8 +22,14 @@ export function ArchiveInfo() {
   const [statisticsInfo, setStatisticsInfo] = useState<Record<string, StatisticsInfoItem[]>>({})
   const [selectedYear, setSelectedYear] = useState<string>('')
 
-  const years = useMemo(() => Object.keys(statisticsInfo).sort((a, b) => Number(b) - Number(a)), [statisticsInfo])
-  const currentYearInfo = useMemo(() => statisticsInfo[selectedYear] || [], [statisticsInfo, selectedYear])
+  const years = useMemo(
+    () => Object.keys(statisticsInfo).sort((a, b) => Number(b) - Number(a)),
+    [statisticsInfo]
+  )
+  const currentYearInfo = useMemo(
+    () => statisticsInfo[selectedYear] || [],
+    [statisticsInfo, selectedYear]
+  )
 
   useEffect(() => {
     async function fetchArticles() {
@@ -90,7 +96,15 @@ export function ArchiveInfo() {
   )
 }
 
-function YearSelector({ years, selectedYear, onSelectYear }: { years: string[], selectedYear: string, onSelectYear: (year: string) => void }) {
+function YearSelector({
+  years,
+  selectedYear,
+  onSelectYear
+}: {
+  years: string[]
+  selectedYear: string
+  onSelectYear: (year: string) => void
+}) {
   return (
     <Card className="overflow-x-auto">
       <CardContent className="flex items-center justify-start p-4 space-x-2">
@@ -98,7 +112,7 @@ function YearSelector({ years, selectedYear, onSelectYear }: { years: string[], 
           <Button
             key={year}
             size="sm"
-            variant={year === selectedYear ? "default" : "outline"}
+            variant={year === selectedYear ? 'default' : 'outline'}
             onClick={() => onSelectYear(year)}
           >
             {year}
@@ -109,7 +123,20 @@ function YearSelector({ years, selectedYear, onSelectYear }: { years: string[], 
   )
 }
 
-const monthEnums = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+const monthEnums = [
+  '一月',
+  '二月',
+  '三月',
+  '四月',
+  '五月',
+  '六月',
+  '七月',
+  '八月',
+  '九月',
+  '十月',
+  '十一月',
+  '十二月'
+]
 
 function MonthCard({ item }: { item: StatisticsInfoItem }) {
   return (
