@@ -12,10 +12,6 @@ const ADMIN_PATH_ALL = [...ADMIN_PAGES, ...ADMIN_APIS]
 export default withAuth(
   function middleware(req) {
     console.log('request:', req.method, req.url)
-
-    if (req.url.endsWith('')) {
-      console.log('文章路由')
-    }
   },
   {
     callbacks: {

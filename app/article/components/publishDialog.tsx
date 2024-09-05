@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, ChangeEvent } from 'react'
+import { ChangeEvent } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -12,11 +12,15 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/hooks/use-toast'
+import { PublishArticleInfo } from '@/types'
+import { Updater } from 'use-immer'
 
 interface PublishDialogProps {
   isOpen: boolean
+  articleInfo: PublishArticleInfo
+  updateArticleInfo: Updater<PublishArticleInfo>
   onClose: () => void
-  onPublish: (data: PublishData) => void
+  onPublish: () => void
 }
 
 export interface PublishData {
@@ -27,27 +31,25 @@ export interface PublishData {
 
 const categories = ['后端', '前端', 'Android', 'iOS', '人工智能', '开发工具', '代码人生', '阅读']
 
-export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps) {
-  const [category, setCategory] = useState<string>('')
-  const [coverImage, setCoverImage] = useState<string>('')
-  const [summary, setSummary] = useState<string>('')
-
+export function PublishDialog({
+  isOpen,
+  articleInfo,
+  updateArticleInfo,
+  onClose,
+  onPublish
+}: PublishDialogProps) {
   const handlePublish = () => {
-    if (!category) {
+    if (!articleInfo.category) {
       toast({ variant: 'destructive', title: '警告', description: '文章分类不能为空' })
       return
     }
 
-    if (!summary) {
+    if (!articleInfo.summary) {
       toast({ variant: 'destructive', title: '警告', description: '文章简介不能为空' })
       return
     }
 
-    onPublish({
-      category,
-      coverImage,
-      summary
-    })
+    onPublish()
   }
 
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +57,9 @@ export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps
     if (file) {
       const reader = new FileReader()
       reader.onloadend = () => {
-        setCoverImage(reader.result as string)
+        updateArticleInfo((d) => {
+          d.coverImage = reader.result as string
+        })
       }
       reader.readAsDataURL(file)
     }
@@ -76,9 +80,9 @@ export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps
               {categories.map((cat) => (
                 <Button
                   key={cat}
-                  variant={category === cat ? 'default' : 'outline'}
+                  variant={articleInfo.category === cat ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => setCategory(cat)}
+                  onClick={() => updateArticleInfo((d) => (d.category = cat))}
                 >
                   {cat}
                 </Button>
@@ -88,8 +92,8 @@ export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps
           <div className="grid gap-2">
             <Label htmlFor="cover">文章封面:</Label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer">
-              {coverImage ? (
-                <img src={coverImage} alt="Cover" className="max-w-full h-auto" />
+              {articleInfo.coverImage ? (
+                <img src={articleInfo.coverImage} alt="Cover" className="max-w-full h-auto" />
               ) : (
                 <label htmlFor="coverImageInput" className="cursor-pointer">
                   <div>
@@ -116,8 +120,8 @@ export function PublishDialog({ isOpen, onClose, onPublish }: PublishDialogProps
             </Label>
             <Textarea
               id="summary"
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
+              value={articleInfo.summary}
+              onChange={(e) => updateArticleInfo((d) => (d.summary = e.target.value))}
               placeholder="请输入文章摘要"
               rows={4}
             />

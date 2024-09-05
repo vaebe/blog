@@ -1,9 +1,8 @@
-import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import { sendJson } from '@/lib/utils'
 
 const prisma = new PrismaClient()
 
-// PUT: 更新文章
 export async function PUT(req: Request) {
   try {
     const body = await req.json()
@@ -21,8 +20,8 @@ export async function PUT(req: Request) {
       }
     })
 
-    return NextResponse.json(updatedArticle)
+    return sendJson({ data: updatedArticle })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to update article' }, { status: 500 })
+    return sendJson({ code: -1, msg: 'Failed to update article' })
   }
 }
