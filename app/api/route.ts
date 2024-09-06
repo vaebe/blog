@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
+import { sendJson } from '@/lib/utils'
 
 export async function GET() {
-  return NextResponse.json({ msg: 'hello world' })
+  return sendJson({ data: 'hello world' })
 }

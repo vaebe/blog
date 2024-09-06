@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server'
 import { getApiUrl } from '@/lib/utils'
 import dayjs from 'dayjs'
 import { PrismaClient } from '@prisma/client'
+import { sendJson } from '@/lib/utils'
 
 const prisma = new PrismaClient()
 
@@ -47,14 +47,15 @@ async function addArticle(info: any) {
 let list = []
 
 async function getArticles(index: number) {
-  const res = await fetch(getApiUrl(`proxy/juejin/articles?cursor=${index}`))
+  const res = await fetch(getApiUrl(`proxy/juejin/articles?cursor=${index}`)).then((res) =>
+    res.json()
+  )
 
-  if (!res.ok) {
-    console.log('同步信息失败!')
-    return
+  if (res.code !== 0) {
+    return sendJson(res)
   }
 
-  const info = await res.json()
+  const info = res.data
 
   for (const item of info.data) {
     addArticle(item)
@@ -75,8 +76,8 @@ export async function GET(req: Request) {
 
     getArticles(index)
 
-    return NextResponse.json({}, { status: 200 })
+    return sendJson({ data: null })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch articles' }, { status: 500 })
+    return sendJson({ code: -1, msg: `同步掘金文章失败: ${error}` })
   }
 }

@@ -20,7 +20,6 @@ export async function GET() {
 
     return sendJson({ data: formattedCounts })
   } catch (error) {
-    console.log(error)
-    return sendJson({ code: -1, msg: '按月查询文章数量失败！' })
+    return sendJson({ code: -1, msg: `按月查询文章数量失败: ${error}` })
   }
 }

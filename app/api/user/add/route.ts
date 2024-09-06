@@ -1,11 +1,9 @@
-import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import { sendJson } from '@/lib/utils'
 
 const prisma = new PrismaClient()
 
 export async function POST(req: Request) {
-  console.log(req, '-=-=-=-=')
-
   try {
     const body = await req.json()
 
@@ -32,8 +30,8 @@ export async function POST(req: Request) {
       }
     })
 
-    return NextResponse.json(newArticle, { status: 200 })
+    return sendJson({ data: newArticle })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create article' }, { status: 500 })
+    return sendJson({ code: -1, msg: `${error}` })
   }
 }
