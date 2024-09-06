@@ -4,21 +4,17 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/hooks/use-toast'
-import { PublishDialog } from '../components/publishDialog'
+import { PublishDialog } from '../../components/publishDialog'
 import { useRouter } from 'next/navigation'
 import { BytemdEditor } from '@/components/bytemd/editor'
-import { useSearchParams } from 'next/navigation'
 import { useImmer } from 'use-immer'
 import { PublishArticleInfo } from '@/types'
 
-export default function PublishArticle() {
-  const searchParams = useSearchParams()
-  const id = searchParams.get('id')
-
+export default function PublishArticle({ params }: { params: { id: string } }) {
   const [content, setContent] = useState('')
 
   const [articleInfo, updateArticleInfo] = useImmer<PublishArticleInfo>({
-    id: '',
+    id: params.id,
     title: '',
     content: '',
     classify: '',
@@ -28,11 +24,11 @@ export default function PublishArticle() {
 
   useEffect(() => {
     async function getData() {
-      if (!id) {
+      if (!params.id) {
         return
       }
 
-      const res = await fetch(`/api/articles/details?id=${id}`).then((res) => res.json())
+      const res = await fetch(`/api/articles/details?id=${params.id}`).then((res) => res.json())
 
       if (res.code !== 0) {
         toast({ variant: 'destructive', title: '警告', description: '获取文章详情失败!' })
@@ -40,7 +36,6 @@ export default function PublishArticle() {
       }
 
       updateArticleInfo((draft) => {
-        draft.id = res.data.id
         draft.title = res.data.title || ''
         draft.classify = res.data.classify || ''
         draft.coverImage = res.data.coverImage || ''
@@ -50,7 +45,7 @@ export default function PublishArticle() {
       setContent(res.data.content)
     }
     getData()
-  }, [id, updateArticleInfo])
+  }, [params.id, updateArticleInfo])
 
   const router = useRouter()
 
