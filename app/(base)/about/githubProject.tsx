@@ -4,8 +4,7 @@ import { SectionContainer } from './sectionContainer'
 import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { fetchGithubPinnedRepos } from '@/lib/api'
-import type { GithubPinnedRepoInfo } from '@/lib/api'
+import type { GithubPinnedRepoInfo } from '@/types/github'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 
@@ -104,8 +103,10 @@ export function GithubProject() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const reposData = await fetchGithubPinnedRepos()
-        if (reposData) setRepos(reposData)
+        const res = await fetch('/api/proxy/github/pinnedRepos').then((res) => res.json())
+        if (res.code === 0) {
+          setRepos(res.data)
+        }
       } catch (error) {
         console.error('Failed to fetch GitHub data:', error)
       } finally {

@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Icon } from '@iconify/react'
 import { useState, useEffect } from 'react'
-import { fetchGithubUserInfo, fetchJuejinUserInfo } from '@/lib/api'
-import type { GithubUserInfo, JuejinUserInfo } from '@/lib/api'
+import type { JuejinUserInfo } from '@/types/juejin'
+import type { GithubUserInfo } from '@/types/github'
 import { techIcons, techStackData } from '@/lib/enums'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -116,9 +116,16 @@ export function UserProfile() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [github, juejin] = await Promise.all([fetchGithubUserInfo(), fetchJuejinUserInfo()])
-        setGithubUserInfo(github)
-        setJuejinUserInfo(juejin)
+        const githubUserRes = await fetch('/api/proxy/github/userInfo').then((res) => res.json())
+
+        if (githubUserRes.code === 0) {
+          setGithubUserInfo(githubUserRes.data)
+        }
+
+        const juejinUserRes = await fetch('/api/proxy/juejin/userInfo').then((res) => res.json())
+        if (juejinUserRes.code === 0) {
+          setJuejinUserInfo(juejinUserRes.data)
+        }
       } catch (error) {
         console.error('Error fetching user data:', error)
       } finally {
