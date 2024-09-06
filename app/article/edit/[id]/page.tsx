@@ -24,10 +24,6 @@ export default function PublishArticle({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     async function getData() {
-      if (!params.id) {
-        return
-      }
-
       const res = await fetch(`/api/articles/details?id=${params.id}`).then((res) => res.json())
 
       if (res.code !== 0) {

@@ -10,6 +10,15 @@ const nextConfig = {
         pathname: '/u/**'
       }
     ]
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: '/article/edit',
+        destination: '/404'
+      }
+    ]
   }
 }
 
