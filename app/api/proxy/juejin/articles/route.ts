@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { sendJson } from '@/lib/utils'
 
 export async function GET(req: Request) {
   try {
@@ -19,8 +19,8 @@ export async function GET(req: Request) {
     })
 
     const data = await res.json()
-    return NextResponse.json(data, { status: 200 })
+    return sendJson({ data })
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 })
+    return sendJson({ code: -1, msg: `${error}` })
   }
 }

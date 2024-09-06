@@ -18,7 +18,7 @@ export async function GET(req: Request) {
 
     return sendJson({ data: user })
   } catch (error) {
-    console.log('校验用户失败', error)
-    return sendJson({ code: -1, msg: `校验用户失败` })
+    console.log('获取用户详情失败', error)
+    return sendJson({ code: -1, msg: `获取用户详情失败` })
   }
 }

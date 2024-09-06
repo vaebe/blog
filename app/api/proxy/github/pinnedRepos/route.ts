@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { sendJson } from '@/lib/utils'
 
 export async function GET() {
   const query = `
@@ -35,12 +35,18 @@ export async function GET() {
         Authorization: `Bearer ${process.env.GITHUB_API_TOKEN}`
       },
       body: JSON.stringify({ query })
-    }).then((res) => res.json())
+    })
 
-    const list = response?.data?.user?.pinnedItems?.edges?.map((edge: any) => edge.node) || []
+    if (!response.ok) {
+      return sendJson({ code: -1, msg: `获取 github 仓库信息失败: ${response.statusText}` })
+    }
 
-    return NextResponse.json(list, { status: 200 })
+    const res = await response.json()
+
+    const list = res?.data?.user?.pinnedItems?.edges?.map((edge: any) => edge.node) || []
+
+    return sendJson({ data: list })
   } catch (error) {
-    return NextResponse.json({ error: `获取 github 仓库信息失败:${error}` }, { status: 500 })
+    return sendJson({ code: -1, msg: `获取 github 仓库信息失败:${error}` })
   }
 }
