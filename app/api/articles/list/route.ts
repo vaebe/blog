@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { sendJson } from '@/lib/utils'
 
@@ -44,6 +43,7 @@ export async function GET(req: Request) {
       }
     })
   } catch (error) {
+    console.error(error)
     return sendJson({ code: -1, msg: '获取文章列表失败!' })
   }
 }
