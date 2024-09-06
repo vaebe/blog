@@ -82,7 +82,11 @@ export function PublishDialog({
                   key={cat}
                   variant={articleInfo.category === cat ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => updateArticleInfo((d) => (d.category = cat))}
+                  onClick={() =>
+                    updateArticleInfo((d) => {
+                      d.category = cat
+                    })
+                  }
                 >
                   {cat}
                 </Button>
@@ -121,7 +125,11 @@ export function PublishDialog({
             <Textarea
               id="summary"
               value={articleInfo.summary}
-              onChange={(e) => updateArticleInfo((d) => (d.summary = e.target.value))}
+              onChange={(e) =>
+                updateArticleInfo((d) => {
+                  d.summary = e.target.value
+                })
+              }
               placeholder="请输入文章摘要"
               rows={4}
             />

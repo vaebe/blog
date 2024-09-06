@@ -21,5 +21,5 @@ export function sendJson(opts: SendJson) {
 }
 
 export function getArticleDetailsUrl(info: Article) {
-  return info.source === '00' ? `/article/${info.id}` : `https://juejin.cn/post/${info.id}`
+  return info?.source === '00' ? `/article/${info.id}` : `https://juejin.cn/post/${info.id}`
 }
