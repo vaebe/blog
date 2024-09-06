@@ -21,7 +21,7 @@ export default function PublishArticle() {
     id: '',
     title: '',
     content: '',
-    category: '',
+    classify: '',
     coverImage: '',
     summary: ''
   })
@@ -42,7 +42,7 @@ export default function PublishArticle() {
       updateArticleInfo((draft) => {
         draft.id = res.data.id
         draft.title = res.data.title || ''
-        draft.category = res.data.classify || ''
+        draft.classify = res.data.classify || ''
         draft.coverImage = res.data.coverImage || ''
         draft.summary = res.data.summary || ''
       })
@@ -80,12 +80,12 @@ export default function PublishArticle() {
 
       if (res.code === 0) {
         router.push('/articles')
-        toast({ title: '文章发布成功', description: '文章发布成功!' })
+        toast({ title: '成功', description: '编辑成功!' })
       } else {
-        toast({ title: '发布失败', description: '发布文章时出现错误', variant: 'destructive' })
+        toast({ title: '失败', description: '编辑文章时出现错误', variant: 'destructive' })
       }
     } catch (error) {
-      toast({ title: '发布失败', description: '发布文章时出现错误', variant: 'destructive' })
+      toast({ title: '失败', description: '编辑文章时出现错误', variant: 'destructive' })
     }
   }
 

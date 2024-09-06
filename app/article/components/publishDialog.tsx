@@ -39,7 +39,7 @@ export function PublishDialog({
   onPublish
 }: PublishDialogProps) {
   const handlePublish = () => {
-    if (!articleInfo.category) {
+    if (!articleInfo.classify) {
       toast({ variant: 'destructive', title: '警告', description: '文章分类不能为空' })
       return
     }
@@ -80,11 +80,11 @@ export function PublishDialog({
               {categories.map((cat) => (
                 <Button
                   key={cat}
-                  variant={articleInfo.category === cat ? 'default' : 'outline'}
+                  variant={articleInfo.classify === cat ? 'default' : 'outline'}
                   size="sm"
                   onClick={() =>
                     updateArticleInfo((d) => {
-                      d.category = cat
+                      d.classify = cat
                     })
                   }
                 >
