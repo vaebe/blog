@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/hooks/use-toast'
 import { PublishDialog } from '../components/publishDialog'
-import type { PublishData } from '../components/publishDialog'
 import { useRouter } from 'next/navigation'
 import { BytemdEditor } from '@/components/bytemd/editor'
 import { useSearchParams } from 'next/navigation'
@@ -14,7 +13,9 @@ import { PublishArticleInfo } from '@/types'
 
 export default function PublishArticle() {
   const searchParams = useSearchParams()
-  const id = searchParams.get('id') // 获取查询参数 ?id=1234
+  const id = searchParams.get('id')
+
+  const [content, setContent] = useState('')
 
   const [articleInfo, updateArticleInfo] = useImmer<PublishArticleInfo>({
     id: '',
@@ -26,11 +27,11 @@ export default function PublishArticle() {
   })
 
   useEffect(() => {
-    if (!id) {
-      return
-    }
-
     async function getData() {
+      if (!id) {
+        return
+      }
+
       const res = await fetch(`/api/articles/details?id=${id}`).then((res) => res.json())
 
       if (res.code !== 0) {
@@ -41,14 +42,15 @@ export default function PublishArticle() {
       updateArticleInfo((draft) => {
         draft.id = res.data.id
         draft.title = res.data.title || ''
-        // draft.content = res.data.content || ''
         draft.category = res.data.classify || ''
         draft.coverImage = res.data.coverImage || ''
         draft.summary = res.data.summary || ''
       })
+
+      setContent(res.data.content)
     }
     getData()
-  }, [])
+  }, [id, updateArticleInfo])
 
   const router = useRouter()
 
@@ -62,18 +64,18 @@ export default function PublishArticle() {
       return
     }
 
-    if (!articleInfo.content) {
+    if (!content) {
       toast({ title: '警告', description: '文章内容不能为空', variant: 'destructive' })
       return
     }
 
     try {
-      const res = await fetch('/api/articles/add', {
-        method: 'POST',
+      const res = await fetch('/api/articles/update', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(articleInfo)
+        body: JSON.stringify({ ...articleInfo, content })
       }).then((res) => res.json())
 
       if (res.code === 0) {
@@ -92,7 +94,11 @@ export default function PublishArticle() {
       <header className="flex items-center justify-between border-b">
         <Input
           value={articleInfo.title}
-          onChange={(e) => updateArticleInfo((d) => (d.title = e.target.value))}
+          onChange={(e) =>
+            updateArticleInfo((d) => {
+              d.title = e.target.value
+            })
+          }
           placeholder="输入文章标题..."
           className="text-xl font-bold border-none rounded-none shadow-none focus-visible:ring-0"
         />
@@ -101,10 +107,7 @@ export default function PublishArticle() {
         </Button>
       </header>
 
-      <BytemdEditor
-        content={articleInfo.content}
-        setContent={(val) => updateArticleInfo((d) => (d.content = val))}
-      ></BytemdEditor>
+      <BytemdEditor content={content} setContent={(val) => setContent(val)}></BytemdEditor>
 
       <PublishDialog
         articleInfo={articleInfo}
