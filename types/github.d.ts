@@ -13,21 +13,6 @@ export interface GithubPinnedRepoInfo {
   }
 }
 
-export async function fetchGithubPinnedRepos() {
-  try {
-    const res = await fetch(getApiUrl('proxy/github/pinnedRepos'))
-
-    if (!res.ok) {
-      return [] as GithubPinnedRepoInfo[]
-    }
-
-    const list = await res.json()
-    return list as GithubPinnedRepoInfo[]
-  } catch (error) {
-    console.error('获取 github 仓库信息失败:', error)
-  }
-}
-
 export interface GithubUserInfo {
   login: string
   id: number
@@ -61,19 +46,4 @@ export interface GithubUserInfo {
   following: number
   created_at: string
   updated_at: string
-}
-
-export async function fetchGithubUserInfo() {
-  try {
-    const res = await fetch(getApiUrl('proxy/github/userInfo'))
-
-    if (res.ok) {
-      const userInfo = await res.json()
-      return userInfo
-    }
-
-    return {}
-  } catch (error) {
-    console.error('Failed to fetch user information:', error)
-  }
 }

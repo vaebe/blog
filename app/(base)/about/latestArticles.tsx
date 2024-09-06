@@ -2,8 +2,7 @@
 
 import { Icon } from '@iconify/react'
 import { SectionContainer } from './sectionContainer'
-import { fetchJuejinArticles } from '@/lib/api'
-import type { JuejinArticle } from '@/lib/api'
+import type { JuejinArticle } from '@/types/juejin'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -93,8 +92,10 @@ export function LatestArticles() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const info = await fetchJuejinArticles()
-        setArticles(info.data)
+        const res = await fetch('/api/proxy/juejin/articles').then((res) => res.json())
+        if (res.code === 0) {
+          setArticles(res?.data?.data || [])
+        }
       } catch (error) {
         console.error('Failed to fetch articles:', error)
       } finally {
