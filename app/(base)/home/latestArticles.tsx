@@ -40,7 +40,7 @@ export function LatestArticles() {
       try {
         setError('')
         setLoading(true)
-        const response = await fetch(getApiUrl(`articles/list?pageSize=6`))
+        const response = await fetch('/api/articles/list?pageSize=6')
         const res = await response.json()
 
         if (res.code !== 0) {
