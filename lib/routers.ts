@@ -4,7 +4,7 @@ export const routerList = [
     name: '首页'
   },
   {
-    path: '/articles',
+    path: '/article/list',
     name: '文章'
   },
   {

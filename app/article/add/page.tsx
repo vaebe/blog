@@ -49,7 +49,7 @@ export default function PublishArticle() {
       }).then((res) => res.json())
 
       if (res.code === 0) {
-        router.push('/articles')
+        router.push('/article/list')
         toast({ title: '成功', description: '文章发布成功!' })
       } else {
         toast({ title: '失败', description: '发布文章时出现错误', variant: 'destructive' })
