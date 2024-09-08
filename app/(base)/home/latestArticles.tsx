@@ -80,7 +80,7 @@ export function LatestArticles() {
         </div>
       </AnimatePresence>
       <div className="text-center">
-        <Link href="/articles">
+        <Link href="/article/list">
           <Button variant="outline" size="lg">
             查看更多
             <Icon icon="mdi:arrow-right" className="ml-2 w-5 h-5" />
