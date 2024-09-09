@@ -1,0 +1,33 @@
+.anchor ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.anchor li {
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.anchor li.active a {
+  color: blue;
+  font-weight: bold;
+}
+
+.level-h1 {
+  font-size: 0.9rem;
+}
+
+.level-h2 {
+  font-size: 0.9rem;
+  padding-left: 10px;
+}
+
+.level-h3 {
+  font-size: 0.9rem;
+  padding-left: 20px;
+}
+
+.level-h4 {
+  font-size: 0.9rem;
+  padding-left: 30px;
+}
