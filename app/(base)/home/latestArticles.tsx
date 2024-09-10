@@ -23,7 +23,9 @@ function ArticleCard({ article }: { article: Article }) {
           <CardTitle className="line-clamp-1 text-lg">{article.title}</CardTitle>
         </CardHeader>
         <CardContent className="flex-grow">
-          <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-300">{article.summary}</p>
+          <p className="line-clamp-2 min-h-10 text-sm text-gray-600 dark:text-gray-300">
+            {article.summary}
+          </p>
         </CardContent>
       </Card>
     </motion.div>

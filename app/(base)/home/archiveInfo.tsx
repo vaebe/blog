@@ -35,15 +35,14 @@ export function ArchiveInfo() {
     async function fetchArticles() {
       try {
         setLoading(true)
-        const response = await fetch(getApiUrl(`articles/articleCountByMonth`))
-        const res = await response.json()
+        const res = await fetch(getApiUrl(`articles/articleCountByMonth`)).then((res) => res.json())
 
         if (res.code !== 0) {
           throw new Error('获取归档数据失败!')
         }
 
         const obj: Record<string, StatisticsInfoItem[]> = {}
-        res.data.forEach((item: StatisticsInfoItem) => {
+        res.data?.forEach((item: StatisticsInfoItem) => {
           const year = dayjs(item.month).format('YYYY')
           if (!obj[year]) {
             obj[year] = []
