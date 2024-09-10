@@ -11,6 +11,11 @@ import mermaid_zhHans from '@bytemd/plugin-mermaid/lib/locales/zh_Hans.json'
 import math_zhHans from '@bytemd/plugin-math/lib/locales/zh_Hans.json'
 import gfm_zhHans from '@bytemd/plugin-gfm/lib/locales/zh_Hans.json'
 
+// css
+import 'bytemd/dist/index.css'
+import 'juejin-markdown-themes/dist/juejin.css'
+import 'highlight.js/styles/default.css'
+
 const plugins = [
   breaks(),
   frontmatter(),
