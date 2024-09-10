@@ -141,7 +141,7 @@ const LoginPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md p-8 space-y-4 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl transition-all duration-300 hover:shadow-3xl"
+          className="w-full max-w-md p-8 space-y-4 bg-white dark:bg-gray-800 rounded-2xl shadow transition-all duration-300 hover:shadow-xl"
         >
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">登录</h2>

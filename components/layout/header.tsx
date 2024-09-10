@@ -6,6 +6,7 @@ import { routerList } from '@/lib/routers'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 
 function NavList() {
   return (
@@ -57,6 +58,15 @@ export default function LayoutHeader() {
           </nav>
 
           <div className="flex items-center space-x-4">
+            {status === 'unauthenticated' && (
+              <Link href="/login">
+                <Button size="sm">
+                  <Icon icon="ri:aed-line" className="mr-2 w-5 h-5" />
+                  登录
+                </Button>
+              </Link>
+            )}
+
             {status === 'authenticated' && (
               <Avatar>
                 <AvatarImage src={session.user.image as string} alt="@shadcn" />
