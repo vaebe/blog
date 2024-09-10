@@ -148,7 +148,7 @@ export function UserProfile() {
           transition={{ duration: 0.5 }}
           className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
         >
-          <div className="flex flex-col md:flex-row md:items-end md:space-x-6">
+          <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
             <Image
               src={githubUserInfo?.avatar_url ?? userIcon}
               alt={`${githubUserInfo?.login}'s avatar`}
@@ -159,12 +159,12 @@ export function UserProfile() {
               placeholder="empty"
             />
 
-            <div className="mt-4 md:mt-0">
+            <div>
               <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
                 {githubUserInfo?.login}
               </h2>
               <p className="text-gray-600 dark:text-gray-300 mt-1">
-                你好！我是vaebe，一名全栈开发者。我喜欢探索新技术，解决复杂问题，
+                你好！我是vaebe，一名全栈开发者。我喜欢探索新技术，
                 在掘金分享我的技术见解。在GitHub上，我积极参与开源项目，不断提升自己的编程技能。
                 欢迎访问我的掘金主页和GitHub主页，了解更多关于我的信息！
               </p>
