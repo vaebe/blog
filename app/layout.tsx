@@ -5,11 +5,10 @@ import 'bytemd/dist/index.css'
 import 'juejin-markdown-themes/dist/juejin.css'
 import { Inter as FontSans } from 'next/font/google'
 import { cn } from '@/lib/utils'
-import LayoutHeader from '@/components/layout/header'
-import LayoutFooter from '@/components/layout/footer'
 import { ThemeProvider } from 'next-themes'
 import { SessionProvider } from 'next-auth/react'
 import { Toaster } from '@/components/ui/toaster'
+import { ThemeSwitch } from '@/components/theme-switch'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -28,6 +27,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SessionProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
+
+            <ThemeSwitch />
           </ThemeProvider>
         </SessionProvider>
 

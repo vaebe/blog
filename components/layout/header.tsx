@@ -1,7 +1,6 @@
 'use client'
 
 import { Icon } from '@iconify/react'
-import { useTheme } from 'next-themes'
 import { signOut, useSession } from 'next-auth/react'
 import { routerList } from '@/lib/routers'
 import Link from 'next/link'
@@ -26,7 +25,6 @@ function NavList() {
 }
 
 export default function LayoutHeader() {
-  const { theme, setTheme } = useTheme()
   const { data: session, status } = useSession()
   const [scrolled, setScrolled] = useState(false)
 
@@ -51,9 +49,7 @@ export default function LayoutHeader() {
               icon="lucide:feather"
               className="w-8 h-8 text-primary group-hover:text-primary/80 transition-colors duration-300"
             />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent group-hover:from-primary/80 group-hover:to-secondary/80 transition-all duration-300">
-              {githubName}
-            </h1>
+            <h1 className="text-2xl font-bold">{githubName}</h1>
           </Link>
 
           <nav className="hidden md:block">
@@ -67,17 +63,6 @@ export default function LayoutHeader() {
                 <AvatarFallback>{session.user.name ?? 'LL'}</AvatarFallback>
               </Avatar>
             )}
-
-            <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 ease-in-out transform hover:scale-110"
-              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              <Icon
-                icon={theme === 'dark' ? 'ph:sun-bold' : 'ph:moon-bold'}
-                className="w-5 h-5 text-gray-600 dark:text-gray-300"
-              />
-            </button>
 
             {status === 'authenticated' && (
               <button
