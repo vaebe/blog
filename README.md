@@ -23,5 +23,5 @@ npx prisma generate
 添加组件
 
 ```bash
-npx shadcn-ui@latest add button
+npx shadcn@latest add scroll-area
 ```
