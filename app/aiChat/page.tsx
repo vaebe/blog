@@ -10,6 +10,24 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Loader2, Send, StopCircle, User } from 'lucide-react'
 import { Viewer } from '@bytemd/react'
 import bytemdPlugins from '@/components/bytemd/plugins'
+import { Icon } from '@iconify/react'
+import Link from 'next/link'
+
+function PageHeader() {
+  return (
+    <div className="mb-4 flex items-center justify-between">
+      <h1 className="text-2xl font-bold">
+        {process.env.NEXT_PUBLIC_GITHUB_USER_NAME} blog AI 小助手
+      </h1>
+
+      <Link href="/">
+        <Button size="icon">
+          <Icon icon="lets-icons:refund-back" width="20px" />
+        </Button>
+      </Link>
+    </div>
+  )
+}
 
 export default function AIChatPage() {
   const { messages, input, handleInputChange, handleSubmit, isLoading, stop } = useChat({
@@ -29,9 +47,8 @@ export default function AIChatPage() {
 
   return (
     <div className="flex flex-col h-screen w-full mx-auto p-4 md:w-10/12">
-      <h1 className="text-2xl font-bold mb-4">
-        {process.env.NEXT_PUBLIC_GITHUB_USER_NAME} blog 智能 AI 小助手
-      </h1>
+      <PageHeader></PageHeader>
+
       <Card className="flex-grow mb-4">
         <ScrollArea className="h-[calc(100vh-200px)] p-4">
           {!chatStarted && <div className="text-center text-gray-500 mt-8">开始与 AI 助手对话</div>}
