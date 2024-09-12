@@ -69,69 +69,25 @@
   }
 }
 
-
-/* 全局滚动条样式 */
-
-/* Webkit 浏览器（Chrome、Safari 等） */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
+/* 滚动槽 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar,
-div::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+::-webkit-scrollbar-track {
+  /* border-radius: 3px; */
+  background: rgba(255, 255, 255, 0.2);
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
 }
 
-html::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track,
-div::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb,
-div::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
-}
-
-html::-webkit-scrollbar-thumb:hover,
-body::-webkit-scrollbar-thumb:hover,
-div::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-/* Firefox */
-html,
-body,
-div {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
-}
-
-/* Edge 和 IE */
-html,
-body,
-div {
-  -ms-overflow-style: none;
-}
-
-/* 全局滚动行为 */
-html {
-  scroll-behavior: smooth;
-}
-
-/* 移动设备优化 */
-@media (max-width: 768px) {
-
-  html::-webkit-scrollbar,
-  body::-webkit-scrollbar,
-  div::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 1);
 }
