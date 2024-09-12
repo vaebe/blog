@@ -8,6 +8,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Loader2, Send, StopCircle, User } from 'lucide-react'
+import { Viewer } from '@bytemd/react'
+import bytemdPlugins from '@/components/bytemd/plugins'
 
 export default function AIChatPage() {
   const { messages, input, handleInputChange, handleSubmit, isLoading, stop } = useChat({
@@ -45,10 +47,10 @@ export default function AIChatPage() {
                 </Avatar>
               )}
               <Card
-                className={`max-w-[80%] ${message.role === 'user' ? 'bg-blue-100' : 'bg-green-100'}`}
+                className={`max-w-[80%] ${message.role === 'user' ? 'bg-blue-100' : 'bg-gray-100'}`}
               >
-                <CardContent className="p-3">
-                  <p>{message.content}</p>
+                <CardContent className="px-3 py-0">
+                  <Viewer value={message.content ?? ''} plugins={bytemdPlugins}></Viewer>
                 </CardContent>
               </Card>
               {message.role === 'user' && (
