@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+'use client'
+
+import React, { useEffect, useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import './index.css'
 
@@ -8,40 +10,48 @@ interface Heading {
   level: string
 }
 
-export function Anchor({ content }: { content: string }) {
+interface AnchorProps {
+  content: string
+}
+
+export const Anchor: React.FC<AnchorProps> = ({ content }) => {
   const [headings, setHeadings] = useState<Heading[]>([])
   const [activeId, setActiveId] = useState<string>('')
+  const observerRef = useRef<IntersectionObserver | null>(null)
+  const mutationObserverRef = useRef<MutationObserver | null>(null)
 
   useEffect(() => {
     if (!content) return
 
-    // 使用 MutationObserver 监听 markdown-body 的变化
-    const observer = new MutationObserver(() => {
-      // 获取 h1 到 h4 标签，并为它们生成唯一的 id
+    const generateHeadings = () => {
       const elements: Heading[] = Array.from(
         document.querySelectorAll(
           '.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4'
         )
       ).map((elem) => {
         const element = elem as HTMLElement
-        // 如果元素没有 id，则为其生成一个 id
         if (!element.id) {
           element.id = uuidv4()
         }
         return {
-          id: element.id, // 直接使用或分配给标题元素
+          id: element.id,
           text: element.innerText,
           level: element.tagName.toLowerCase()
         }
       })
       setHeadings(elements)
+      observeHeadings(elements)
+    }
 
-      // 使用 Intersection Observer 监听标题的可见性
-      const io = new IntersectionObserver(
+    const observeHeadings = (elements: Heading[]) => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
+
+      observerRef.current = new IntersectionObserver(
         (entries) => {
           const visibleEntries = entries.filter((entry) => entry.isIntersecting)
           if (visibleEntries.length > 0) {
-            // 找到最靠近视口顶部的元素
             const nearestEntry = visibleEntries.reduce((nearest, entry) => {
               return entry.boundingClientRect.top < nearest.boundingClientRect.top ? entry : nearest
             })
@@ -54,23 +64,22 @@ export function Anchor({ content }: { content: string }) {
       elements.forEach((heading) => {
         const element = document.getElementById(heading.id)
         if (element) {
-          io.observe(element)
+          observerRef.current?.observe(element)
         }
       })
-
-      // 组件销毁时取消监听
-      return () => {
-        io.disconnect()
-      }
-    })
+    }
 
     const markdownBody = document.querySelector('.markdown-body')
     if (markdownBody) {
-      observer.observe(markdownBody, { childList: true, subtree: true })
+      mutationObserverRef.current = new MutationObserver(generateHeadings)
+      mutationObserverRef.current.observe(markdownBody, { childList: true, subtree: true })
     }
 
+    generateHeadings()
+
     return () => {
-      observer.disconnect() // 组件销毁时取消 MutationObserver
+      observerRef.current?.disconnect()
+      mutationObserverRef.current?.disconnect()
     }
   }, [content])
 
