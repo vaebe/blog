@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useChat, Message } from 'ai/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -89,6 +89,8 @@ export default function AIChatPage() {
   })
 
   const [chatStarted, setChatStarted] = useState(false)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const [scrollHeight, setScrollHeight] = useState(0)
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -98,21 +100,49 @@ export default function AIChatPage() {
     }
   }
 
+  useEffect(() => {
+    const scrollElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]')
+    if (scrollElement) {
+      const observer = new ResizeObserver((entries) => {
+        for (let entry of entries) {
+          if (entry.target === scrollElement) {
+            setScrollHeight(entry.target.scrollHeight)
+            entry.target.scrollTop = entry.target.scrollHeight
+          }
+        }
+      })
+
+      observer.observe(scrollElement)
+
+      return () => {
+        observer.disconnect()
+      }
+    }
+  }, [messages])
+
   return (
     <div className="flex flex-col h-screen w-full mx-auto p-4 md:w-10/12">
       <PageHeader></PageHeader>
 
-      <Card className="flex-grow mb-4">
-        <ScrollArea className="h-[calc(100vh-200px)] p-4">
-          {!chatStarted && <div className="text-center text-gray-500 mt-8">开始与 AI 助手对话</div>}
+      <Card className="flex-grow mb-4 overflow-hidden">
+        <ScrollArea
+          className="h-[calc(100vh-160px)]"
+          ref={scrollAreaRef}
+          style={{ height: `calc(100vh - 160px)`, maxHeight: `calc(100vh - 160px)` }}
+        >
+          <div className="p-4" style={{ minHeight: `${scrollHeight}px` }}>
+            {!chatStarted && (
+              <div className="text-center text-gray-500 mt-8">开始与 AI 助手对话</div>
+            )}
 
-          <MessageList messages={messages}></MessageList>
+            <MessageList messages={messages}></MessageList>
 
-          {isLoading && (
-            <div className="flex justify-center items-center mt-4">
-              <Loader2 className="h-6 w-6 animate-spin" />
-            </div>
-          )}
+            {isLoading && (
+              <div className="flex justify-center items-center mt-4">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            )}
+          </div>
         </ScrollArea>
       </Card>
       <form onSubmit={onSubmit} className="flex space-x-2">
