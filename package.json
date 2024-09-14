@@ -37,6 +37,7 @@
     "ai": "^3.3.30",
     "bcrypt": "^5.1.1",
     "bytemd": "^1.21.0",
+    "cheerio": "^1.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
