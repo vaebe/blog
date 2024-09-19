@@ -59,10 +59,10 @@ export default function LayoutHeader() {
         <div className="flex items-center space-x-4">
           {status === 'unauthenticated' && (
             <Link href="/login">
-              <Button size="sm">
+              <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-white dark:bg-gray-800 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 shadow-sm hover:shadow-md">
                 <Icon icon="ri:aed-line" className="mr-2 w-5 h-5" />
                 登录
-              </Button>
+              </div>
             </Link>
           )}
 
