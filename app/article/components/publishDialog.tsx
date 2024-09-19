@@ -14,6 +14,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/hooks/use-toast'
 import { PublishArticleInfo } from '@/types'
 import { Updater } from 'use-immer'
+import Image from 'next/image'
 
 interface PublishDialogProps {
   isOpen: boolean
@@ -97,7 +98,7 @@ export function PublishDialog({
             <Label htmlFor="cover">文章封面:</Label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer">
               {articleInfo.coverImage ? (
-                <img src={articleInfo.coverImage} alt="Cover" className="max-w-full h-auto" />
+                <Image src={articleInfo.coverImage} alt="Cover" className="max-w-full h-auto" />
               ) : (
                 <label htmlFor="coverImageInput" className="cursor-pointer">
                   <div>
