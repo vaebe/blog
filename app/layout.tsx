@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="zh" suppressHydrationWarning>
       <body
         className={cn(
-          'min-h-screen flex flex-col bg-gradient-to-b from-gray-100 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100',
+          'min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-black dark:text-white',
           fontSans.variable
         )}
       >
