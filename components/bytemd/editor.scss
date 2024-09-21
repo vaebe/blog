@@ -1,4 +1,8 @@
-@use './dark-theme.scss';
+@import 'bytemd/dist/index.css';
+@import 'juejin-markdown-themes/dist/juejin.css';
+// @import 'highlight.js/styles/default.css';
+@import 'highlight.js/styles/atom-one-dark.css';
+// @import 'highlight.js/styles/a11y-dark.css';
 
 .bytemd {
   height: calc(100vh - 40px);
