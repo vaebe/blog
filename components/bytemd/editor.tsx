@@ -1,6 +1,6 @@
 'use client'
 
-import './editor.css'
+import './editor.scss'
 import plugins from './plugins'
 import { Editor } from '@bytemd/react'
 import zh_Hans from 'bytemd/locales/zh_Hans.json'
