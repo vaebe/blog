@@ -1,14 +1,12 @@
 'use client'
 
-import { Viewer } from '@bytemd/react'
-import plugins from '@/components/bytemd/plugins'
 import { useEffect, useState } from 'react'
 import { Article } from '@prisma/client'
-import './style.css'
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { toast } from '@/components/hooks/use-toast'
 import { getReadingTime } from '@/lib/getReadingTime'
 import { Anchor } from './anchor/index'
+import { BytemdViewer } from '@/components/bytemd/viewer'
 
 export default function Component({ params }: { params: { id: string } }) {
   const [article, setArticle] = useState<Article>()
@@ -37,7 +35,7 @@ export default function Component({ params }: { params: { id: string } }) {
           <CardDescription>{article?.summary}</CardDescription>
         </CardHeader>
 
-        <Viewer value={article?.content ?? ''} plugins={plugins}></Viewer>
+        <BytemdViewer content={article?.content ?? ''}></BytemdViewer>
       </Card>
 
       <Card className="sticky top-[12vh] ml-4 w-[240px] hidden lg:block">
