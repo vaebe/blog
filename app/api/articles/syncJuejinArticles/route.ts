@@ -70,7 +70,15 @@ async function getArticles(index: number) {
 
 const LastSyncTimeKey = 'blogLastSyncTime'
 
-export async function GET() {
+export async function GET(req: Request) {
+  const apiKey = req.headers.get('x-api-key')
+  const expectedApiKey = process.env.GITHUB_REPOSITORY_API_KEY
+
+  // 验证 API 密钥
+  if (!apiKey || apiKey !== expectedApiKey) {
+    return sendJson({ code: -1, msg: '无效的 API 密钥' })
+  }
+
   // 获取上次同步时间
   const lastSyncTime = await kv.get<string>(LastSyncTimeKey)
 
