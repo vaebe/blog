@@ -44,8 +44,6 @@ async function addArticle(info: any) {
   })
 }
 
-let list = []
-
 async function getArticles(index: number) {
   const res = await fetch(getApiUrl(`proxy/juejin/articles?cursor=${index}`)).then((res) =>
     res.json()
@@ -69,14 +67,23 @@ async function getArticles(index: number) {
   }
 }
 
-export async function GET(req: Request) {
+let lastSyncTime: Date | null = null
+
+export async function GET() {
+  // 检查是否在一个小时内
+  if (lastSyncTime && dayjs().diff(lastSyncTime, 'hour') < 1) {
+    return sendJson({ code: -1, msg: '一个小时内只能请求一次' })
+  }
+
   try {
-    list = []
     const index = 0
 
     getArticles(index)
 
-    return sendJson({ data: null })
+    // 更新上次同步时间
+    lastSyncTime = new Date()
+
+    return sendJson({ data: null, msg: '同步掘金文章成功' })
   } catch (error) {
     return sendJson({ code: -1, msg: `同步掘金文章失败: ${error}` })
   }
