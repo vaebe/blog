@@ -1,5 +1,3 @@
-import { getApiUrl } from '@/lib/utils'
-
 export interface ArticleInfo {
   article_id: string
   user_id: string

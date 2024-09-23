@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { getApiUrl } from '@/lib/utils'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { Icon } from '@iconify/react'
@@ -35,7 +34,7 @@ export function ArchiveInfo() {
     async function fetchArticles() {
       try {
         setLoading(true)
-        const res = await fetch(getApiUrl(`articles/articleCountByMonth`)).then((res) => res.json())
+        const res = await fetch(`/api/articles/articleCountByMonth`).then((res) => res.json())
 
         if (res.code !== 0) {
           throw new Error('获取归档数据失败!')

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getApiUrl, getArticleDetailsUrl } from '@/lib/utils'
+import { getArticleDetailsUrl } from '@/lib/utils'
 import { Article } from '@prisma/client'
 import { Icon } from '@iconify/react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'

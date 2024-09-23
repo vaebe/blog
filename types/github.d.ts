@@ -1,5 +1,3 @@
-import { getApiUrl } from '@/lib/utils'
-
 export interface GithubPinnedRepoInfo {
   id: number
   name: string
