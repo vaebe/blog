@@ -2,6 +2,7 @@ import { getApiUrl } from '@/lib/utils'
 import dayjs from 'dayjs'
 import { PrismaClient } from '@prisma/client'
 import { sendJson } from '@/lib/utils'
+import { kv } from '@vercel/kv'
 
 const prisma = new PrismaClient()
 
@@ -67,9 +68,14 @@ async function getArticles(index: number) {
   }
 }
 
-let lastSyncTime: Date | null = null
+const LastSyncTimeKey = 'blogLastSyncTime'
 
 export async function GET() {
+  // 获取上次同步时间
+  const lastSyncTime = await kv.get<string>(LastSyncTimeKey)
+
+  console.log('lastSyncTime\r\n', lastSyncTime)
+
   // 检查是否在一个小时内
   if (lastSyncTime && dayjs().diff(lastSyncTime, 'hour') < 1) {
     return sendJson({ code: -1, msg: '一个小时内只能请求一次' })
@@ -81,7 +87,7 @@ export async function GET() {
     getArticles(index)
 
     // 更新上次同步时间
-    lastSyncTime = new Date()
+    await kv.set(LastSyncTimeKey, dayjs().format('YYYY-MM-DD HH:mm:ss'))
 
     return sendJson({ data: null, msg: '同步掘金文章成功' })
   } catch (error) {
