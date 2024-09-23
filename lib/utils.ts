@@ -7,10 +7,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getApiUrl(path: string) {
-  return `${process.env.NEXT_PUBLIC_BASE_API}${path}`
-}
-
 interface SendJson {
   code?: number
   data?: any

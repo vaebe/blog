@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Icon } from '@iconify/react'
 import { Article } from '@prisma/client'
-import { getApiUrl } from '@/lib/utils'
 import { ArticleCard } from '@/components/article-card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -184,7 +183,7 @@ export default function ArticlesPage() {
 
     try {
       const res = await fetch(
-        getApiUrl(`articles/list?page=${currentPage}&pageSize=${6}&searchTerm=${searchTerm}`)
+        `/api/articles/list?page=${currentPage}&pageSize=${6}&searchTerm=${searchTerm}`
       )
       const data = await res.json()
 

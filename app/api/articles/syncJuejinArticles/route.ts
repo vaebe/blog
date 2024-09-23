@@ -1,4 +1,3 @@
-import { getApiUrl } from '@/lib/utils'
 import dayjs from 'dayjs'
 import { PrismaClient } from '@prisma/client'
 import { sendJson } from '@/lib/utils'
@@ -46,9 +45,7 @@ async function addArticle(info: any) {
 }
 
 async function getArticles(index: number) {
-  const res = await fetch(getApiUrl(`proxy/juejin/articles?cursor=${index}`)).then((res) =>
-    res.json()
-  )
+  const res = await fetch(`/api/proxy/juejin/articles?cursor=${index}`).then((res) => res.json())
 
   if (res.code !== 0) {
     return sendJson(res)
