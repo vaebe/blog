@@ -9,3 +9,26 @@
   border: 0;
   overflow: hidden;
 }
+
+.markdown-body {
+
+  ol,
+  ul {
+    counter-reset: custom-counter; // 重置计数器
+
+    li {
+      counter-increment: custom-counter; // 增加计数器
+
+      &::marker {
+        content: counter(custom-counter) "."; // 显示计数器的值
+        color: inherit;
+        unicode-bidi: isolate;
+        font-variant-numeric: tabular-nums;
+        text-transform: none;
+        text-indent: 0px !important;
+        text-align: start !important;
+        text-align-last: start !important;
+      }
+    }
+  }
+}

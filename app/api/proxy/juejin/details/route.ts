@@ -16,6 +16,8 @@ export async function GET(req: Request) {
 
     const $ = cheerio.load(htmlContent)
 
+    $('#article-root style').remove()
+
     return sendJson({ data: $('#article-root').html() })
   } catch (error) {
     return sendJson({ code: -1, msg: `${error}` })
