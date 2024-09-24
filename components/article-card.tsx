@@ -2,7 +2,6 @@ import { Article } from '@prisma/client'
 import { Icon } from '@iconify/react'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { motion } from 'framer-motion'
-import { getArticleDetailsUrl } from '@/lib/utils'
 import Link from 'next/link'
 
 export function ArticleCard({ article }: { article: Article }) {
@@ -31,7 +30,7 @@ export function ArticleCard({ article }: { article: Article }) {
               </span>
             </div>
             <Link
-              href={getArticleDetailsUrl(article)}
+              href={`/article/${article.id}`}
               target="_blank"
               className="mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline"
             >

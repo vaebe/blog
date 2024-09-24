@@ -15,7 +15,3 @@ interface SendJson {
 export function sendJson(opts: SendJson) {
   return NextResponse.json({ code: 0, msg: '', ...opts }, { status: 200 })
 }
-
-export function getArticleDetailsUrl(info: Article) {
-  return info?.source === '00' ? `/article/${info.id}` : `https://juejin.cn/post/${info.id}`
-}
