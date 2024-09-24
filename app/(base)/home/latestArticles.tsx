@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getArticleDetailsUrl } from '@/lib/utils'
 import { Article } from '@prisma/client'
 import { Icon } from '@iconify/react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -75,7 +74,7 @@ export function LatestArticles() {
       <AnimatePresence>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {articles.map((item) => (
-            <Link key={item.id} href={getArticleDetailsUrl(item)} target="_blank">
+            <Link key={item.id} href={`/article/${item.id}`} target="_blank">
               <ArticleCard article={item} />
             </Link>
           ))}

@@ -9,8 +9,11 @@ import { Anchor } from './anchor/index'
 import { BytemdViewer } from '@/components/bytemd/viewer'
 
 export default function Component({ params }: { params: { id: string } }) {
+  const [pageType, setPageType] = useState<string>()
   const [article, setArticle] = useState<Article>()
   const [readingTime, setReadingTime] = useState<number>(0)
+
+  const [details, setDetails] = useState<string>('')
 
   useEffect(() => {
     async function getData() {
@@ -22,6 +25,21 @@ export default function Component({ params }: { params: { id: string } }) {
 
       setArticle(res.data)
       setReadingTime(getReadingTime(res.data.content).minutes)
+      setPageType(res.data.source)
+
+      // 博客创建的文章直接返回
+      if (res.data.source === '00') return
+
+      fetch(`/api/proxy/juejin/details?id=${params.id}`)
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.code !== 0) {
+            toast({ variant: 'destructive', title: '警告', description: '获取文章详情失败!' })
+            return
+          }
+
+          setDetails(res.data)
+        })
     }
     getData()
   }, [params.id])
@@ -35,12 +53,16 @@ export default function Component({ params }: { params: { id: string } }) {
           <CardDescription>{article?.summary}</CardDescription>
         </CardHeader>
 
-        <BytemdViewer content={article?.content ?? ''}></BytemdViewer>
+        {pageType === '00' ? (
+          <BytemdViewer content={article?.content ?? ''} />
+        ) : (
+          <div dangerouslySetInnerHTML={{ __html: details }} />
+        )}
       </Card>
 
       <Card className="sticky top-[12vh] ml-4 w-[240px] hidden lg:block">
         <CardContent className="pt-4">
-          <Anchor content={article?.content ?? ''}></Anchor>
+          <Anchor content={details || article?.content || ''}></Anchor>
         </CardContent>
       </Card>
     </div>
