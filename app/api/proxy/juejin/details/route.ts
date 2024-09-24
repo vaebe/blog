@@ -18,6 +18,8 @@ export async function GET(req: Request) {
 
     $('#article-root style').remove()
 
+    // todo 获取下 read-time 元素中的阅读时间返回
+
     return sendJson({ data: $('#article-root').html() })
   } catch (error) {
     return sendJson({ code: -1, msg: `${error}` })
