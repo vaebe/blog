@@ -2,7 +2,6 @@ import dayjs from 'dayjs'
 import { PrismaClient } from '@prisma/client'
 import { sendJson } from '@/lib/utils'
 import { kv } from '@vercel/kv'
-import { error } from 'console'
 
 const prisma = new PrismaClient()
 
