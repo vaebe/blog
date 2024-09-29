@@ -6,7 +6,6 @@ import { routerList } from '@/lib/routers'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 
 function NavList() {
   return (
@@ -68,7 +67,7 @@ export default function LayoutHeader() {
 
           {status === 'authenticated' && (
             <Avatar>
-              <AvatarImage src={session.user.image as string} alt="@shadcn" />
+              <AvatarImage src={session.user.image ?? ''} alt="user" />
               <AvatarFallback>{session.user.name ?? 'LL'}</AvatarFallback>
             </Avatar>
           )}
