@@ -20,7 +20,7 @@
       counter-increment: custom-counter; // 增加计数器
 
       &::marker {
-        content: counter(custom-counter) "."; // 显示计数器的值
+        content: counter(custom-counter) ". "; // 显示计数器的值
         color: inherit;
         unicode-bidi: isolate;
         font-variant-numeric: tabular-nums;

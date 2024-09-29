@@ -65,8 +65,8 @@ export default function Component({ params }: { params: { id: string } }) {
         </CardHeader>
 
         <CardContent className="mt-4 px-4 sm:px-6 lg:px-8">
-          <div>
-            <h2 className="text-xl font-semibold mb-2">总结:</h2>
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold mb-2">导读:</h2>
             <p className="text-gray-600 bg-gray-100 p-4 rounded-md">{article?.summary}</p>
           </div>
 
