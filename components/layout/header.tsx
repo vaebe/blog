@@ -6,6 +6,7 @@ import { routerList } from '@/lib/routers'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 function NavList() {
   return (
@@ -21,6 +22,52 @@ function NavList() {
         </li>
       ))}
     </ul>
+  )
+}
+
+function UserAvatarItem({
+  icon,
+  name,
+  onClick
+}: {
+  icon: string
+  name: string
+  onClick?: () => void
+}) {
+  return (
+    <div
+      className="py-0.5 flex items-center cursor-pointer rounded bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 ease-in-out transform hover:scale-110"
+      onClick={onClick}
+    >
+      <Icon icon={icon} className="w-5 h-5 mx-2" />
+      <span>{name}</span>
+    </div>
+  )
+}
+
+function UserAvatar({ session }: { session: any }) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <div className="flex items-center space-x-2 cursor-pointer">
+          <Avatar className="w-8 h-8">
+            <AvatarImage src={session.user.image ?? ''} alt="user" />
+            <AvatarFallback>{session.user.name ?? 'LL'}</AvatarFallback>
+          </Avatar>
+
+          <span>{session.user.name}</span>
+        </div>
+      </PopoverTrigger>
+      <PopoverContent>
+        <div className="grid gap-2">
+          <Link href="/article/add" target="_blank">
+            <UserAvatarItem icon="lucide:feather" name="写文章" />
+          </Link>
+
+          <UserAvatarItem name="退出登录" icon="lucide:log-out" onClick={() => signOut()} />
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }
 
@@ -65,22 +112,7 @@ export default function LayoutHeader() {
             </Link>
           )}
 
-          {status === 'authenticated' && (
-            <Avatar>
-              <AvatarImage src={session.user.image ?? ''} alt="user" />
-              <AvatarFallback>{session.user.name ?? 'LL'}</AvatarFallback>
-            </Avatar>
-          )}
-
-          {status === 'authenticated' && (
-            <button
-              onClick={() => signOut()}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 ease-in-out transform hover:scale-110"
-              aria-label="Sign out"
-            >
-              <Icon icon="uis:signout" className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-            </button>
-          )}
+          {status === 'authenticated' && <UserAvatar session={session} />}
         </div>
       </div>
     </header>
