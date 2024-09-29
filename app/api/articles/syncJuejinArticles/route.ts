@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { PrismaClient } from '@prisma/client'
 import { sendJson } from '@/lib/utils'
 import { kv } from '@vercel/kv'
+import { error } from 'console'
 
 const prisma = new PrismaClient()
 
@@ -45,16 +46,20 @@ async function addArticle(info: any) {
 }
 
 async function getArticles(index: number) {
-  const res = await fetch(`/api/proxy/juejin/articles?cursor=${index}`).then((res) => res.json())
+  const res = await fetch(`${process.env.SITE_URL}/api/proxy/juejin/articles?cursor=${index}`).then(
+    (res) => res.json()
+  )
 
-  if (res.code !== 0) {
-    return sendJson(res)
+  if (res?.code !== 0) {
+    throw new Error('同步掘金文章失败!')
   }
 
   const info = res.data
 
   for (const item of info.data) {
     addArticle(item)
+
+    console.log('同步文章:', item.article_info.title)
   }
 
   const nextIndex = index + 10
@@ -89,7 +94,7 @@ export async function GET(req: Request) {
   try {
     const index = 0
 
-    getArticles(index)
+    await getArticles(index)
 
     // 更新上次同步时间
     await kv.set(LastSyncTimeKey, dayjs().format('YYYY-MM-DD HH:mm:ss'))
