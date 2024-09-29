@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { signIn, useSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { Icon } from '@iconify/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -12,10 +12,9 @@ import { FullScreenLoading } from '@/components/screen-loading'
 
 interface LoginFormProps {
   onSubmit: (account: string, password: string) => Promise<void>
-  isLoading: boolean
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => {
+const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
 
@@ -74,16 +73,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => {
       <Button
         type="submit"
         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors duration-300"
-        disabled={isLoading}
       >
-        {isLoading ? (
-          <>
-            <Icon icon="mdi:loading" className="animate-spin mr-2" />
-            登录中...
-          </>
-        ) : (
-          '登录'
-        )}
+        登录
       </Button>
     </form>
   )
@@ -91,22 +82,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => {
 
 interface GithubLoginButtonProps {
   onClick: () => void
-  isLoading: boolean
 }
 
-const GithubLoginButton: React.FC<GithubLoginButtonProps> = ({ onClick, isLoading }) => (
+const GithubLoginButton = ({ onClick }: GithubLoginButtonProps) => (
   <Button
     className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-300"
     onClick={onClick}
-    disabled={isLoading}
   >
     <Icon icon="mdi:github" className="mr-2 h-5 w-5" />
     Github 登录
   </Button>
 )
 
-const LoginPage: React.FC = () => {
-  const { status } = useSession()
+const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
 
@@ -118,22 +106,27 @@ const LoginPage: React.FC = () => {
       password
     })
 
+    setIsLoading(false)
+
     if (res?.error) {
       toast({ title: '登录失败', description: '请检查您的用户名和密码', variant: 'destructive' })
     } else {
       toast({ title: '登录成功', description: '欢迎回来！' })
     }
-
-    setIsLoading(false)
   }
 
-  const handleGithubLogin = () => {
-    signIn('github')
+  function handleGithubLogin() {
+    setIsLoading(true)
+
+    signIn('github').catch((error) => {
+      setIsLoading(false)
+      toast({ title: '登录失败', description: error, variant: 'destructive' })
+    })
   }
 
   return (
     <div className="flex items-center justify-center min-h-screen dark:from-gray-900 dark:to-gray-800 transition-all duration-500">
-      <FullScreenLoading isLoading={isLoading || status === 'loading'}></FullScreenLoading>
+      <FullScreenLoading isLoading={isLoading}></FullScreenLoading>
 
       <AnimatePresence>
         <motion.div
@@ -147,7 +140,7 @@ const LoginPage: React.FC = () => {
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">登录</h2>
           </div>
 
-          <LoginForm onSubmit={handleCredentialsLogin} isLoading={isLoading} />
+          <LoginForm onSubmit={handleCredentialsLogin} />
 
           <div className="mt-6">
             <div className="relative">
@@ -162,7 +155,7 @@ const LoginPage: React.FC = () => {
             </div>
 
             <div className="mt-6">
-              <GithubLoginButton onClick={handleGithubLogin} isLoading={status === 'loading'} />
+              <GithubLoginButton onClick={handleGithubLogin} />
             </div>
           </div>
         </motion.div>
