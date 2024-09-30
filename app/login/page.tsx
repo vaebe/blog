@@ -47,10 +47,12 @@ const LoginForm = ({ setIsLoading }: LoginFormProps) => {
 
     setIsLoading(true)
 
-    signIn('email', { email: account }).catch((error) => {
-      setIsLoading(false)
-      toast({ title: '登录失败', description: error, variant: 'destructive' })
-    })
+    signIn('email', { email: account, callbackUrl: '/auth/verify-request?provider=email' }).catch(
+      (error) => {
+        setIsLoading(false)
+        toast({ title: '登录失败', description: error, variant: 'destructive' })
+      }
+    )
   }
 
   return (
