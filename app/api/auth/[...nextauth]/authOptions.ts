@@ -4,7 +4,6 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import EmailProvider from 'next-auth/providers/email'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from '@/prisma/index'
-import { url } from 'inspector'
 
 const AUTH_GITHUB_CLIENT_ID = process.env.AUTH_GITHUB_CLIENT_ID
 const AUTH_GITHUB_CLIENT_SECRET = process.env.AUTH_GITHUB_CLIENT_SECRET
@@ -57,7 +56,10 @@ export const authOptions: AuthOptions = {
     }),
     GitHubProvider({
       clientId: AUTH_GITHUB_CLIENT_ID ?? '',
-      clientSecret: AUTH_GITHUB_CLIENT_SECRET ?? ''
+      clientSecret: AUTH_GITHUB_CLIENT_SECRET ?? '',
+      httpOptions: {
+        timeout: 10000 // 将超时时间设置为10秒（10000毫秒）
+      }
     }),
     EmailProvider({
       server: {
@@ -92,20 +94,17 @@ export const authOptions: AuthOptions = {
       return baseUrl
     },
     async jwt({ token, user }) {
-      if (user) {
-        const userInfo = await prisma.user.findUnique({
-          where: { email: user.email as string }
-        })
+      const info = { ...token }
 
-        if (userInfo) {
-          token.role = userInfo.role
-        }
-      }
-      return token
+      info.role = user.role
+
+      return info
     },
-    async session({ session, token }) {
+    async session({ session, user }) {
       const info = { ...session }
-      info.user.role = token?.role as string
+
+      info.user.role = user?.role
+
       return info
     }
   }
