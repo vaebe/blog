@@ -4,6 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import EmailProvider from 'next-auth/providers/email'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from '@/prisma/index'
+import { url } from 'inspector'
 
 const AUTH_GITHUB_CLIENT_ID = process.env.AUTH_GITHUB_CLIENT_ID
 const AUTH_GITHUB_CLIENT_SECRET = process.env.AUTH_GITHUB_CLIENT_SECRET
@@ -65,13 +66,14 @@ export const authOptions: AuthOptions = {
         auth: {
           user: process.env.EMAIL_SERVER_USER,
           pass: process.env.EMAIL_SERVER_PASSWORD
-        },
+        }
       },
       from: process.env.EMAIL_FROM
     })
   ],
   pages: {
-    signIn: '/login'
+    signIn: '/login',
+    verifyRequest: '/auth/verify-request'
   },
   session: {
     // strategy: "jwt",
