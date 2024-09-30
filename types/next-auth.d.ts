@@ -11,4 +11,7 @@ declare module 'next-auth' {
       role?: string | null // 扩展 Session 类型，添加 role 属性
     }
   }
+  interface User {
+    role?: string | null
+  }
 }

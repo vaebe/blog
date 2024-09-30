@@ -52,17 +52,19 @@ function UserAvatar({ session }: { session: any }) {
         <div className="flex items-center space-x-2 cursor-pointer">
           <Avatar className="w-8 h-8">
             <AvatarImage src={session.user.image ?? ''} alt="user" />
-            <AvatarFallback>{session.user.name ?? 'LL'}</AvatarFallback>
+            <AvatarFallback>{session.user.name ?? 'll'}</AvatarFallback>
           </Avatar>
 
-          <span>{session.user.name}</span>
+          <span>{session?.user?.name ?? 'll'}</span>
         </div>
       </PopoverTrigger>
       <PopoverContent>
         <div className="grid gap-2">
-          <Link href="/article/add" target="_blank">
-            <UserAvatarItem icon="lucide:feather" name="写文章" />
-          </Link>
+          {session?.user?.role === '00' && (
+            <Link href="/article/add" target="_blank">
+              <UserAvatarItem icon="lucide:feather" name="写文章" />
+            </Link>
+          )}
 
           <UserAvatarItem name="退出登录" icon="lucide:log-out" onClick={() => signOut()} />
         </div>
