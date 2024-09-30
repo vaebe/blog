@@ -11,72 +11,109 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FullScreenLoading } from '@/components/screen-loading'
 
 interface LoginFormProps {
-  onSubmit: (account: string, password: string) => Promise<void>
+  setIsLoading: (status: boolean) => void
 }
 
-const LoginForm = ({ onSubmit }: LoginFormProps) => {
+const LoginForm = ({ setIsLoading }: LoginFormProps) => {
   const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
+  const { toast } = useToast()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(account, password)
+
+    setIsLoading(true)
+
+    const res = await signIn('credentials', {
+      redirect: false,
+      account,
+      password
+    })
+
+    setIsLoading(false)
+
+    if (res?.error) {
+      toast({ title: '登录失败', description: '请检查您的用户名和密码', variant: 'destructive' })
+    } else {
+      toast({ title: '登录成功', description: '欢迎回来！' })
+    }
+  }
+
+  function handleEmailLogin() {
+    if (!account) {
+      toast({ title: '登录失败', description: '请输入邮箱', variant: 'destructive' })
+      return
+    }
+
+    setIsLoading(true)
+
+    signIn('email', { email: account }).catch((error) => {
+      setIsLoading(false)
+      toast({ title: '登录失败', description: error, variant: 'destructive' })
+    })
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="account" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            用户名
-          </Label>
-          <div className="mt-1 relative rounded-md shadow-sm">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Icon icon="mdi:account" className="h-5 w-5 text-gray-400" />
+    <>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-4">
+          <div>
+            <Label
+              htmlFor="account"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              用户名
+            </Label>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Icon icon="mdi:account" className="h-5 w-5 text-gray-400" />
+              </div>
+              <Input
+                id="account"
+                name="account"
+                type="text"
+                required
+                className="pl-10 block w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                placeholder="请输入用户名"
+                value={account}
+                onChange={(e) => setAccount(e.target.value)}
+              />
             </div>
-            <Input
-              id="account"
-              name="account"
-              type="text"
-              required
-              className="pl-10 block w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              placeholder="请输入用户名"
-              value={account}
-              onChange={(e) => setAccount(e.target.value)}
-            />
+          </div>
+          <div>
+            <Label
+              htmlFor="password"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              密码
+            </Label>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Icon icon="mdi:lock" className="h-5 w-5 text-gray-400" />
+              </div>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                className="pl-10 block w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                placeholder="请输入密码"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
           </div>
         </div>
-        <div>
-          <Label
-            htmlFor="password"
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            密码
-          </Label>
-          <div className="mt-1 relative rounded-md shadow-sm">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Icon icon="mdi:lock" className="h-5 w-5 text-gray-400" />
-            </div>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              required
-              className="pl-10 block w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              placeholder="请输入密码"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-      <Button
-        type="submit"
-        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors duration-300"
-      >
-        登录
-      </Button>
-    </form>
+        <Button
+          type="submit"
+          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors duration-300"
+        >
+          登录
+        </Button>
+      </form>
+
+      <EmailLoginButton onClick={handleEmailLogin}></EmailLoginButton>
+    </>
   )
 }
 
@@ -94,26 +131,19 @@ const GithubLoginButton = ({ onClick }: GithubLoginButtonProps) => (
   </Button>
 )
 
+const EmailLoginButton = ({ onClick }: GithubLoginButtonProps) => (
+  <Button
+    className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-300"
+    onClick={onClick}
+  >
+    <Icon icon="mdi:email" className="mr-2 h-5 w-5" />
+    邮箱登录
+  </Button>
+)
+
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
-
-  const handleCredentialsLogin = async (account: string, password: string) => {
-    setIsLoading(true)
-    const res = await signIn('credentials', {
-      redirect: false,
-      account,
-      password
-    })
-
-    setIsLoading(false)
-
-    if (res?.error) {
-      toast({ title: '登录失败', description: '请检查您的用户名和密码', variant: 'destructive' })
-    } else {
-      toast({ title: '登录成功', description: '欢迎回来！' })
-    }
-  }
 
   function handleGithubLogin() {
     setIsLoading(true)
@@ -140,7 +170,7 @@ const LoginPage = () => {
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">登录</h2>
           </div>
 
-          <LoginForm onSubmit={handleCredentialsLogin} />
+          <LoginForm setIsLoading={setIsLoading} />
 
           <div className="mt-6">
             <div className="relative">

@@ -8,7 +8,6 @@ datasource db {
 }
 
 model Article {
-  @@map("article")
   id         String    @id @unique
   userId     Int
   title      String    @db.Text
@@ -26,20 +25,88 @@ model Article {
   updatedAt  DateTime? @updatedAt
   deletedAt  DateTime?
   isDeleted  Int?      @default(0)
+  @@map("article")
 }
 
 model User {
+  id            String          @id @default(cuid())
+  name          String?
+  username      String?         @unique
+  email         String?         @unique
+  password      String?         @db.Text
+  role          String?         @default("01")
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   @@map("user")
-  id          String    @id @unique
-  nickName    String?   @db.Text
-  account     String    @unique
-  password    String?   @db.Text
-  role        String?   @db.Text
-  homepage    String?   @db.Text
-  avatar      String?   @db.Text
-  accountType String    @unique
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
-  deletedAt   DateTime?
-  isDeleted   Int?      @default(0)
+}
+ 
+model Account {
+  id                       String  @id @default(cuid())
+  userId                   String  @unique
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String? @db.Text
+  access_token             String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+  refresh_token_expires_in Int?
+  user                     User?   @relation(fields: [userId], references: [id])
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("account")
+}
+ 
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  @@index([userId])
+  @@map("session")
+}
+ 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@unique([identifier, token])
+  @@map("verification_token")
+}
+ 
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([userId, credentialID])
+  @@map("authenticator")
 }
