@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     }
 
     const user = await prisma.user.findUnique({
-      where: { account: account }
+      where: { email: account }
     })
 
     return sendJson({ data: user })
