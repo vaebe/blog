@@ -78,8 +78,8 @@ export const authOptions: AuthOptions = {
     verifyRequest: '/auth/verify-request'
   },
   session: {
-    // strategy: "jwt",
-    // maxAge: 24 * 60 * 60 // 过期时间,
+    strategy: 'jwt',
+    maxAge: 24 * 60 * 60 // 过期时间,
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
@@ -94,18 +94,17 @@ export const authOptions: AuthOptions = {
       return baseUrl
     },
     async jwt({ token, user }) {
-      const info = { ...token }
-
-      info.role = user.role
-
-      return info
+      // 如果 user 存在，存储角色信息
+      if (user) {
+        token.role = user.role // 将角色存储到 token 中
+      }
+      return token
     },
-    async session({ session, user }) {
-      const info = { ...session }
-
-      info.user.role = user?.role
-
-      return info
+    async session({ session, token }) {
+      if (token?.role) {
+        session.user.role = token.role as string
+      }
+      return session
     }
   }
 }
