@@ -44,6 +44,8 @@ async function addArticle(info: any) {
   })
 }
 
+let syncArticleNameList: string[] = []
+
 async function getArticles(index: number) {
   const res = await fetch(`${process.env.SITE_URL}/api/proxy/juejin/articles?cursor=${index}`).then(
     (res) => res.json()
@@ -58,20 +60,22 @@ async function getArticles(index: number) {
   for (const item of info.data) {
     addArticle(item)
 
-    console.log('同步文章:', item.article_info.title)
+    syncArticleNameList.push(item.article_info.title)
   }
 
   const nextIndex = index + 10
 
   // 是否还有更多文章
   if (info.has_more) {
-    getArticles(nextIndex)
+    await getArticles(nextIndex)
   }
 }
 
 const LastSyncTimeKey = 'blogLastSyncTime'
 
 export async function GET(req: Request) {
+  syncArticleNameList = []
+
   const apiKey = req.headers.get('x-api-key')
   const expectedApiKey = process.env.GITHUB_REPOSITORY_API_KEY
 
@@ -98,7 +102,9 @@ export async function GET(req: Request) {
     // 更新上次同步时间
     await kv.set(LastSyncTimeKey, dayjs().format('YYYY-MM-DD HH:mm:ss'))
 
-    return sendJson({ data: null, msg: '同步掘金文章成功' })
+    console.log(syncArticleNameList)
+
+    return sendJson({ data: syncArticleNameList, msg: '同步掘金文章成功' })
   } catch (error) {
     return sendJson({ code: -1, msg: `同步掘金文章失败: ${error}` })
   }
