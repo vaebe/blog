@@ -41,6 +41,8 @@ model User {
   sessions      Session[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
+  // 留言
+  messages  Message[]
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -109,4 +111,15 @@ model Authenticator {
  
   @@id([userId, credentialID])
   @@map("authenticator")
+}
+
+// 留言
+model Message {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  @@map("message")
 }
