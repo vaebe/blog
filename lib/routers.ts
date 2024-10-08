@@ -8,6 +8,10 @@ export const routerList = [
     name: '文章'
   },
   {
+    path: '/guestbook',
+    name: '留言板'
+  },
+  {
     path: '/aiChat',
     name: 'AI 对话'
   },
