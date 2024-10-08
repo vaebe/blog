@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { useSession } from 'next-auth/react'
+import { useToast } from '@/components/hooks/use-toast'
 
 // 模拟 API 调用获取留言
 const fetchMessages = async (page: number, limit: number) => {
@@ -41,9 +43,7 @@ export default function GuestBook() {
     setLoading(false)
   }
 
-  useEffect(() => {
-    loadMessages()
-  }, [])
+  loadMessages()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -62,16 +62,37 @@ export default function GuestBook() {
     return () => observer.disconnect()
   }, [loaderRef, loading])
 
-  const handleSubmit = (msg: string) => {
-    if (msg.trim() && username.trim()) {
-      const newMsg = {
-        id: Date.now(),
-        user: username,
-        content: msg,
-        createdAt: new Date().toISOString()
-      }
-      setMessages((prevMessages) => [newMsg, ...prevMessages])
+  const { toast } = useToast()
+
+  const { data: session } = useSession()
+
+  const handleSubmit = async (msg: string) => {
+    if (!msg.trim()) {
+      toast({ title: '留言失败', description: '留言内容不能为空!', variant: 'destructive' })
+      return
     }
+
+    const res = await fetch('/api/guestbook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        content: msg,
+        userEmail: session?.user?.email
+      })
+    }).then((res) => res.json())
+
+    console.log(res, '-=-=-=-=-')
+
+    if (res.code !== 0) {
+      toast({ description: res.msg, variant: 'destructive' })
+      return
+    }
+
+    toast({ description: '今天的你格外迷人!' })
+
+    setMessages((prevMessages) => [res.data, ...prevMessages])
   }
 
   return (
