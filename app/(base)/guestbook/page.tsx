@@ -6,18 +6,6 @@ import { Card } from '@/components/ui/card'
 import { useSession } from 'next-auth/react'
 import { useToast } from '@/components/hooks/use-toast'
 
-// 模拟 API 调用获取留言
-const fetchMessages = async (page: number, limit: number) => {
-  // 在实际应用中,这里应该是一个真实的 API 调用
-  await new Promise((resolve) => setTimeout(resolve, 1000)) // 模拟网络延迟
-  return Array.from({ length: limit }, (_, i) => ({
-    id: page * limit + i + 1,
-    user: `User ${page * limit + i + 1}`,
-    content: `This is message ${page * limit + i + 1}`,
-    createdAt: new Date(Date.now() - Math.random() * 10000000000).toISOString()
-  }))
-}
-
 interface Message {
   id: number
   user: string
@@ -28,22 +16,40 @@ interface Message {
 export default function GuestBook() {
   const [messages, setMessages] = useState<Array<Message>>([])
 
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useState(1)
+  const [totalPage, setTotalPage] = useState(1)
   const [loading, setLoading] = useState(false)
-  const [username, setUsername] = useState('')
   const loaderRef = useRef(null)
 
-  // 优化: 将加载状态和消息加载逻辑合并
   const loadMessages = async () => {
+    if (totalPage > page) {
+      return
+    }
+
     if (loading) return
     setLoading(true)
-    const newMessages = await fetchMessages(page, 10)
-    setMessages((prevMessages) => [...prevMessages, ...newMessages])
+
     setPage((prevPage) => prevPage + 1)
+
+    const res = await fetch(`/api/guestbook?page=${page}&pageSize=${10}`).then((res) => res.json())
+
+    console.log(res.data.totalPages, page)
+    if (res.code !== 0) {
+      setLoading(false)
+      return
+    }
+
+    setMessages((prevMessages) => [...prevMessages, ...res.data.list])
+
+    setTotalPage(res.data.totalPages)
+
     setLoading(false)
   }
 
-  loadMessages()
+  useEffect(() => {
+    setPage(1)
+    setMessages([])
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -60,7 +66,7 @@ export default function GuestBook() {
     }
 
     return () => observer.disconnect()
-  }, [loaderRef, loading])
+  }, [])
 
   const { toast } = useToast()
 
@@ -82,8 +88,6 @@ export default function GuestBook() {
         userEmail: session?.user?.email
       })
     }).then((res) => res.json())
-
-    console.log(res, '-=-=-=-=-')
 
     if (res.code !== 0) {
       toast({ description: res.msg, variant: 'destructive' })
