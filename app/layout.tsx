@@ -1,6 +1,7 @@
 'use client'
 
 import './globals.css'
+import '@/lib/date'
 import { Inter as FontSans } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import { ThemeProvider } from 'next-themes'
