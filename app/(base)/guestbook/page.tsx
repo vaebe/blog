@@ -5,21 +5,24 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useSession } from 'next-auth/react'
 import { useToast } from '@/components/hooks/use-toast'
+import { Message } from '@prisma/client'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import dayjs from 'dayjs'
 
-interface Message {
-  id: number
-  user: string
-  content: string
-  createdAt: string
+interface MessageInfo extends Message {
+  author: {
+    name: string
+    email: string
+    image: string
+  }
 }
 
 export default function GuestBook() {
-  const [messages, setMessages] = useState<Array<Message>>([])
+  const [messages, setMessages] = useState<Array<MessageInfo>>([])
 
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState(1)
   const [loading, setLoading] = useState(false)
-  const loaderRef = useRef(null)
 
   const loadMessages = async () => {
     if (totalPage > page) {
@@ -51,23 +54,6 @@ export default function GuestBook() {
     setMessages([])
   }, [])
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          loadMessages()
-        }
-      },
-      { threshold: 1.0 }
-    )
-
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [])
-
   const { toast } = useToast()
 
   const { data: session } = useSession()
@@ -94,7 +80,7 @@ export default function GuestBook() {
       return
     }
 
-    toast({ description: '今天的你格外迷人!' })
+    toast({ description: '留言成功,今天的你格外迷人!' })
 
     setMessages((prevMessages) => [res.data, ...prevMessages])
   }
@@ -105,21 +91,7 @@ export default function GuestBook() {
 
       <AddMessage onSubmit={handleSubmit}></AddMessage>
 
-      <div className="space-y-4">
-        {messages.map((message) => (
-          <div key={message.id} className="bg-gray-100 p-4 rounded-lg">
-            <div className="flex justify-between items-center mb-2">
-              <p className="font-semibold">{message.user}</p>
-              <p className="text-sm text-gray-500">
-                {new Date(message.createdAt).toLocaleString()}
-              </p>
-            </div>
-            <p>{message.content}</p>
-          </div>
-        ))}
-        {loading && <div className="text-center">加载中...</div>}
-        <div ref={loaderRef} />
-      </div>
+      <MessagesList list={messages} loading={loading} loadMessages={loadMessages}></MessagesList>
     </Card>
   )
 }
@@ -163,5 +135,74 @@ function AddMessage({ onSubmit }: { onSubmit: (msg: string) => void }) {
         </Button>
       </div>
     </div>
+  )
+}
+
+interface MessagesListProps {
+  list: MessageInfo[]
+  loadMessages: () => void
+  loading: boolean
+}
+
+function MessagesList({ list, loadMessages, loading }: MessagesListProps) {
+  const loaderRef = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMessages()
+        }
+      },
+      { threshold: 1.0 }
+    )
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div className="space-y-2">
+      {list.map((message, index) => (
+        <MessagesListItem
+          info={message}
+          key={message.id}
+          isLast={index === list.length - 1}
+        ></MessagesListItem>
+      ))}
+
+      {loading && <div className="text-center">加载中...</div>}
+
+      <div ref={loaderRef} />
+    </div>
+  )
+}
+
+function MessagesListItem({ info, isLast }: { info: MessageInfo; isLast: boolean }) {
+  return (
+    <>
+      <div className="flex items-start">
+        <Avatar className="mt-2">
+          <AvatarImage src={info?.author?.image} alt="@shadcn" />
+          <AvatarFallback>{info?.author?.name}</AvatarFallback>
+        </Avatar>
+
+        <div className="ml-4">
+          <p>
+            <span className="mr-2 text-lg font-medium">{info?.author?.name}</span>
+            <span className="text-gray-500 text-xs">
+              {dayjs(info.createdAt).locale('zh-cn').fromNow()}
+            </span>
+          </p>
+
+          <div>{info.content}</div>
+        </div>
+      </div>
+
+      {!isLast && <p className="h-[20px] w-[3px] bg-gray-200 ml-4 dark:bg-gray-800"></p>}
+    </>
   )
 }
