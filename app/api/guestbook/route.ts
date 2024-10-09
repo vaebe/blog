@@ -28,6 +28,42 @@ export async function POST(req: Request) {
 }
 
 // 查询留言列表
-export async function GET() {
-  return sendJson({ data: 'hello world' })
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url)
+  const page = parseInt(searchParams.get('page') || '1')
+  const pageSize = parseInt(searchParams.get('pageSize') || '10')
+
+  const skip = (page - 1) * pageSize
+
+  try {
+    const list = await prisma.message.findMany({
+      include: {
+        author: {
+          select: {
+            name: true,
+            email: true,
+            image: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      skip: skip,
+      take: pageSize
+    })
+
+    const total = await prisma.message.count()
+
+    return sendJson({
+      data: {
+        list,
+        total,
+        currentPage: page,
+        totalPages: Math.ceil(total / pageSize)
+      }
+    })
+  } catch (error) {
+    return sendJson({ code: -1, msg: '获取留言信息失败' })
+  }
 }
