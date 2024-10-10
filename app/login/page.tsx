@@ -25,7 +25,6 @@ const LoginForm = ({ setIsLoading }: LoginFormProps) => {
     setIsLoading(true)
 
     const res = await signIn('credentials', {
-      redirect: false,
       account,
       password
     })
