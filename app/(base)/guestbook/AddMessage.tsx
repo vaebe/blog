@@ -7,17 +7,90 @@ import { Icon } from '@iconify/react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { BytemdViewer } from '@/components/bytemd/viewer'
 
+interface MessageInputProps {
+  message: string
+  onChange: (value: string) => void
+}
+// 留言输入组件
+const MessageInput = ({ message, onChange }: MessageInputProps) => {
+  return (
+    <textarea
+      className="block w-full shrink-0 resize-none border-0 bg-transparent p-2 md:p-4 text-sm leading-6 text-zinc-800 placeholder-zinc-400 outline-none transition-[height] will-change-[height] focus:outline-none focus:ring-0 dark:text-zinc-200 dark:placeholder-zinc-500"
+      placeholder="请输入您的留言"
+      rows={6}
+      value={message}
+      onChange={(e) => onChange(e.target.value)}
+    ></textarea>
+  )
+}
+
+// 留言预览组件
+const MessagePreview = ({ message }: { message: string }) => {
+  return (
+    <div className="min-h-24">
+      <BytemdViewer content={message}></BytemdViewer>
+    </div>
+  )
+}
+
+interface MessageControlsProps {
+  messageLength: number
+  messageView: boolean
+  onToggleView: () => void
+  onSendMsg: () => void
+}
+
+function MessageControls({
+  messageLength,
+  messageView,
+  onToggleView,
+  onSendMsg
+}: MessageControlsProps) {
+  return (
+    <div className="flex justify-between items-center mt-2 px-2">
+      <p className="text-xs text-zinc-500">支持 Markdown 格式</p>
+      <div className="flex items-center justify-end">
+        <p className="text-xs text-zinc-500">{messageLength} / 1000</p>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Icon
+                icon={messageView ? 'carbon:view-off' : 'carbon:view'}
+                onClick={onToggleView}
+                className="cursor-pointer mx-4"
+                width="24px"
+              />
+            </TooltipTrigger>
+            <TooltipContent>{messageView ? '关闭预览' : '预览一下'}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Icon
+                icon="streamline:send-email"
+                className="cursor-pointer"
+                width="20px"
+                onClick={onSendMsg}
+              />
+            </TooltipTrigger>
+            <TooltipContent>发送</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+    </div>
+  )
+}
+
 interface AddMessageProps {
   setMessages: Dispatch<SetStateAction<MessageInfo[]>>
 }
 
 export function AddMessage({ setMessages }: AddMessageProps) {
   const [messageView, setMessageView] = useState(false)
-
   const [message, setMessage] = useState('')
-
   const { toast } = useToast()
-
   const { data: session, status } = useSession()
 
   const sendMsg = async () => {
@@ -46,7 +119,7 @@ export function AddMessage({ setMessages }: AddMessageProps) {
 
     setMessageView(false)
 
-    setMessages((oldData) => [res.data, ...oldData])
+    setMessages((oldData) => [{ ...res.data, author: session?.user }, ...oldData])
 
     setMessage('')
   }
@@ -64,54 +137,17 @@ export function AddMessage({ setMessages }: AddMessageProps) {
       {status === 'authenticated' ? (
         <div className="group relative w-full rounded-xl p-2 bg-white dark:bg-black bg-opacity-5 shadow-xl shadow-zinc-500/10 ring-2 ring-zinc-200/30 transition-opacity">
           {messageView ? (
-            <div className=" min-h-24">
-              <BytemdViewer content={message}></BytemdViewer>
-            </div>
+            <MessagePreview message={message} />
           ) : (
-            <textarea
-              className="block w-full shrink-0 resize-none border-0 bg-transparent p-2 md:p-4 text-sm leading-6 text-zinc-800 placeholder-zinc-400 outline-none transition-[height] will-change-[height] focus:outline-none focus:ring-0 dark:text-zinc-200 dark:placeholder-zinc-500"
-              placeholder="请输入您的留言"
-              rows={6}
-              value={message}
-              onChange={(e) => messageChange(e.target.value)}
-            ></textarea>
+            <MessageInput message={message} onChange={messageChange} />
           )}
 
-          <div className="flex justify-between items-center mt-2 px-2">
-            <p className="text-xs text-zinc-500">支持 Markdown 格式</p>
-
-            <div className="flex items-center justify-end">
-              <p className="text-xs text-zinc-500">{message.length} / 1000</p>
-
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Icon
-                      icon={messageView ? 'carbon:view-off' : 'carbon:view'}
-                      onClick={() => setMessageView(!messageView)}
-                      className="cursor-pointer mx-4"
-                      width="24px"
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>{messageView ? '关闭预览' : '预览一下'}</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Icon
-                      icon="streamline:send-email"
-                      className="cursor-pointer"
-                      width="20px"
-                      onClick={sendMsg}
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>发送</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </div>
+          <MessageControls
+            messageLength={message.length}
+            messageView={messageView}
+            onToggleView={() => setMessageView(!messageView)}
+            onSendMsg={sendMsg}
+          />
         </div>
       ) : (
         <Button onClick={sendMsg} className="my-4">
