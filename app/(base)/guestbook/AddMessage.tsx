@@ -4,6 +4,7 @@ import { useToast } from '@/components/hooks/use-toast'
 import { useSession } from 'next-auth/react'
 import { MessageInfo } from './types'
 import { Icon } from '@iconify/react'
+import { Textarea } from '@/components/ui/textarea'
 
 interface AddMessageProps {
   setMessages: Dispatch<SetStateAction<MessageInfo[]>>
@@ -38,7 +39,7 @@ export function AddMessage({ setMessages }: AddMessageProps) {
       return
     }
 
-    toast({ title: '留言成功', description: '今天的你格外迷人!' })
+    toast({ title: '留言成功', description: '今天天气貌似不错!' })
 
     setMessages((oldData) => [res.data, ...oldData])
 
@@ -49,17 +50,16 @@ export function AddMessage({ setMessages }: AddMessageProps) {
     <div className="mt-1">
       {status === 'authenticated' ? (
         <div>
-          <textarea
-            id="message"
-            rows={3}
-            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+          <Textarea
             placeholder="请输入您的留言"
+            id="message"
+            rows={6}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
 
           <div className="flex justify-end">
-            <Button onClick={sendMsg} className="my-4">
+            <Button onClick={sendMsg} className="mt-4 mb-14">
               发送留言
             </Button>
           </div>
