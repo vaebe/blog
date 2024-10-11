@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import type { MessageInfo } from './types'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@iconify/react'
+import { BytemdViewer } from '@/components/bytemd/viewer'
 
 interface MessagesListProps {
   list: MessageInfo[]
@@ -77,7 +78,7 @@ export function MessagesListItem({ info, isLast }: { info: MessageInfo; isLast: 
           <AvatarFallback>{info?.author?.name}</AvatarFallback>
         </Avatar>
 
-        <div className="ml-4">
+        <div className="ml-4 w-full">
           <p>
             <span className="mr-2 text-lg font-medium">{info?.author?.name}</span>
             <span className="text-gray-500 text-xs">
@@ -85,7 +86,7 @@ export function MessagesListItem({ info, isLast }: { info: MessageInfo; isLast: 
             </span>
           </p>
 
-          <div>{info.content}</div>
+          <BytemdViewer content={info.content}></BytemdViewer>
         </div>
       </div>
 
