@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/hooks/use-toast'
 import { useSession } from 'next-auth/react'
 import { MessageInfo } from './types'
+import { Icon } from '@iconify/react'
 
 interface AddMessageProps {
   setMessages: Dispatch<SetStateAction<MessageInfo[]>>
@@ -13,7 +14,7 @@ export function AddMessage({ setMessages }: AddMessageProps) {
 
   const { toast } = useToast()
 
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
 
   const sendMsg = async () => {
     if (!message.trim()) {
@@ -46,20 +47,29 @@ export function AddMessage({ setMessages }: AddMessageProps) {
 
   return (
     <div className="mt-1">
-      <textarea
-        id="message"
-        rows={3}
-        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
-        placeholder="请输入您的留言"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
+      {status === 'authenticated' ? (
+        <div>
+          <textarea
+            id="message"
+            rows={3}
+            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+            placeholder="请输入您的留言"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
 
-      <div className="flex justify-end">
+          <div className="flex justify-end">
+            <Button onClick={sendMsg} className="my-4">
+              发送留言
+            </Button>
+          </div>
+        </div>
+      ) : (
         <Button onClick={sendMsg} className="my-4">
-          发送留言
+          <Icon icon="memory:user" className="mr-2" width="20px" />
+          登录后才可以留言！
         </Button>
-      </div>
+      )}
     </div>
   )
 }

@@ -24,7 +24,7 @@ export function MessagesList({ list, setMessages }: MessagesListProps) {
 
     setPage((prevPage) => prevPage + 1)
 
-    const res = await fetch(`/api/guestbook?page=${page}&pageSize=${1}`).then((res) => res.json())
+    const res = await fetch(`/api/guestbook?page=${page}&pageSize=${100}`).then((res) => res.json())
 
     if (res.code !== 0) {
       setLoading(false)
