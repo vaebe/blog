@@ -4,13 +4,16 @@ import { useToast } from '@/components/hooks/use-toast'
 import { useSession } from 'next-auth/react'
 import { MessageInfo } from './types'
 import { Icon } from '@iconify/react'
-import { Textarea } from '@/components/ui/textarea'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { BytemdViewer } from '@/components/bytemd/viewer'
 
 interface AddMessageProps {
   setMessages: Dispatch<SetStateAction<MessageInfo[]>>
 }
 
 export function AddMessage({ setMessages }: AddMessageProps) {
+  const [messageView, setMessageView] = useState(false)
+
   const [message, setMessage] = useState('')
 
   const { toast } = useToast()
@@ -41,27 +44,73 @@ export function AddMessage({ setMessages }: AddMessageProps) {
 
     toast({ title: '留言成功', description: '今天天气貌似不错!' })
 
+    setMessageView(false)
+
     setMessages((oldData) => [res.data, ...oldData])
 
     setMessage('')
   }
 
-  return (
-    <div className="mt-1">
-      {status === 'authenticated' ? (
-        <div>
-          <Textarea
-            placeholder="请输入您的留言"
-            id="message"
-            rows={6}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
+  function messageChange(value: string) {
+    if (message.length > 1000) {
+      return
+    }
 
-          <div className="flex justify-end">
-            <Button onClick={sendMsg} className="mt-4 mb-14">
-              发送留言
-            </Button>
+    setMessage(value)
+  }
+
+  return (
+    <div className="mt-1 mb-14">
+      {status === 'authenticated' ? (
+        <div className="group relative w-full rounded-xl p-2 bg-white dark:bg-black bg-opacity-5 shadow-xl shadow-zinc-500/10 ring-2 ring-zinc-200/30 transition-opacity">
+          {messageView ? (
+            <div className=" min-h-24">
+              <BytemdViewer content={message}></BytemdViewer>
+            </div>
+          ) : (
+            <textarea
+              className="block w-full shrink-0 resize-none border-0 bg-transparent p-2 md:p-4 text-sm leading-6 text-zinc-800 placeholder-zinc-400 outline-none transition-[height] will-change-[height] focus:outline-none focus:ring-0 dark:text-zinc-200 dark:placeholder-zinc-500"
+              placeholder="请输入您的留言"
+              rows={6}
+              value={message}
+              onChange={(e) => messageChange(e.target.value)}
+            ></textarea>
+          )}
+
+          <div className="flex justify-between items-center mt-2 px-2">
+            <p className="text-xs text-zinc-500">支持 Markdown 格式</p>
+
+            <div className="flex items-center justify-end">
+              <p className="text-xs text-zinc-500">{message.length} / 1000</p>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Icon
+                      icon={messageView ? 'carbon:view-off' : 'carbon:view'}
+                      onClick={() => setMessageView(!messageView)}
+                      className="cursor-pointer mx-4"
+                      width="24px"
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>{messageView ? '关闭预览' : '预览一下'}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Icon
+                      icon="streamline:send-email"
+                      className="cursor-pointer"
+                      width="20px"
+                      onClick={sendMsg}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>发送</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
         </div>
       ) : (
