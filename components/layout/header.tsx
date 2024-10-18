@@ -89,7 +89,7 @@ export default function LayoutHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white/80 dark:bg-gray-800/90 backdrop-blur-sm transition-all duration-300 ease-in-out ${scrolled ? 'shadow-md' : ''}`}
+      className={`sticky top-0 z-50 bg-white/80 dark:bg-black/90 backdrop-blur-sm transition-all duration-300 ease-in-out ${scrolled ? 'shadow-md' : ''}`}
     >
       <div className="flex justify-between items-center px-2 sm:px-4 lg:px-6 py-2">
         <Link href="/" className="flex items-center space-x-2 group">
