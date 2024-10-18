@@ -55,7 +55,7 @@ export default function Component({ params }: { params: { id: string } }) {
 
   return (
     <div className="flex justify-center items-start gap-4 mt-[4vh]">
-      <Card className="w-full max-w-4xl">
+      <div className="w-full max-w-5xl">
         <CardHeader className="space-y-2 border-b px-4 sm:px-6 lg:px-8">
           <CardTitle>{article?.title}</CardTitle>
           <CardDescription className="text-sm text-gray-400 flex items-center">
@@ -76,7 +76,7 @@ export default function Component({ params }: { params: { id: string } }) {
             <div dangerouslySetInnerHTML={{ __html: details }} />
           )}
         </CardContent>
-      </Card>
+      </div>
 
       <Card className="sticky top-14 w-64 hidden lg:block h-fit max-h-[calc(100vh-4rem)] overflow-y-auto">
         <CardContent className="p-4">
