@@ -9,7 +9,7 @@ interface SectionContainerProps {
 
 export function SectionContainer({ children, title, titleIcon }: SectionContainerProps) {
   return (
-    <section className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
+    <section className="bg-white/80 dark:bg-black/90 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
       <h2 className="text-2xl font-semibold mb-4 flex items-center">
         <Icon icon={titleIcon} className="mr-2 text-blue-500 dark:text-blue-400" />
         {title}

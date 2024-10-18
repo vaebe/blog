@@ -146,7 +146,7 @@ export function UserProfile() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.5 }}
-          className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
+          className="bg-white/80 dark:bg-black/90 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
         >
           <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
             <Image
