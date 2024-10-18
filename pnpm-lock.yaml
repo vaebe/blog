@@ -140,6 +140,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-p5:
+        specifier: ^1.4.1
+        version: 1.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-spinners:
         specifier: ^0.14.1
         version: 0.14.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1267,6 +1270,9 @@ packages:
 
   '@types/node@20.16.10':
     resolution: {integrity: sha512-vQUKgWTjEIRFCvK6CyriPH3MZYiYlNy0fKiEYHWbcoWLEgs4opurGGKlebrTLqdSMIbXImH6XExNiIyNUv3WpA==}
+
+  '@types/p5@1.7.0':
+    resolution: {integrity: sha512-6AnjmW98/edgXB+pYDBx7t6QbCogIG6NUzey93JpGTZA4096C+KjSN8y0sj43QRd9XtblrAhoRXHj1pFZ2vsCg==}
 
   '@types/parse5@6.0.3':
     resolution: {integrity: sha512-SuT16Q1K51EAVPz1K29DJ/sXjhSQ0zjvsypYJ6tlwVsRV9jwW5Adq2ch8Dq8kDBCkYnELS7N7VNCSB5nC56t/g==}
@@ -3337,6 +3343,10 @@ packages:
     resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
     engines: {node: '>=18'}
 
+  opencollective-postinstall@2.0.2:
+    resolution: {integrity: sha512-pVOEP16TrAO2/fjej1IdOyupJY8KDUM1CvsaScRbw6oddvpQoOfGk4ywha0HKKVAD6RkW4x6Q+tNBwhf3Bgpuw==}
+    hasBin: true
+
   openid-client@5.6.5:
     resolution: {integrity: sha512-5P4qO9nGJzB5PI0LFlhj4Dzg3m4odt0qsJTfyEtZyOlkgpILwEioOhVVJOrS1iVH494S4Ee5OCjjg6Bf5WOj3w==}
 
@@ -3359,6 +3369,9 @@ packages:
   p-locate@6.0.0:
     resolution: {integrity: sha512-wPrq66Llhl7/4AGC6I+cqxT07LhXvWL08LNXz1fENOw0Ap4sRZZ/gZpTTJ5jpurzzzfS2W/Ge9BY3LgLjCShcw==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
+  p5@1.7.0:
+    resolution: {integrity: sha512-qrbT/44Dwm63ZtOKX/mp61pw+5yj6ijYLOmRv7p6zcfjbo83Vb0gVFEvW0kTLFu7hceWCig0HONo9F1bSlqbsQ==}
 
   package-json-from-dist@1.0.0:
     resolution: {integrity: sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==}
@@ -3533,6 +3546,13 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  react-p5@1.4.1:
+    resolution: {integrity: sha512-njeL8zskkbo8gK3ql1u4/MgmecT/g7Z7LvypTn65DWUnuBvV/9S5AowcKkwQuLVo8/DDAE5vgGVFq1DOkoWiJA==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+    peerDependencies:
+      react: '>= 17.0.1'
+      react-dom: '>= 17.0.1'
 
   react-remove-scroll-bar@2.3.6:
     resolution: {integrity: sha512-DtSYaao4mBmX+HDo5YWYdBWQwYIQQshUV/dVxFxK+KM26Wjwp1gZ6rv6OC3oujI6Bfu6Xyg3TwK533AQutsn/g==}
@@ -5265,6 +5285,8 @@ snapshots:
   '@types/node@20.16.10':
     dependencies:
       undici-types: 6.19.6
+
+  '@types/p5@1.7.0': {}
 
   '@types/parse5@6.0.3': {}
 
@@ -7857,6 +7879,8 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
+  opencollective-postinstall@2.0.2: {}
+
   openid-client@5.6.5:
     dependencies:
       jose: 4.15.9
@@ -7888,6 +7912,8 @@ snapshots:
   p-locate@6.0.0:
     dependencies:
       p-limit: 4.0.0
+
+  p5@1.7.0: {}
 
   package-json-from-dist@1.0.0: {}
 
@@ -8036,6 +8062,14 @@ snapshots:
       scheduler: 0.23.2
 
   react-is@16.13.1: {}
+
+  react-p5@1.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      '@types/p5': 1.7.0
+      opencollective-postinstall: 2.0.2
+      p5: 1.7.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   react-remove-scroll-bar@2.3.6(@types/react@18.3.10)(react@18.3.1):
     dependencies:
