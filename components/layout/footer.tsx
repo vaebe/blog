@@ -6,7 +6,7 @@ export default function LayoutFooter() {
   const githubUserName = process.env.NEXT_PUBLIC_GITHUB_USER_NAME ?? ''
 
   return (
-    <footer className="dark:text-white ">
+    <footer className="dark:text-white bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <NavList></NavList>
 
