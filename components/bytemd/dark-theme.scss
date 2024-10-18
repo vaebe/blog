@@ -48,7 +48,6 @@
   }
 
   .markdown-body p,
-  .markdown-body blockquote,
   .markdown-body ul,
   .markdown-body ol,
   .markdown-body dl,
@@ -68,17 +67,15 @@
   }
 
   .markdown-body blockquote {
-    padding: 0 1em;
-    color: #8b949e;
-    border-left: .25em solid #30363d;
-  }
+    color: #ffffffb3;
+    padding: 1px 23px;
+    margin: 22px 0;
+    border-left: 4px solid #fff3;
+    background-color: #ffffff1f;
 
-  .markdown-body blockquote> :first-child {
-    margin-top: 0;
-  }
-
-  .markdown-body blockquote> :last-child {
-    margin-bottom: 0;
+    & p {
+      margin: 10px 0;
+    }
   }
 
   .markdown-body h1,

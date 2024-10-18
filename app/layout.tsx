@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="zh" suppressHydrationWarning>
       <body
         className={cn(
-          'min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-black dark:text-white',
+          'min-h-screen flex flex-col bg-white dark:bg-black text-black dark:text-white',
           fontSans.variable
         )}
       >
