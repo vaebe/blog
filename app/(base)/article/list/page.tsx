@@ -4,99 +4,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Icon } from '@iconify/react'
 import { Article } from '@prisma/client'
-import { ArticleCard } from '@/components/article-card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
-
-    return () => {
-      clearTimeout(handler)
-    }
-  }, [value, delay])
-
-  return debouncedValue
-}
-
-// SearchBar component
-interface SearchBarProps {
-  onSearch: (term: string) => void
-}
-
-function SearchBar({ onSearch }: SearchBarProps) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const debouncedSearchTerm = useDebounce(searchTerm, 300)
-
-  useEffect(() => {
-    onSearch(debouncedSearchTerm)
-  }, [debouncedSearchTerm, onSearch])
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSearch(searchTerm)
-  }
-
-  return (
-    <Card className="mb-8">
-      <CardContent className="pt-6">
-        <form onSubmit={handleSearch} className="flex space-x-2">
-          <Input
-            type="text"
-            placeholder="搜索文章..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-grow"
-          />
-          <Button type="submit">
-            搜索
-            <Icon icon="mdi:magnify" className="ml-2 w-5 h-5" />
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-  )
-}
-
-// Pagination component
-interface PaginationProps {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-}
-
-function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
-  return (
-    <div className="mt-8 flex justify-center items-center space-x-4">
-      <Button
-        onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
-        disabled={currentPage === 1}
-        variant="outline"
-      >
-        <Icon icon="mdi:chevron-left" className="mr-2 w-5 h-5" />
-        上一页
-      </Button>
-      <span className="text-gray-600 dark:text-gray-400">
-        第 {currentPage} 页，共 {totalPages} 页
-      </span>
-      <Button
-        onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
-        disabled={currentPage === totalPages}
-        variant="outline"
-      >
-        下一页
-        <Icon icon="mdi:chevron-right" className="ml-2 w-5 h-5" />
-      </Button>
-    </div>
-  )
-}
+import Link from 'next/link'
 
 function LoadingState() {
   return (
@@ -133,26 +43,43 @@ function ErrorState({ message }: { message: string }) {
   )
 }
 
-function ArticleList({ articles }: { articles: Article[] }) {
+function ArticleInfo({ info }: { info: Article }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="space-y-6"
-    >
-      {articles.map((item) => (
-        <motion.div
-          key={item.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <ArticleCard article={item} />
-        </motion.div>
-      ))}
-    </motion.div>
+    <Link href={`/article/${info.id}`} target="_blank">
+      <div className="mb-2">
+        <p className="text-lg font-medium">{info.title}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          <span>{new Date(info.createdAt).toLocaleDateString()}</span>
+
+          <span className="ml-4">阅读: {info.views}</span>
+        </p>
+      </div>
+    </Link>
   )
+}
+
+function ArticleList({ articleInfo }: { articleInfo: Record<string, Article[]> }) {
+  const content = Object.keys(articleInfo)
+    .sort((a, b) => Number(b) - Number(a))
+    .map((item) => {
+      return (
+        <div key={item}>
+          <p className="text-3xl font-bold my-8">{item}</p>
+          {articleInfo[item].map((subItem) => (
+            <motion.div
+              key={subItem.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ArticleInfo info={subItem}></ArticleInfo>
+            </motion.div>
+          ))}
+        </div>
+      )
+    })
+
+  return <>{content}</>
 }
 
 function NoResults() {
@@ -170,10 +97,8 @@ function NoResults() {
 }
 
 export default function ArticlesPage() {
-  const [articles, setArticles] = useState<Article[]>([])
-  const [totalPages, setTotalPages] = useState(1)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [articles, setArticles] = useState<Record<string, Article[]>>({})
+  const [articleTotal, setArticleTotal] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -182,75 +107,60 @@ export default function ArticlesPage() {
     setError('')
 
     try {
-      const res = await fetch(
-        `/api/articles/list?page=${currentPage}&pageSize=${6}&searchTerm=${searchTerm}`
-      )
-      const data = await res.json()
+      const res = await fetch(`/api/articles/all`).then((res) => res.json())
 
-      if (data.code !== 0) {
-        throw new Error('获取列表数据失败!')
+      if (res.code !== 0) {
+        throw new Error('获取全部文章失败!')
       }
 
-      setArticles(data.data.articles || [])
-      setTotalPages(data.data.totalPages || 1)
+      const list = res.data ?? []
+
+      setArticleTotal(list.length)
+
+      const data: Record<string, Article[]> = {}
+
+      list.map((item: Article) => {
+        const year = new Date(item.createdAt).getFullYear()
+
+        if (!data[year]) {
+          data[year] = []
+        }
+
+        data[year].push(item)
+      })
+
+      setArticles(data)
     } catch (err) {
       console.error(err)
       setError('获取列表数据失败!')
     } finally {
       setLoading(false)
     }
-  }, [currentPage, searchTerm])
+  }, [])
 
   useEffect(() => {
     fetchArticles()
   }, [fetchArticles])
 
-  const handleSearch = useCallback((term: string) => {
-    setSearchTerm(term)
-    setCurrentPage(1)
-  }, [])
-
-  const handlePageChange = useCallback((page: number) => {
-    setCurrentPage(page)
-  }, [])
-
   const renderContent = () => {
     if (loading) {
       return <LoadingState />
     }
+
     if (error) {
       return <ErrorState message={error} />
     }
-    if (articles.length > 0) {
-      return <ArticleList articles={articles} />
+
+    if (articleTotal > 0) {
+      return <ArticleList articleInfo={articles} />
     }
+
     return <NoResults />
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <motion.h1
-        className="text-3xl font-bold mb-8 text-center"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        文章列表
-      </motion.h1>
-
-      <SearchBar onSearch={handleSearch} />
-
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <AnimatePresence mode="wait">{renderContent()}</AnimatePresence>
-
-      {!loading && !error && articles.length > 0 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        </motion.div>
-      )}
     </div>
   )
 }
