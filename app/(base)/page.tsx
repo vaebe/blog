@@ -1,13 +1,17 @@
 'use client'
 
-import { LatestArticles } from '@/app/(base)/home/latestArticles'
-import { ArchiveInfo } from '@/app/(base)/home/archiveInfo'
+import { LatestArticles } from './home/latestArticles'
+import { GithubProject } from './home/githubProject'
+import { UserProfile } from './home/userInfoDisplay'
 
-export default function Component() {
+export default function About() {
   return (
-    <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <LatestArticles></LatestArticles>
-      <ArchiveInfo></ArchiveInfo>
-    </main>
+    <div className="max-w-5xl mx-auto my-4 space-y-8">
+      <UserProfile />
+
+      <LatestArticles />
+
+      <GithubProject />
+    </div>
   )
 }
