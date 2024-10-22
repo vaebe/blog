@@ -139,7 +139,7 @@ export default function ArticlesPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-5xl mx-auto my-4">
       <AnimatePresence mode="wait">{renderContent()}</AnimatePresence>
     </div>
   )

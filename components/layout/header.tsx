@@ -93,10 +93,6 @@ export default function LayoutHeader() {
     >
       <div className="flex justify-between items-center px-2 sm:px-4 lg:px-6 py-2">
         <Link href="/" className="flex items-center space-x-2 group">
-          <Icon
-            icon="lucide:feather"
-            className="w-8 h-8 text-primary group-hover:text-primary/80 transition-colors duration-300"
-          />
           <h1 className="text-2xl font-bold">{githubName}</h1>
         </Link>
 
