@@ -10,181 +10,215 @@ import Link from 'next/link'
 import Image from 'next/image'
 import userIcon from '@/public/user-icon.png'
 
-function SkeletonStatItem() {
-  return (
-    <div className="flex items-center space-x-2">
-      <Skeleton className="w-5 h-5 rounded-full" />
-      <Skeleton className="w-20 h-4" />
-      <Skeleton className="w-10 h-4" />
+// 动画配置常量
+const ANIMATION_CONFIG = {
+  duration: 0.5,
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 }
+}
+
+// 社交媒体链接配置
+const SOCIAL_LINKS = {
+  juejin: {
+    url: 'https://juejin.cn/user/712139266339694',
+    icon: 'simple-icons:juejin',
+    label: '掘金'
+  },
+  github: {
+    url: 'https://github.com/vaebe',
+    icon: 'mdi:github',
+    label: 'GitHub'
+  }
+} as const
+
+// 统计项组件
+const StatItem = ({ icon, label, value }: { icon: string; label: string; value?: number }) => (
+  <div className="inline-flex items-center space-x-2">
+    <Icon icon={icon} className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+    <span className="text-gray-600 dark:text-gray-300">{label}:</span>
+    <span className="font-semibold">{value ?? '-'}</span>
+  </div>
+)
+
+// 社交媒体统计区块
+const SocialStatsSection = ({
+  platform,
+  stats
+}: {
+  platform: keyof typeof SOCIAL_LINKS
+  stats: { icon: string; label: string; value?: number }[]
+}) => (
+  <div className="flex flex-col items-center space-y-4">
+    <Link href={SOCIAL_LINKS[platform].url} target="_blank" rel="noopener noreferrer">
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
+        <Icon icon={SOCIAL_LINKS[platform].icon} className="mr-2" />
+        {SOCIAL_LINKS[platform].label}
+      </h3>
+    </Link>
+    <div className="flex items-center space-x-4">
+      {stats.map((stat, index) => (
+        <StatItem key={index} {...stat} />
+      ))}
     </div>
-  )
-}
+  </div>
+)
 
-function UserProfileSkeleton() {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
-    >
-      <div className="flex flex-col md:flex-row md:items-end md:space-x-6">
-        <Skeleton className="w-32 h-32 rounded-full" />
-        <div className="mt-4 md:mt-0 flex-1">
-          <Skeleton className="w-48 h-8 mb-2" />
-          <Skeleton className="w-full h-20" />
-        </div>
+// 加载骨架屏组件
+const SkeletonStatItem = () => (
+  <div className="flex items-center space-x-2">
+    <Skeleton className="w-5 h-5 rounded-full" />
+    <Skeleton className="w-20 h-4" />
+    <Skeleton className="w-10 h-4" />
+  </div>
+)
+
+const UserProfileSkeleton = () => (
+  <motion.div
+    {...ANIMATION_CONFIG}
+    className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
+  >
+    <div className="flex flex-col md:flex-row md:items-end md:space-x-6">
+      <Skeleton className="w-32 h-32 rounded-full" />
+      <div className="mt-4 md:mt-0 flex-1">
+        <Skeleton className="w-48 h-8 mb-2" />
+        <Skeleton className="w-full h-20" />
       </div>
-
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <Skeleton className="w-24 h-6 mb-2" />
-          <SkeletonStatItem />
-          <SkeletonStatItem />
-          <SkeletonStatItem />
-        </div>
-        <div className="space-y-4">
-          <Skeleton className="w-24 h-6 mb-2" />
-          <SkeletonStatItem />
-          <SkeletonStatItem />
-          <SkeletonStatItem />
-        </div>
-      </div>
-    </motion.div>
-  )
-}
-
-interface StatItemProps {
-  icon: string
-  label: string
-  value: number | undefined
-}
-function StatItem({ icon, label, value }: StatItemProps) {
-  return (
-    <div className="inline-flex items-center space-x-2">
-      <Icon icon={icon} className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-      <span className="text-gray-600 dark:text-gray-300">{label}:</span>
-      <span className="font-semibold">{value}</span>
     </div>
-  )
-}
+    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+      {[0, 1].map((section) => (
+        <div key={section} className="space-y-4">
+          <Skeleton className="w-24 h-6 mb-2" />
+          {[0, 1, 2].map((item) => (
+            <SkeletonStatItem key={item} />
+          ))}
+        </div>
+      ))}
+    </div>
+  </motion.div>
+)
 
-export function UserProfile() {
-  const [githubUserInfo, setGithubUserInfo] = useState<GithubUserInfo>()
-  const [juejinUserInfo, setJuejinUserInfo] = useState<JuejinUserInfo>()
-  const [isLoading, setIsLoading] = useState(true)
+// 主要用户信息组件
+const UserInfo = ({
+  githubUserInfo,
+  description
+}: {
+  githubUserInfo?: GithubUserInfo
+  description: string
+}) => (
+  <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
+    <Image
+      src={githubUserInfo?.avatar_url ?? userIcon}
+      alt={`${githubUserInfo?.login}'s avatar`}
+      className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 shadow-lg"
+      width={128}
+      height={128}
+      priority
+      placeholder="empty"
+    />
+    <div>
+      <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
+        {githubUserInfo?.login ?? 'Loading...'}
+      </h2>
+      <p className="text-gray-600 dark:text-gray-300 mt-1">{description}</p>
+    </div>
+  </div>
+)
+
+// 自定义Hook: 获取用户数据
+const useUserData = () => {
+  const [data, setData] = useState<{
+    github?: GithubUserInfo
+    juejin?: JuejinUserInfo
+    isLoading: boolean
+    error?: string
+  }>({
+    isLoading: true
+  })
 
   useEffect(() => {
-    const loadData = async () => {
+    const fetchData = async () => {
       try {
-        const githubUserRes = await fetch('/api/proxy/github/userInfo').then((res) => res.json())
+        const [githubRes, juejinRes] = await Promise.all([
+          fetch('/api/proxy/github/userInfo'),
+          fetch('/api/proxy/juejin/userInfo')
+        ])
 
-        if (githubUserRes.code === 0) {
-          setGithubUserInfo(githubUserRes.data)
-        }
+        const [githubData, juejinData] = await Promise.all([githubRes.json(), juejinRes.json()])
 
-        const juejinUserRes = await fetch('/api/proxy/juejin/userInfo').then((res) => res.json())
-        if (juejinUserRes.code === 0) {
-          setJuejinUserInfo(juejinUserRes.data)
-        }
+        setData({
+          github: githubData.code === 0 ? githubData.data : undefined,
+          juejin: juejinData.code === 0 ? juejinData.data : undefined,
+          isLoading: false
+        })
       } catch (error) {
+        setData((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: 'Failed to fetch user data'
+        }))
         console.error('Error fetching user data:', error)
-      } finally {
-        setIsLoading(false)
       }
     }
-    loadData()
+
+    fetchData()
   }, [])
+
+  return data
+}
+
+// 主组件
+export function UserProfile() {
+  const { github: githubUserInfo, juejin: juejinUserInfo, isLoading, error } = useUserData()
+
+  const description = `我是 Vaebe，一名全栈开发者，专注于前端技术。我的主要技术栈是 Vue
+    及其全家桶，目前也在使用 React 来构建项目，比如这个博客，它使用 Next.js。
+    我会将自己的实践过程以文章的形式分享在掘金上，并在 GitHub
+    上参与开源项目，不断提升自己的编程技能。欢迎访问我的掘金主页和 GitHub
+    主页，了解更多关于我的信息！`
+
+  if (error) {
+    return <div className="text-red-500">Error: {error}</div>
+  }
 
   return (
     <AnimatePresence mode="wait">
       {isLoading ? (
         <UserProfileSkeleton key="skeleton" />
       ) : (
-        <motion.div
-          key="content"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.5 }}
-          className=""
-        >
-          <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
-            <Image
-              src={githubUserInfo?.avatar_url ?? userIcon}
-              alt={`${githubUserInfo?.login}'s avatar`}
-              className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 shadow-lg"
-              width={128}
-              height={128}
-              priority={true}
-              placeholder="empty"
+        <motion.div key="content" {...ANIMATION_CONFIG} className="space-y-8">
+          <UserInfo githubUserInfo={githubUserInfo} description={description} />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <SocialStatsSection
+              platform="juejin"
+              stats={[
+                {
+                  icon: 'mdi:file-document-outline',
+                  label: '文章',
+                  value: juejinUserInfo?.post_article_count
+                },
+                { icon: 'mdi:thumb-up', label: '获赞', value: juejinUserInfo?.got_digg_count },
+                { icon: 'mdi:eye', label: '阅读量', value: juejinUserInfo?.got_view_count }
+              ]}
             />
 
-            <div>
-              <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
-                {githubUserInfo?.login}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300 mt-1">
-                我是 Vaebe，一名全栈开发者，专注于前端技术。我的主要技术栈是 Vue
-                及其全家桶，目前也在使用 React 来构建项目，比如这个博客，它使用 Next.js。
-                <br></br>
-                我会将自己的实践过程以文章的形式分享在掘金上，并在 GitHub
-                上参与开源项目，不断提升自己的编程技能。欢迎访问我的掘金主页和 GitHub
-                主页，了解更多关于我的信息！
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-            <div className="flex flex-col items-center space-y-4">
-              <Link
-                href="https://juejin.cn/user/712139266339694"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
-                  <Icon icon="simple-icons:juejin" className="mr-2 text-blue-500" />
-                  掘金
-                </h3>
-              </Link>
-
-              <div className="felx items-center space-x-4">
-                <StatItem
-                  icon="mdi:file-document-outline"
-                  label="文章"
-                  value={juejinUserInfo?.post_article_count}
-                />
-                <StatItem icon="mdi:thumb-up" label="获赞" value={juejinUserInfo?.got_digg_count} />
-                <StatItem icon="mdi:eye" label="阅读量" value={juejinUserInfo?.got_view_count} />
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center space-y-4">
-              <Link href="https://github.com/vaebe" target="_blank" rel="noopener noreferrer">
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
-                  <Icon icon="mdi:github" className="mr-2" /> GitHub
-                </h3>
-              </Link>
-
-              <div className="felx items-center space-x-4">
-                <StatItem
-                  icon="mdi:source-repository"
-                  label="仓库"
-                  value={githubUserInfo?.public_repos}
-                />
-                <StatItem
-                  icon="mdi:account-group"
-                  label="关注者"
-                  value={githubUserInfo?.followers}
-                />
-                <StatItem
-                  icon="mdi:account-multiple"
-                  label="正在关注"
-                  value={githubUserInfo?.following}
-                />
-              </div>
-            </div>
+            <SocialStatsSection
+              platform="github"
+              stats={[
+                {
+                  icon: 'mdi:source-repository',
+                  label: '仓库',
+                  value: githubUserInfo?.public_repos
+                },
+                { icon: 'mdi:account-group', label: '关注者', value: githubUserInfo?.followers },
+                {
+                  icon: 'mdi:account-multiple',
+                  label: '正在关注',
+                  value: githubUserInfo?.following
+                }
+              ]}
+            />
           </div>
         </motion.div>
       )}
