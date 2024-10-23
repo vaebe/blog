@@ -97,7 +97,7 @@ const LoginForm = ({ setIsLoading }: LoginFormProps) => {
                 name="password"
                 type="password"
                 required
-                className="pl-10 block w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="pl-10 block w-full border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="请输入密码"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -105,10 +105,7 @@ const LoginForm = ({ setIsLoading }: LoginFormProps) => {
             </div>
           </div>
         </div>
-        <Button
-          type="submit"
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors duration-300"
-        >
+        <Button className="w-full" type="submit">
           登录
         </Button>
       </form>
