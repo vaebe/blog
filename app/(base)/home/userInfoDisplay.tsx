@@ -164,9 +164,12 @@ export function UserProfile() {
                 {githubUserInfo?.login}
               </h2>
               <p className="text-gray-600 dark:text-gray-300 mt-1">
-                你好！我是vaebe，一名全栈开发者。我喜欢探索新技术，
-                在掘金分享我的技术见解。在GitHub上，我积极参与开源项目，不断提升自己的编程技能。
-                欢迎访问我的掘金主页和GitHub主页，了解更多关于我的信息！
+                我是 Vaebe，一名全栈开发者，专注于前端技术。我的主要技术栈是 Vue
+                及其全家桶，目前也在使用 React 来构建项目，比如这个博客，它使用 Next.js。
+                <br></br>
+                我会将自己的实践过程以文章的形式分享在掘金上，并在 GitHub
+                上参与开源项目，不断提升自己的编程技能。欢迎访问我的掘金主页和 GitHub
+                主页，了解更多关于我的信息！
               </p>
             </div>
           </div>
