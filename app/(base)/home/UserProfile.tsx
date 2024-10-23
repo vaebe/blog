@@ -41,14 +41,13 @@ const StatItem = ({ icon, label, value }: { icon: string; label: string; value?:
   </div>
 )
 
-// 社交媒体统计区块
-const SocialStatsSection = ({
-  platform,
-  stats
-}: {
+interface SocialStatsSectionProps {
   platform: keyof typeof SOCIAL_LINKS
   stats: { icon: string; label: string; value?: number }[]
-}) => (
+}
+
+// 社交媒体统计区块
+const SocialStatsSection = ({ platform, stats }: SocialStatsSectionProps) => (
   <div className="flex flex-col items-center space-y-4">
     <Link href={SOCIAL_LINKS[platform].url} target="_blank" rel="noopener noreferrer">
       <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
@@ -74,10 +73,7 @@ const SkeletonStatItem = () => (
 )
 
 const UserProfileSkeleton = () => (
-  <motion.div
-    {...ANIMATION_CONFIG}
-    className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
-  >
+  <motion.div {...ANIMATION_CONFIG} className="bg-white dark:bg-gray-800 rounded-lg p-6">
     <div className="flex flex-col md:flex-row md:items-end md:space-x-6">
       <Skeleton className="w-32 h-32 rounded-full" />
       <div className="mt-4 md:mt-0 flex-1">
