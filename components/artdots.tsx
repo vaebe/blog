@@ -20,7 +20,8 @@ function getForceOnPoint(x: number, y: number, z: number, noise: any) {
 }
 
 const Artdots = ({ className }: { className?: string }) => {
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
+
   const [points, setPoints] = useState<{ x: number; y: number; opacity: number }[]>([])
   const existingPoints = useRef(new Set<string>())
   const p5Instance = useRef<any>(null)
@@ -48,8 +49,8 @@ const Artdots = ({ className }: { className?: string }) => {
 
   const draw = (p5: any) => {
     // 根据主题设置背景和线条颜色
-    const backgroundColor = theme === 'dark' ? '#000000' : '#ffffff'
-    const strokeColor = theme === 'dark' ? [50, 56, 56] : [204, 204, 204]
+    const backgroundColor = resolvedTheme === 'dark' ? '#000000' : '#ffffff'
+    const strokeColor = resolvedTheme === 'dark' ? [50, 56, 56] : [204, 204, 204]
 
     p5.background(backgroundColor)
     const t = Date.now() / 10000
