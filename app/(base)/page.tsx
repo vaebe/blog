@@ -7,7 +7,7 @@ import { TechnologyStack } from './home/TechnologyStack'
 
 export default function About() {
   return (
-    <div className="max-w-5xl mx-auto my-4 space-y-8">
+    <div className="max-w-5xl mx-auto px-2 space-y-8">
       <UserProfile />
 
       <TechnologyStack></TechnologyStack>

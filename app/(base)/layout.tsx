@@ -7,7 +7,7 @@ export default function BaseLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
       <LayoutHeader></LayoutHeader>
-      <main className="flex-grow">{children}</main>
+      <main className="my-4">{children}</main>
       <LayoutFooter></LayoutFooter>
     </>
   )
