@@ -1,6 +1,6 @@
 'use client'
 
-import { SectionContainer } from './sectionContainer'
+import { ContentCard } from './ContentCard'
 import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -117,12 +117,12 @@ export function GithubProject() {
   }, [])
 
   return (
-    <SectionContainer title="GitHub 项目" titleIcon="mdi:github">
+    <ContentCard title="GitHub 项目" titleIcon="mdi:github">
       <AnimatePresence>
         {isLoading ? <LoadingComponent /> : <ProjectInfo repos={repos} />}
       </AnimatePresence>
 
       {repos.length === 0 && !isLoading && <NoFound />}
-    </SectionContainer>
+    </ContentCard>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { Icon } from '@iconify/react'
-import { SectionContainer } from './sectionContainer'
+import { ContentCard } from './ContentCard'
 import type { JuejinArticle } from '@/types/juejin'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -85,7 +85,7 @@ function ArticleInfo({ articles }: { articles: JuejinArticle[] }) {
   )
 }
 
-export function LatestArticles() {
+export function JueJinArticles() {
   const [articles, setArticles] = useState<JuejinArticle[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -106,12 +106,12 @@ export function LatestArticles() {
   }, [])
 
   return (
-    <SectionContainer title="最新文章" titleIcon="mdi:pencil">
+    <ContentCard title="掘金文章" titleIcon="simple-icons:juejin">
       <AnimatePresence>
         {isLoading ? <LoadingComponent /> : <ArticleInfo articles={articles} />}
       </AnimatePresence>
 
       {articles.length === 0 && !isLoading && <NoFound />}
-    </SectionContainer>
+    </ContentCard>
   )
 }
