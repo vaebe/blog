@@ -6,7 +6,6 @@ import { Icon } from '@iconify/react'
 import { useState, useEffect } from 'react'
 import type { JuejinUserInfo } from '@/types/juejin'
 import type { GithubUserInfo } from '@/types/github'
-import { techIcons, techStackData } from '@/lib/enums'
 import Link from 'next/link'
 import Image from 'next/image'
 import userIcon from '@/public/user-icon.png'
@@ -17,16 +16,6 @@ function SkeletonStatItem() {
       <Skeleton className="w-5 h-5 rounded-full" />
       <Skeleton className="w-20 h-4" />
       <Skeleton className="w-10 h-4" />
-    </div>
-  )
-}
-
-function SkeletonTechnologyStack() {
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {[...Array(6)].map((_, index) => (
-        <Skeleton key={index} className="h-8 rounded-lg" />
-      ))}
     </div>
   )
 }
@@ -62,48 +51,21 @@ function UserProfileSkeleton() {
           <SkeletonStatItem />
         </div>
       </div>
-
-      <div className="mt-8">
-        <Skeleton className="w-24 h-6 mb-4" />
-        <SkeletonTechnologyStack />
-      </div>
     </motion.div>
   )
 }
 
-function StatItem({
-  icon,
-  label,
-  value
-}: {
+interface StatItemProps {
   icon: string
   label: string
   value: number | undefined
-}) {
+}
+function StatItem({ icon, label, value }: StatItemProps) {
   return (
-    <div className="flex items-center space-x-2">
+    <div className="inline-flex items-center space-x-2">
       <Icon icon={icon} className="w-5 h-5 text-gray-500 dark:text-gray-400" />
       <span className="text-gray-600 dark:text-gray-300">{label}:</span>
       <span className="font-semibold">{value}</span>
-    </div>
-  )
-}
-
-function TechnologyStack() {
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {techStackData.map((tech) => (
-        <div
-          key={tech}
-          className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-1"
-        >
-          <Icon
-            icon={techIcons[tech] ? techIcons[tech] : 'mdi:code-tags'}
-            className="mr-2 w-5 h-5"
-          />
-          <span>{tech}</span>
-        </div>
-      ))}
     </div>
   )
 }
@@ -146,7 +108,7 @@ export function UserProfile() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.5 }}
-          className="bg-white/80 dark:bg-black/90 rounded-lg p-6 shadow-lg transition-all duration-300 hover:shadow-xl"
+          className=""
         >
           <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
             <Image
@@ -174,27 +136,8 @@ export function UserProfile() {
             </div>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <Link href="https://github.com/vaebe" target="_blank" rel="noopener noreferrer">
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
-                  <Icon icon="mdi:github" className="mr-2" /> GitHub
-                </h3>
-              </Link>
-
-              <StatItem
-                icon="mdi:source-repository"
-                label="仓库"
-                value={githubUserInfo?.public_repos}
-              />
-              <StatItem icon="mdi:account-group" label="关注者" value={githubUserInfo?.followers} />
-              <StatItem
-                icon="mdi:account-multiple"
-                label="正在关注"
-                value={githubUserInfo?.following}
-              />
-            </div>
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+            <div className="flex flex-col items-center space-y-4">
               <Link
                 href="https://juejin.cn/user/712139266339694"
                 target="_blank"
@@ -206,19 +149,42 @@ export function UserProfile() {
                 </h3>
               </Link>
 
-              <StatItem
-                icon="mdi:file-document-outline"
-                label="文章"
-                value={juejinUserInfo?.post_article_count}
-              />
-              <StatItem icon="mdi:thumb-up" label="获赞" value={juejinUserInfo?.got_digg_count} />
-              <StatItem icon="mdi:eye" label="阅读量" value={juejinUserInfo?.got_view_count} />
+              <div className="felx items-center space-x-4">
+                <StatItem
+                  icon="mdi:file-document-outline"
+                  label="文章"
+                  value={juejinUserInfo?.post_article_count}
+                />
+                <StatItem icon="mdi:thumb-up" label="获赞" value={juejinUserInfo?.got_digg_count} />
+                <StatItem icon="mdi:eye" label="阅读量" value={juejinUserInfo?.got_view_count} />
+              </div>
             </div>
-          </div>
 
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">技能</h3>
-            <TechnologyStack />
+            <div className="flex flex-col items-center space-y-4">
+              <Link href="https://github.com/vaebe" target="_blank" rel="noopener noreferrer">
+                <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
+                  <Icon icon="mdi:github" className="mr-2" /> GitHub
+                </h3>
+              </Link>
+
+              <div className="felx items-center space-x-4">
+                <StatItem
+                  icon="mdi:source-repository"
+                  label="仓库"
+                  value={githubUserInfo?.public_repos}
+                />
+                <StatItem
+                  icon="mdi:account-group"
+                  label="关注者"
+                  value={githubUserInfo?.followers}
+                />
+                <StatItem
+                  icon="mdi:account-multiple"
+                  label="正在关注"
+                  value={githubUserInfo?.following}
+                />
+              </div>
+            </div>
           </div>
         </motion.div>
       )}
