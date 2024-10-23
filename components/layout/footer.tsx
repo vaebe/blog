@@ -1,6 +1,8 @@
 'use client'
 import { routerList } from '@/lib/routers'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 export default function LayoutFooter() {
   const githubUserName = process.env.NEXT_PUBLIC_GITHUB_USER_NAME ?? ''
@@ -41,19 +43,11 @@ function Subscription({ className }: { className: string }) {
       <h3 className="text-lg font-semibold mb-4">订阅</h3>
       <p className="text-gray-500 mb-4">可以及时获取我的最新动态</p>
 
-      <form className="flex">
-        <input
-          type="email"
-          placeholder="输入您的邮箱"
-          className="flex-grow px-4 py-2 rounded-l-md focus:outline-none border"
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          订阅
-        </button>
-      </form>
+      <div className="flex items-center">
+        <Input type="email" placeholder="输入您的邮箱" className="rounded-r-none"></Input>
+
+        <Button className=" rounded-l-none">订阅</Button>
+      </div>
     </div>
   )
 }
