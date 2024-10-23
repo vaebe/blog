@@ -9,7 +9,7 @@ export default function LayoutFooter() {
 
   return (
     <footer className="dark:text-white bg-transparent">
-      <div className="max-w-5xl mx-auto my-4">
+      <div className="max-w-5xl mx-auto px-2 my-4">
         <NavList></NavList>
 
         <Subscription className="mt-4"></Subscription>

@@ -11,7 +11,7 @@ export default function GuestBook() {
   const [messages, setMessages] = useState<Array<MessageInfo>>([])
 
   return (
-    <div className="min-h-screen max-w-5xl mx-auto my-4">
+    <div className="min-h-screen max-w-5xl mx-auto px-2">
       <Header></Header>
 
       <AddMessage setMessages={setMessages}></AddMessage>

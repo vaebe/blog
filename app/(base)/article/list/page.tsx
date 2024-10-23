@@ -68,6 +68,7 @@ const ArticleInfo = ({ info }: { info: Article }) => {
   return (
     <Link
       href={`/article/${info.id}`}
+      target="_blank"
       className="block hover:bg-accent rounded-lg transition-colors duration-200 p-4"
     >
       <h3 className="text-lg font-medium mb-2">{info.title}</h3>
@@ -161,7 +162,7 @@ export default function ArticlesPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto my-4 px-4">
+    <div className="max-w-5xl mx-auto px-2">
       <AnimatePresence mode="wait">{renderContent()}</AnimatePresence>
     </div>
   )
