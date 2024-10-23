@@ -2,20 +2,59 @@
 
 import { Icon } from '@iconify/react'
 import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+
+const themes = [
+  { value: 'dark', label: '深色', icon: 'ph:moon-bold' },
+  { value: 'light', label: '浅色', icon: 'ph:sun-bold' },
+  { value: 'system', label: '系统', icon: 'ph:desktop-bold' }
+] as const
 
 export function ThemeSwitch() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
 
   return (
-    <button
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="fixed bottom-4 right-4 p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 ease-in-out transform hover:scale-110"
-      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-    >
-      <Icon
-        icon={theme === 'dark' ? 'ph:sun-bold' : 'ph:moon-bold'}
-        className="w-5 h-5 text-gray-600 dark:text-gray-300"
-      />
-    </button>
+    <div className="fixed bottom-4 right-4">
+      <div className="relative">
+        <Button
+          size="icon"
+          onClick={() => setIsOpen(!isOpen)}
+          className="p-2 rounded-full"
+          aria-label="Theme switcher"
+        >
+          <Icon
+            icon={themes.find((t) => t.value === theme)?.icon || themes[0].icon}
+            className="w-5 h-5 text-white dark:text-black"
+          />
+        </Button>
+
+        {isOpen && (
+          <div className="absolute bottom-full w-[120px] right-0 mb-2 bg-black dark:bg-white rounded-lg shadow-lg overflow-hidden">
+            {themes.map((t) => (
+              <button
+                key={t.value}
+                onClick={() => {
+                  setTheme(t.value)
+                  setIsOpen(false)
+                }}
+                className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-white/15 dark:text-black hover:dark:bg-black/15"
+              >
+                <Icon icon={t.icon} className="w-4 h-4 mr-2" />
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
