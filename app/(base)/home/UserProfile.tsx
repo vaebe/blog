@@ -55,7 +55,7 @@ const SocialStatsSection = ({ platform, stats }: SocialStatsSectionProps) => (
         {SOCIAL_LINKS[platform].label}
       </h3>
     </Link>
-    <div className="flex items-center space-x-4">
+    <div className="flex flex-col items-center space-y-2 sm:flex-row sm:items-center sm:space-x-4">
       {stats.map((stat, index) => (
         <StatItem key={index} {...stat} />
       ))}
@@ -102,7 +102,7 @@ const UserInfo = ({
   githubUserInfo?: GithubUserInfo
   description: string
 }) => (
-  <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
+  <div className="flex flex-col items-center md:flex-row md:items-center md:space-x-6">
     <Image
       src={githubUserInfo?.avatar_url ?? userIcon}
       alt={`${githubUserInfo?.login}'s avatar`}
@@ -113,7 +113,7 @@ const UserInfo = ({
       placeholder="empty"
     />
     <div>
-      <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
+      <h2 className="text-3xl font-bold text-center md:text-left text-gray-800 dark:text-white">
         {githubUserInfo?.login ?? 'Loading...'}
       </h2>
       <p className="text-gray-600 dark:text-gray-300 mt-1">{description}</p>

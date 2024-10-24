@@ -56,17 +56,15 @@ function ProjectInfo({ repos }: { repos: GithubPinnedRepoInfo[] }) {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3, delay: index * 0.1 }}
-          className="group py-6 first:pt-0 last:pb-0"
+          className="group py-4 first:pt-0 last:pb-0"
         >
           <Link
             href={repo.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="block transition duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg p-4 -m-4"
+            className="block transition duration-300 ease-in-out hover:bg-black/10 dark:hover:bg-white/10 rounded p-2"
           >
-            <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition duration-300">
-              {repo.name}
-            </h3>
+            <h3 className="text-lg font-semibold mb-2 transition duration-300">{repo.name}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
               {repo.description || 'No description available'}
             </p>
