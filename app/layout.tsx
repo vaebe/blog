@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { ThemeProvider } from 'next-themes'
 import { SessionProvider } from 'next-auth/react'
 import { Toaster } from '@/components/ui/toaster'
+import { Toaster as SonnerToaster } from '@/components/ui/sonner'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Artdots } from '@/components/artdots'
 import Script from 'next/script'
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </SessionProvider>
 
         <Toaster />
+        <SonnerToaster position="bottom-center"></SonnerToaster>
       </body>
     </html>
   )

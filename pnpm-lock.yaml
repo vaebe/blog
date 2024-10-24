@@ -174,6 +174,9 @@ importers:
       '@types/node':
         specifier: ^20.16.10
         version: 20.16.10
+      '@types/nodemailer':
+        specifier: ^6.4.16
+        version: 6.4.16
       '@types/react':
         specifier: ^18.3.10
         version: 18.3.10
@@ -1270,6 +1273,9 @@ packages:
 
   '@types/node@20.16.10':
     resolution: {integrity: sha512-vQUKgWTjEIRFCvK6CyriPH3MZYiYlNy0fKiEYHWbcoWLEgs4opurGGKlebrTLqdSMIbXImH6XExNiIyNUv3WpA==}
+
+  '@types/nodemailer@6.4.16':
+    resolution: {integrity: sha512-uz6hN6Pp0upXMcilM61CoKyjT7sskBoOWpptkjjJp8jIMlTdc3xG01U7proKkXzruMS4hS0zqtHNkNPFB20rKQ==}
 
   '@types/p5@1.7.0':
     resolution: {integrity: sha512-6AnjmW98/edgXB+pYDBx7t6QbCogIG6NUzey93JpGTZA4096C+KjSN8y0sj43QRd9XtblrAhoRXHj1pFZ2vsCg==}
@@ -5285,6 +5291,10 @@ snapshots:
   '@types/node@20.16.10':
     dependencies:
       undici-types: 6.19.6
+
+  '@types/nodemailer@6.4.16':
+    dependencies:
+      '@types/node': 20.16.10
 
   '@types/p5@1.7.0': {}
 
