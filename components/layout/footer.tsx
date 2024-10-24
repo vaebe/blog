@@ -3,6 +3,8 @@ import { routerList } from '@/lib/routers'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 export default function LayoutFooter() {
   const githubUserName = process.env.NEXT_PUBLIC_GITHUB_USER_NAME ?? ''
@@ -37,16 +39,76 @@ function NavList() {
   )
 }
 
+const htmlTemplate = `
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>感谢您的订阅</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+      <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h1 style="color: #4a4a4a;">首先感谢您订阅我的博客！</h1>
+        <p>我会不定期更新自己在 vue 、react 相关的实践!</p>
+        <p>如果您有任何问题或建议，可以使用邮件或留言板与我联系。</p>
+        <p>再次感谢您的支持！</p>
+        <p>祝您生活愉快！</p>
+      </div>
+    </body>
+    </html>
+  `
+
 function Subscription({ className }: { className: string }) {
+  const [email, setEmail] = useState('')
+
+  async function sendSubscriptionEmail() {
+    // 判断是否是一个合法的邮箱
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      toast.warning('请输入合法的邮箱地址')
+      return
+    }
+
+    const res = await fetch('/api/sendEmail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        toEmail: email,
+        subject: '感谢您订阅 vaebe 博客',
+        html: htmlTemplate
+      })
+    }).then((res) => res.json())
+
+    if (res.code !== 0) {
+      toast.warning(res.msg)
+      return
+    }
+
+    setEmail('')
+
+    toast.success(res.msg)
+  }
+
   return (
     <div className={className}>
       <h3 className="text-lg font-semibold mb-4">订阅</h3>
       <p className="text-gray-500 mb-4">可以及时获取我的最新动态</p>
 
       <div className="flex items-center">
-        <Input type="email" placeholder="输入您的邮箱" className="rounded-r-none"></Input>
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="输入您的邮箱"
+          className="rounded-r-none"
+        ></Input>
 
-        <Button className=" rounded-l-none">订阅</Button>
+        <Button className="rounded-l-none" onClick={sendSubscriptionEmail}>
+          订阅
+        </Button>
       </div>
     </div>
   )
