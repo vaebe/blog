@@ -8,8 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Loader2, Send, StopCircle, User } from 'lucide-react'
-import { Viewer } from '@bytemd/react'
-import bytemdPlugins from '@/components/bytemd/plugins'
+import { BytemdViewer } from '@/components/bytemd/viewer'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
 
@@ -32,9 +31,7 @@ function PageHeader() {
 function UserMessage({ message }: { message: Message }) {
   return (
     <>
-      <Card className="max-w-[80%] bg-blue-100">
-        <CardContent className="p-3">{message.content ?? ''}</CardContent>
-      </Card>
+      <Card className="max-w-[80%] p-2">{message.content ?? ''}</Card>
 
       <Avatar>
         <AvatarFallback>
@@ -54,10 +51,8 @@ function AssistantMessage({ message }: { message: Message }) {
         <AvatarImage src="/ai-avatar.png" alt="AI Avatar" />
       </Avatar>
 
-      <Card className="max-w-[80%] bg-gray-100">
-        <CardContent className="px-3 py-0">
-          <Viewer value={message.content ?? ''} plugins={bytemdPlugins}></Viewer>
-        </CardContent>
+      <Card className="max-w-[80%] p-2">
+        <BytemdViewer content={message.content ?? ''}></BytemdViewer>
       </Card>
     </>
   )
