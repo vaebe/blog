@@ -14,3 +14,5 @@ interface SendJson {
 export function sendJson(opts: SendJson) {
   return NextResponse.json({ code: 0, msg: '', ...opts }, { status: 200 })
 }
+
+export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/

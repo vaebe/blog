@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { emailRegex } from '@/lib/utils'
 
 export default function LayoutFooter() {
   const githubUserName = process.env.NEXT_PUBLIC_GITHUB_USER_NAME ?? ''
@@ -64,7 +65,6 @@ function Subscription({ className }: { className: string }) {
 
   async function sendSubscriptionEmail() {
     // 判断是否是一个合法的邮箱
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       toast.warning('请输入合法的邮箱地址')
       return
