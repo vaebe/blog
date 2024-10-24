@@ -55,7 +55,7 @@ const SocialStatsSection = ({ platform, stats }: SocialStatsSectionProps) => (
         {SOCIAL_LINKS[platform].label}
       </h3>
     </Link>
-    <div className="flex flex-col items-center space-y-2 sm:flex-row sm:items-center sm:space-x-4">
+    <div className="flex flex-col items-center space-y-2 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0">
       {stats.map((stat, index) => (
         <StatItem key={index} {...stat} />
       ))}
@@ -73,7 +73,7 @@ const SkeletonStatItem = () => (
 )
 
 const UserProfileSkeleton = () => (
-  <motion.div {...ANIMATION_CONFIG} className="bg-white dark:bg-gray-800 rounded-lg p-6">
+  <motion.div {...ANIMATION_CONFIG} className="bg-black/10 dark:bg-white/10 rounded-lg p-6">
     <div className="flex flex-col md:flex-row md:items-end md:space-x-6">
       <Skeleton className="w-32 h-32 rounded-full" />
       <div className="mt-4 md:mt-0 flex-1">
