@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { emailRegex } from '@/lib/utils'
+import { Icon } from '@iconify/react'
 
 export default function LayoutFooter() {
   const githubUserName = process.env.NEXT_PUBLIC_GITHUB_USER_NAME ?? ''
@@ -97,18 +98,29 @@ function Subscription({ className }: { className: string }) {
       <h3 className="text-lg font-semibold mb-4">订阅</h3>
       <p className="text-gray-500 mb-4">可以及时获取我的最新动态</p>
 
-      <div className="flex items-center">
-        <Input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="输入您的邮箱"
-          className="rounded-r-none"
-        ></Input>
+      <div className=" grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex items-center">
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="输入您的邮箱"
+            className="rounded-r-none"
+          ></Input>
 
-        <Button className="rounded-l-none" onClick={sendSubscriptionEmail}>
-          订阅
-        </Button>
+          <Button className="rounded-l-none" onClick={sendSubscriptionEmail}>
+            订阅
+          </Button>
+        </div>
+
+        <Link
+          href="/rss"
+          target="_blank"
+          className="flex items-center justify-end hover:text-gray-500"
+        >
+          <p className="mr-4 text-lg">RSS 订阅</p>
+          <Icon icon="mingcute:rss-2-fill" width="24px"></Icon>
+        </Link>
       </div>
     </div>
   )
