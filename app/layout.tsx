@@ -12,7 +12,6 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { Artdots } from '@/components/artdots'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/react'
-import Head from 'next/head'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -22,9 +21,19 @@ const fontSans = FontSans({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh" suppressHydrationWarning>
-      <Head>
+      <head>
+        <title>vaebe blog</title>
+        <meta
+          name="description"
+          content="我是 Vaebe，一名全栈开发者，专注于前端技术。我的主要技术栈是 Vue 及其全家桶，目前也在使用 React 来构建项目，比如这个博客，它使用 Next.js。"
+        />
         <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.xml" />
-      </Head>
+        <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+        <link rel="manifest" href="/favicon/site.webmanifest" />
+      </head>
 
       <Script
         src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
