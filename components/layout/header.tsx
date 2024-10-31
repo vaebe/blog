@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { BlogLogo } from '@/components/blog-logo'
 
 function NavList() {
   return (
@@ -93,6 +94,8 @@ export default function LayoutHeader() {
     >
       <div className="flex justify-between items-center px-2 sm:px-4 lg:px-6 py-2">
         <Link href="/" className="flex items-center space-x-2 group">
+          <BlogLogo></BlogLogo>
+
           <h1 className="text-2xl font-bold">{githubName}</h1>
         </Link>
 
