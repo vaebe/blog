@@ -11,6 +11,7 @@ import { Toaster as SonnerToaster } from '@/components/ui/sonner'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Artdots } from '@/components/artdots'
 import Script from 'next/script'
+import { Analytics } from '@vercel/analytics/react'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -30,6 +31,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
           strategy="lazyOnload"
         />
+
+        <Analytics />
 
         <SessionProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
