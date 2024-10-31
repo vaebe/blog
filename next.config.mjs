@@ -14,8 +14,16 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/article/edit',
-        destination: '/404'
+        source: '/rss',
+        destination: '/api/feed.xml'
+      },
+      {
+        source: '/rss.xml',
+        destination: '/api/feed.xml'
+      },
+      {
+        source: '/feed',
+        destination: '/api/feed.xml'
       }
     ]
   }

@@ -12,6 +12,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { Artdots } from '@/components/artdots'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/react'
+import Head from 'next/head'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -21,19 +22,20 @@ const fontSans = FontSans({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh" suppressHydrationWarning>
+      <Head>
+        <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.xml" />
+      </Head>
+
+      <Script
+        src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+        strategy="lazyOnload"
+      />
       <body
         className={cn(
           'min-h-screen flex flex-col bg-white dark:bg-black text-black dark:text-white',
           fontSans.variable
         )}
       >
-        <Script
-          src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
-          strategy="lazyOnload"
-        />
-
-        <Analytics />
-
         <SessionProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
@@ -41,6 +43,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <ThemeSwitch />
           </ThemeProvider>
         </SessionProvider>
+
+        <Analytics />
 
         <Toaster />
         <SonnerToaster position="bottom-center"></SonnerToaster>
