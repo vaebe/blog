@@ -1,6 +1,5 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Icon } from '@iconify/react'
 import { useState, useEffect } from 'react'
@@ -9,14 +8,6 @@ import type { GithubUserInfo } from '@/types/github'
 import Link from 'next/link'
 import Image from 'next/image'
 import userIcon from '@/public/user-icon.png'
-
-// 动画配置常量
-const ANIMATION_CONFIG = {
-  duration: 0.5,
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 }
-}
 
 // 社交媒体链接配置
 const SOCIAL_LINKS = {
@@ -73,25 +64,27 @@ const SkeletonStatItem = () => (
 )
 
 const UserProfileSkeleton = () => (
-  <motion.div {...ANIMATION_CONFIG} className="bg-black/10 dark:bg-white/10 rounded-lg p-6">
-    <div className="flex flex-col md:flex-row md:items-end md:space-x-6">
+  <div className="space-y-8">
+    <div className="flex flex-col items-center md:flex-row md:items-center md:space-x-6">
       <Skeleton className="w-32 h-32 rounded-full" />
       <div className="mt-4 md:mt-0 flex-1">
         <Skeleton className="w-48 h-8 mb-2" />
         <Skeleton className="w-full h-20" />
       </div>
     </div>
-    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {[0, 1].map((section) => (
-        <div key={section} className="space-y-4">
+        <div key={section} className="flex flex-col items-center space-y-4">
           <Skeleton className="w-24 h-6 mb-2" />
-          {[0, 1, 2].map((item) => (
-            <SkeletonStatItem key={item} />
-          ))}
+          <div className="flex flex-col items-center space-y-2 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0">
+            {[0, 1, 2].map((item) => (
+              <SkeletonStatItem key={item} />
+            ))}
+          </div>
         </div>
       ))}
     </div>
-  </motion.div>
+  </div>
 )
 
 // 主要用户信息组件
@@ -163,27 +156,27 @@ const useUserData = () => {
   return data
 }
 
+const Userdescription = `我是 Vaebe，一名全栈开发者，专注于前端技术。我的主要技术栈是 Vue
+及其全家桶，目前也在使用 React 来构建项目，比如这个博客，它使用 Next.js。
+我会将自己的实践过程以文章的形式分享在掘金上，并在 GitHub
+上参与开源项目，不断提升自己的编程技能。欢迎访问我的掘金主页和 GitHub
+主页，了解更多关于我的信息！`
+
 // 主组件
 export function UserProfile() {
   const { github: githubUserInfo, juejin: juejinUserInfo, isLoading, error } = useUserData()
-
-  const description = `我是 Vaebe，一名全栈开发者，专注于前端技术。我的主要技术栈是 Vue
-    及其全家桶，目前也在使用 React 来构建项目，比如这个博客，它使用 Next.js。
-    我会将自己的实践过程以文章的形式分享在掘金上，并在 GitHub
-    上参与开源项目，不断提升自己的编程技能。欢迎访问我的掘金主页和 GitHub
-    主页，了解更多关于我的信息！`
 
   if (error) {
     return <div className="text-red-500">Error: {error}</div>
   }
 
   return (
-    <AnimatePresence mode="wait">
+    <>
       {isLoading ? (
         <UserProfileSkeleton key="skeleton" />
       ) : (
-        <motion.div key="content" {...ANIMATION_CONFIG} className="space-y-8">
-          <UserInfo githubUserInfo={githubUserInfo} description={description} />
+        <div key="content" className="space-y-8">
+          <UserInfo githubUserInfo={githubUserInfo} description={Userdescription} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SocialStatsSection
@@ -216,8 +209,8 @@ export function UserProfile() {
               ]}
             />
           </div>
-        </motion.div>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   )
 }
