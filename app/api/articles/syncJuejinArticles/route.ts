@@ -90,7 +90,7 @@ export async function GET(req: Request) {
   console.log('lastSyncTime\r\n', lastSyncTime)
 
   // 检查是否在一个小时内
-  if (lastSyncTime && dayjs().diff(lastSyncTime, 'hour') < 1) {
+  if (lastSyncTime) {
     return sendJson({ code: -1, msg: '一个小时内只能请求一次' })
   }
 
@@ -99,8 +99,8 @@ export async function GET(req: Request) {
 
     await getArticles(index)
 
-    // 更新上次同步时间
-    await kv.set(LastSyncTimeKey, dayjs().format('YYYY-MM-DD HH:mm:ss'))
+    // 更新上次同步时间, 设置一小时有效期
+    await kv.set(LastSyncTimeKey, dayjs().format('YYYY-MM-DD HH:mm:ss'), { ex: 3600 })
 
     console.log(syncArticleNameList)
 
