@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client'
 import { sendJson } from '@/lib/utils'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/prisma'
 
 export async function GET() {
   try {

@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { randomUUID } from 'crypto'
 import { sendJson } from '@/lib/utils'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/prisma'
 
 export async function POST(req: Request) {
   try {
