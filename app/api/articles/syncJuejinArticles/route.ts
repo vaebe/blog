@@ -1,9 +1,7 @@
 import dayjs from 'dayjs'
-import { PrismaClient } from '@prisma/client'
 import { sendJson } from '@/lib/utils'
 import { kv } from '@vercel/kv'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/prisma'
 
 async function addArticle(info: any) {
   const {
