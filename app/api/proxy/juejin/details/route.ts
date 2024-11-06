@@ -1,6 +1,20 @@
 import { sendJson } from '@/lib/utils'
 import * as cheerio from 'cheerio'
 
+const headers = {
+  'Content-Type': 'text/html; charset=utf-8',
+  'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+  'Accept-Language': 'en-US,en;q=0.5',
+  'Accept-Encoding': 'gzip, deflate, br',
+  Connection: 'keep-alive',
+  'Upgrade-Insecure-Requests': '1',
+  'Cache-Control': 'max-age=0',
+  TE: 'Trailers',
+  Referer: 'https://juejin.cn'
+}
+
 export async function GET(req: Request) {
   try {
     // 参数验证
@@ -12,11 +26,7 @@ export async function GET(req: Request) {
 
     // 请求文章内容
     const res = await fetch(`https://juejin.cn/post/${id}`, {
-      headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
-      }
+      headers: headers
     })
 
     if (!res.ok) {
