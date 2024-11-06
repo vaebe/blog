@@ -1,52 +1,71 @@
 import { sendJson } from '@/lib/utils'
+import { kv } from '@vercel/kv'
+import type { GithubPinnedRepoInfo } from '@/types/github'
+import { TimeInSeconds } from '@/lib/enums'
 
-export async function GET() {
-  const query = `
-  {
-    user(login: "${process.env.NEXT_PUBLIC_GITHUB_USER_NAME}") {
-      pinnedItems(first: 6, types: [REPOSITORY]) {
-        totalCount
-        edges {
-          node {
-            ... on Repository {
-              id
+const InfoKey = 'blog-github-pinned-repo-info'
+const GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql'
+
+const buildQuery = (username: string) => `
+{
+  user(login: "${username}") {
+    pinnedItems(first: 6, types: [REPOSITORY]) {
+      totalCount
+      edges {
+        node {
+          ... on Repository {
+            id
+            name
+            description
+            url
+            stargazerCount
+            forkCount
+            primaryLanguage {
               name
-              description
-              url
-              stargazerCount
-              forkCount
-              primaryLanguage {
-                name,
-                color
-              }
+              color
             }
           }
         }
       }
     }
   }
-  `
+}
+`
 
+async function fetchPinnedRepos() {
+  const query = buildQuery(process.env.NEXT_PUBLIC_GITHUB_USER_NAME!)
+
+  const response = await fetch(GITHUB_GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.GITHUB_API_TOKEN}`
+    },
+    body: JSON.stringify({ query })
+  })
+
+  if (!response.ok) {
+    const errorMessage = await response.text()
+    throw new Error(`获取 GitHub 仓库信息失败: ${response.statusText} - ${errorMessage}`)
+  }
+
+  const res = await response.json()
+  return res?.data?.user?.pinnedItems?.edges?.map((edge: any) => edge.node) || []
+}
+
+export async function GET() {
   try {
-    const response = await fetch('https://api.github.com/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.GITHUB_API_TOKEN}`
-      },
-      body: JSON.stringify({ query })
-    })
-
-    if (!response.ok) {
-      return sendJson({ code: -1, msg: `获取 github 仓库信息失败: ${response.statusText}` })
+    const cachedInfo = await kv.get<GithubPinnedRepoInfo>(InfoKey)
+    if (cachedInfo) {
+      return sendJson({ data: cachedInfo })
     }
 
-    const res = await response.json()
+    const pinnedRepos = await fetchPinnedRepos()
+    await kv.set(InfoKey, pinnedRepos, { ex: TimeInSeconds.oneWeek })
 
-    const list = res?.data?.user?.pinnedItems?.edges?.map((edge: any) => edge.node) || []
-
-    return sendJson({ data: list })
+    return sendJson({ data: pinnedRepos })
   } catch (error) {
-    return sendJson({ code: -1, msg: `获取 github 仓库信息失败:${error}` })
+    console.error(error)
+    return sendJson({ code: -1, msg: '获取 GitHub 仓库信息失败!' })
   }
 }
