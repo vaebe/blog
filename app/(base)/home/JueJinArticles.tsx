@@ -2,22 +2,13 @@
 
 import { Icon } from '@iconify/react'
 import { ContentCard } from './ContentCard'
-import type { JuejinArticle } from '@/types/juejin'
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
+import { Article } from '@prisma/client'
 
 function NoFound() {
-  return (
-    <motion.p
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="text-center text-gray-500 dark:text-gray-400 py-8"
-    >
-      No articles found.
-    </motion.p>
-  )
+  return <p className="text-center text-gray-500 dark:text-gray-400 py-8">No articles found.</p>
 }
 
 function LoadingComponent() {
@@ -35,66 +26,55 @@ function LoadingComponent() {
   )
 }
 
-function ArticleInfo({ articles }: { articles: JuejinArticle[] }) {
+function ArticleInfo({ articles }: { articles: Article[] }) {
   return (
-    <motion.ul
-      key="content"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="divide-y divide-gray-200 dark:divide-gray-700"
-    >
-      {articles?.map((article, index) => (
-        <motion.li
-          key={article.article_info.article_id}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.3, delay: index * 0.1 }}
-          className="group py-4 first:pt-0 last:pb-0"
-        >
+    <div key="content" className="divide-y divide-gray-200 dark:divide-gray-700">
+      {articles?.map((article) => (
+        <div key={article.id} className="group py-4 first:pt-0 last:pb-0">
           <Link
-            href={`https://juejin.cn/post/${article.article_info.article_id}`}
+            href={`https://juejin.cn/post/${article.id}`}
             target="_blank"
             rel="noopener noreferrer"
             className="block transition duration-300 ease-in-out hover:bg-black/10 dark:hover:bg-white/10 rounded p-2"
           >
-            <h3 className="text-lg font-semibold mb-2 transition duration-300">
-              {article.article_info.title}
-            </h3>
+            <h3 className="text-lg font-semibold mb-2 transition duration-300">{article.title}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
-              {article.article_info.brief_content || 'No description available'}
+              {article.summary || 'No description available'}
             </p>
             <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 space-x-4">
               <span className="flex items-center">
                 <Icon icon="mdi:star" className="w-4 h-4 mr-1 text-yellow-500" />
-                {article.article_info.collect_count}
+                {article.favorites}
               </span>
               <span className="flex items-center">
                 <Icon icon="mdi:thumb-up" className="w-4 h-4 mr-1 text-green-500" />
-                {article.article_info.digg_count}
+                {article.likes}
               </span>
               <span className="flex items-center">
                 <Icon icon="mdi:eye" className="w-4 h-4 mr-1 text-blue-500" />
-                {article.article_info.view_count}
+                {article.views}
               </span>
             </div>
           </Link>
-        </motion.li>
+        </div>
       ))}
-    </motion.ul>
+    </div>
   )
 }
 
 export function JueJinArticles() {
-  const [articles, setArticles] = useState<JuejinArticle[]>([])
+  const [articles, setArticles] = useState<Article[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch('/api/proxy/juejin/articles').then((res) => res.json())
+        const res = await fetch('/api/articles/all').then((res) => res.json())
+
         if (res.code === 0) {
-          setArticles(res?.data?.data || [])
+          const list: Article[] = res?.data || []
+          const sortedData = list.sort((a, b) => b.likes - a.likes).slice(0, 6)
+          setArticles(sortedData)
         }
       } catch (error) {
         console.error('Failed to fetch articles:', error)
@@ -107,9 +87,7 @@ export function JueJinArticles() {
 
   return (
     <ContentCard title="掘金文章" titleIcon="simple-icons:juejin">
-      <AnimatePresence>
-        {isLoading ? <LoadingComponent /> : <ArticleInfo articles={articles} />}
-      </AnimatePresence>
+      {isLoading ? <LoadingComponent /> : <ArticleInfo articles={articles} />}
 
       {articles.length === 0 && !isLoading && <NoFound />}
     </ContentCard>
