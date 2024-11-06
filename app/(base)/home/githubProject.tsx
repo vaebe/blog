@@ -3,32 +3,19 @@
 import { ContentCard } from './ContentCard'
 import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
-import { motion, AnimatePresence } from 'framer-motion'
 import type { GithubPinnedRepoInfo } from '@/types/github'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 
 function NoFound() {
   return (
-    <motion.p
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="text-center text-gray-500 dark:text-gray-400 py-8"
-    >
-      No repositories found.
-    </motion.p>
+    <div className="text-center text-gray-500 dark:text-gray-400 py-8">No repositories found.</div>
   )
 }
 
 function LoadingComponent() {
   return (
-    <motion.div
-      key="loader"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="space-y-6"
-    >
+    <div className="space-y-6">
       {[...Array(3)].map((_, index) => (
         <div key={index}>
           <Skeleton className="h-6 w-3/4 mb-2" />
@@ -37,27 +24,15 @@ function LoadingComponent() {
           {index < 2 && <div className="my-6 border-b border-gray-200 dark:border-gray-700"></div>}
         </div>
       ))}
-    </motion.div>
+    </div>
   )
 }
 
 function ProjectInfo({ repos }: { repos: GithubPinnedRepoInfo[] }) {
   return (
-    <motion.ul
-      key="content"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="divide-y divide-gray-200 dark:divide-gray-700"
-    >
-      {repos.map((repo, index) => (
-        <motion.li
-          key={repo.id}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.3, delay: index * 0.1 }}
-          className="group py-4 first:pt-0 last:pb-0"
-        >
+    <div className="divide-y divide-gray-200 dark:divide-gray-700">
+      {repos.map((repo) => (
+        <div key={repo.id} className="group py-4 first:pt-0 last:pb-0">
           <Link
             href={repo.url}
             target="_blank"
@@ -88,9 +63,9 @@ function ProjectInfo({ repos }: { repos: GithubPinnedRepoInfo[] }) {
               )}
             </div>
           </Link>
-        </motion.li>
+        </div>
       ))}
-    </motion.ul>
+    </div>
   )
 }
 
@@ -116,9 +91,7 @@ export function GithubProject() {
 
   return (
     <ContentCard title="GitHub 项目" titleIcon="mdi:github">
-      <AnimatePresence>
-        {isLoading ? <LoadingComponent /> : <ProjectInfo repos={repos} />}
-      </AnimatePresence>
+      {isLoading ? <LoadingComponent /> : <ProjectInfo repos={repos} />}
 
       {repos.length === 0 && !isLoading && <NoFound />}
     </ContentCard>
