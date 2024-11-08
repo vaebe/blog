@@ -5,6 +5,7 @@ import plugins from './plugins'
 import { Editor } from '@bytemd/react'
 import zh_Hans from 'bytemd/locales/zh_Hans.json'
 import { imagekitUploadFile } from '@/lib/imagekit'
+import { toast } from '@/components/hooks/use-toast'
 
 async function uploadImages(files: File[]) {
   let resultData = []
@@ -19,6 +20,8 @@ async function uploadImages(files: File[]) {
         alt: item.name,
         title: item.name
       })
+    } else {
+      toast({ variant: 'destructive', title: '警告', description: '图片上传失败，请重试!' })
     }
   }
 
