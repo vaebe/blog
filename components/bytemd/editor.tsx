@@ -4,27 +4,24 @@ import './editor.scss'
 import plugins from './plugins'
 import { Editor } from '@bytemd/react'
 import zh_Hans from 'bytemd/locales/zh_Hans.json'
+import { imagekitUploadFile } from '@/lib/imagekit'
 
 async function uploadImages(files: File[]) {
   let resultData = []
 
   for (const item of files) {
-    const formData = new FormData()
-    formData.append('file', item)
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    })
-    const data = await res.json()
+    const res = await imagekitUploadFile({ file: item, fileName: item.name })
 
-    if (data?.code === 0) {
+    if (res?.code === 0) {
+      console.log('res', res)
       resultData.push({
-        url: data?.data,
+        url: res?.data.url,
         alt: item.name,
         title: item.name
       })
     }
   }
+
   return resultData
 }
 
