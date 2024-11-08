@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     const privateKey = process.env.IMAGEKIT_PRIVATE_KEY ?? ''
 
     const token = jwt.sign(payload.uploadPayload, privateKey, {
-      expiresIn: 1,
+      expiresIn: 60, // token 过期时间最大 3600 秒
       header: {
         alg: 'HS256',
         typ: 'JWT',
