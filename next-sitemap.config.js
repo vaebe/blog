@@ -2,8 +2,10 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
+const NEXT_PUBLIC_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
+
 module.exports = {
-  siteUrl: process.env.SITE_URL,
+  siteUrl: NEXT_PUBLIC_SITE_URL,
   generateRobotsTxt: true,
   generateIndexSitemap: false,
   exclude: ['/api', '/api/**'],
@@ -16,7 +18,7 @@ module.exports = {
 
     articles.map((item) => {
       result.push({
-        loc: `${process.env.SITE_URL}/article/${item.id}`, // 页面位置
+        loc: `${NEXT_PUBLIC_SITE_URL}/article/${item.id}`, // 页面位置
         changefreq: 'daily', // 更新频率
         priority: 0.7, // 优先级
         lastmod: new Date(item.createdAt).toISOString() // 最后修改时间
