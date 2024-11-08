@@ -45,9 +45,9 @@ async function addArticle(info: any) {
 let syncArticleNameList: string[] = []
 
 async function getArticles(index: number) {
-  const res = await fetch(`${process.env.SITE_URL}/api/proxy/juejin/articles?cursor=${index}`).then(
-    (res) => res.json()
-  )
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/proxy/juejin/articles?cursor=${index}`
+  ).then((res) => res.json())
 
   if (res?.code !== 0) {
     throw new Error('同步掘金文章失败!')
