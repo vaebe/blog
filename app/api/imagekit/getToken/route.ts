@@ -7,23 +7,20 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { payload } = body
 
-    // 过期时间 2 分钟
-    const expiresIn = Math.floor(new Date().getTime() / 1000) + 120
-
     const privateKey = process.env.IMAGEKIT_PRIVATE_KEY ?? ''
 
     const token = jwt.sign(payload.uploadPayload, privateKey, {
-      expiresIn: expiresIn,
+      expiresIn: 1,
       header: {
         alg: 'HS256',
         typ: 'JWT',
-        kid: payload.publicKey
+        kid: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY
       }
     })
 
     return sendJson({ data: token })
   } catch (err) {
-    console.log(err)
+    console.error(err)
     return sendJson({ code: -1, msg: '获取上传 token 失败!' })
   }
 }
