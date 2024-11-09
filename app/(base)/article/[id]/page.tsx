@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Article } from '@prisma/client'
-import { Card, CardDescription, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { toast } from '@/components/hooks/use-toast'
 import { getReadingTime } from '@/lib/getReadingTime'
 import { Anchor } from './anchor/index'
@@ -35,32 +35,29 @@ export default function Component({ params }: { params: { id: string } }) {
   }, [params.id])
 
   return (
-    <div className="flex justify-center items-start gap-4 mt-[4vh]">
-      <div className="w-full max-w-5xl">
-        <CardHeader className="space-y-2 border-b px-4 sm:px-6 lg:px-8">
-          <CardTitle>{article?.title}</CardTitle>
-          <CardDescription className="text-sm text-gray-400 flex items-center">
-            <Icon icon="ri:time-line" />
-            阅读时间: {readingTime} 分钟
-          </CardDescription>
-        </CardHeader>
+    <div className="relative max-w-4xl mx-auto my-2">
+    <div className="space-y-4 border-b pb-4">
+      <h1 className="text-2xl font-bold">{article?.title}</h1>
+      <div className="text-gray-500 flex items-center">
+        <Icon icon="ri:time-line" /> 阅读时间: {readingTime} 分钟
+      </div>
+    </div>
 
-        <CardContent className="mt-4 px-4 sm:px-6 lg:px-8">
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold mb-2">导读:</h2>
-            <p className="text-gray-600 bg-gray-100 p-4 rounded-md">{article?.summary}</p>
-          </div>
-
-          <BytemdViewer content={article?.content ?? ''} />
-        </CardContent>
+    <div className="mt-4">
+      <div className="mb-4 bg-black/10 dark:bg-white/10 p-2 rounded-md">
+        <h2 className="text-lg mb-2 text-gray-600 dark:text-gray-300">导读:</h2>
+        <p className="text-gray-500 dark:text-gray-400">{article?.summary}</p>
       </div>
 
-      <Card className="sticky top-14 w-64 hidden lg:block h-fit max-h-[calc(100vh-4rem)] overflow-y-auto">
-        <CardContent className="p-4">
-          <h3 className="text-lg font-semibold mb-4">目录</h3>
-          <Anchor content={article?.content || ''}></Anchor>
-        </CardContent>
-      </Card>
+      <BytemdViewer content={article?.content ?? ''} />
     </div>
+
+    <Card className="absolute -right-64 top-0 w-64 hidden xl:block">
+    <CardContent className="p-2">
+      <h3 className="text-lg font-semibold mb-4">章节</h3>
+      <Anchor content={article?.content || ''}></Anchor>
+    </CardContent>
+  </Card>
+  </div>
   )
 }
