@@ -9,21 +9,27 @@ import { Card } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Loader2, Send, StopCircle, User } from 'lucide-react'
 import { BytemdViewer } from '@/components/bytemd/viewer'
-import { Icon } from '@iconify/react'
-import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 function PageHeader() {
+  const { data: session, status } = useSession()
+
   return (
     <div className="mb-4 flex items-center justify-between">
       <h1 className="text-2xl font-bold">
         {process.env.NEXT_PUBLIC_GITHUB_USER_NAME} blog AI 小助手
       </h1>
 
-      <Link href="/">
-        <Button size="icon">
-          <Icon icon="lets-icons:refund-back" width="20px" />
-        </Button>
-      </Link>
+      {status === 'authenticated' && (
+        <div className="flex items-center space-x-2 cursor-pointer">
+          <Avatar className="w-8 h-8">
+            <AvatarImage src={session?.user?.image ?? ''} alt="user" />
+            <AvatarFallback>{session?.user?.name ?? 'll'}</AvatarFallback>
+          </Avatar>
+
+          <span>{session?.user?.name ?? 'll'}</span>
+        </div>
+      )}
     </div>
   )
 }
