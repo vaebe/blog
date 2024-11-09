@@ -30,7 +30,7 @@ export interface PublishData {
   summary: string
 }
 
-const categories = ['后端', '前端', 'Android', 'iOS', '人工智能', '开发工具', '代码人生', '阅读']
+const categories = ['后端', '前端', 'Android', 'iOS', '人工智能', '阅读']
 
 export function PublishDialog({
   isOpen,
