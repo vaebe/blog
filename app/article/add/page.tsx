@@ -19,7 +19,7 @@ export default function PublishArticle() {
     title: '',
     content: '',
     classify: '',
-    coverImage: '',
+    coverImg: '',
     summary: ''
   })
 

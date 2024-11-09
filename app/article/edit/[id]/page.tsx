@@ -17,7 +17,7 @@ export default function PublishArticle({ params }: { params: { id: string } }) {
     title: '',
     content: '',
     classify: '',
-    coverImage: '',
+    coverImg: '',
     summary: ''
   })
 
@@ -33,7 +33,7 @@ export default function PublishArticle({ params }: { params: { id: string } }) {
       updateArticleInfo((draft) => {
         draft.title = res.data.title || ''
         draft.classify = res.data.classify || ''
-        draft.coverImage = res.data.coverImage || ''
+        draft.coverImg = res.data.coverImg || ''
         draft.summary = res.data.summary || ''
       })
 
