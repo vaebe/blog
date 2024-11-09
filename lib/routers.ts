@@ -13,6 +13,7 @@ export const routerList = [
   },
   {
     path: '/aiChat',
-    name: 'AI 对话'
+    name: 'AI 对话',
+    linkTarget: '_blank'
   }
 ]
