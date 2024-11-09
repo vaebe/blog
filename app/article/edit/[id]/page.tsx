@@ -1,14 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { toast } from '@/components/hooks/use-toast'
-import { PublishDialog } from '@/components/article/publishDialog'
+import { PublishDialog } from '@/app/article/PublishDialog'
 import { useRouter } from 'next/navigation'
 import { BytemdEditor } from '@/components/bytemd/editor'
 import { useImmer } from 'use-immer'
 import { PublishArticleInfo } from '@/types'
+import { HeaderComponent } from '@/app/article/Header'
 
 export default function PublishArticle({ params }: { params: { id: string } }) {
   const [content, setContent] = useState('')
@@ -82,21 +81,12 @@ export default function PublishArticle({ params }: { params: { id: string } }) {
 
   return (
     <div className="h-[100vh] overflow-hidden">
-      <header className="flex items-center justify-between border-b">
-        <Input
-          value={articleInfo.title}
-          onChange={(e) =>
-            updateArticleInfo((d) => {
-              d.title = e.target.value
-            })
-          }
-          placeholder="输入文章标题..."
-          className="text-xl font-bold border-none rounded-none shadow-none focus-visible:ring-0"
-        />
-        <Button className="rounded-none shadow-none" onClick={() => setPublishDialogShow(true)}>
-          发布
-        </Button>
-      </header>
+      <HeaderComponent
+        title={articleInfo.title}
+        updateArticleInfo={updateArticleInfo}
+        setPublishDialogShow={setPublishDialogShow}
+        butName="编辑"
+      ></HeaderComponent>
 
       <BytemdEditor content={content} setContent={(val) => setContent(val)}></BytemdEditor>
 
