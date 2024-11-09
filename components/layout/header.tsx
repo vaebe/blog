@@ -16,6 +16,7 @@ function NavList() {
         <li key={item.path}>
           <Link
             href={item.path}
+            target={item?.linkTarget}
             className="px-6 py-1 text-lg font-medium rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-100 ease-in-out"
           >
             {item.name}
