@@ -1,24 +1,38 @@
 import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
+import { sendJson } from '@/lib/utils'
 
-const ADMIN_PAGES = ['/article/add']
+const ADMIN_PAGES = ['/article/add', '/article/edit']
+
 const ADMIN_APIS = [
   '/api/articles/delete',
   '/api/articles/add',
   '/api/articles/update',
-  '/api/user'
+  '/api/user',
+  '/api/imagekit/getFileInfoByHash',
+  '/api/imagekit/getToken'
 ]
-const ADMIN_PATH_ALL = [...ADMIN_PAGES, ...ADMIN_APIS]
 
 export default withAuth(
   function middleware(req) {
     console.log('request:', req.method, req.url)
 
     const token = req.nextauth.token
-    const pathname = req.nextUrl.pathname
-    if (ADMIN_PATH_ALL.some((item) => pathname.startsWith(item)) && token?.role !== '00') {
-      // 如果用户没有权限访问管理页面，重定向到404页面 而不是
-      return NextResponse.rewrite(new URL('/404', req.url))
+
+    if (token?.role !== '00') {
+      const path = req.nextUrl.pathname
+
+      if (path.startsWith('/api') && ADMIN_APIS.some((item) => path.startsWith(item))) {
+        // 如果没有访问接口的权限返回 401
+        return sendJson({ code: 401, msg: '无权限' })
+      }
+
+      if (ADMIN_PAGES.some((item) => path.startsWith(item))) {
+        // 如果用户没有权限访问管理页面，重定向到404页面
+        const url = req.nextUrl.clone()
+        url.pathname = '/404'
+        return NextResponse.rewrite(url)
+      }
     }
   },
   {
@@ -32,5 +46,10 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)']
+  matcher: [
+    // 匹配页面路由
+    '/((?!_next/static|_next/image|.*\\.png$).*)',
+    // 匹配 API 路由
+    '/api/:path*'
+  ]
 }
