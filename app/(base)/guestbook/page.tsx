@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Card } from '@/components/ui/card'
 import { Header } from './Header'
 import { AddMessage } from './AddMessage'
 import type { MessageInfo } from './types'
@@ -11,7 +10,7 @@ export default function GuestBook() {
   const [messages, setMessages] = useState<Array<MessageInfo>>([])
 
   return (
-    <div className="min-h-screen max-w-5xl mx-auto px-2">
+    <div className="min-h-screen max-w-4xl mx-auto px-2">
       <Header></Header>
 
       <AddMessage setMessages={setMessages}></AddMessage>

@@ -163,7 +163,7 @@ export default function ArticlesPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-2">
+    <div className="max-w-4xl mx-auto px-2">
       <AnimatePresence mode="wait">{renderContent()}</AnimatePresence>
     </div>
   )
