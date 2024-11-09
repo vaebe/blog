@@ -12,6 +12,6 @@ export interface PublishArticleInfo {
   title: string
   content: string
   classify: string
-  coverImage: string
+  coverImg: string
   summary: string
 }
