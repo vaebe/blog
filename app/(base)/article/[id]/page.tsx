@@ -10,10 +10,8 @@ import { BytemdViewer } from '@/components/bytemd/viewer'
 import { Icon } from '@iconify/react'
 
 export default function Component({ params }: { params: { id: string } }) {
-  const [pageType, setPageType] = useState<string>()
   const [article, setArticle] = useState<Article>()
   const [readingTime, setReadingTime] = useState<number>(0)
-  const [details, setDetails] = useState<string>('')
 
   useEffect(() => {
     async function fetchArticleDetails() {
@@ -25,29 +23,12 @@ export default function Component({ params }: { params: { id: string } }) {
       return res.data
     }
 
-    async function fetchProxyDetails() {
-      const res = await fetch(`/api/proxy/juejin/details?id=${params.id}`).then((res) => res.json())
-      if (res.code !== 0) {
-        toast({ variant: 'destructive', title: '警告', description: '获取代理文章详情失败!' })
-        return null
-      }
-      return res.data
-    }
-
     async function getData() {
       const articleData = await fetchArticleDetails()
       if (!articleData) return
 
       setArticle(articleData)
       setReadingTime(getReadingTime(articleData.content).minutes)
-      setPageType(articleData.source)
-
-      if (articleData.source !== '00') {
-        const proxyDetails = await fetchProxyDetails()
-        if (proxyDetails) {
-          setDetails(proxyDetails)
-        }
-      }
     }
 
     getData()
@@ -70,18 +51,14 @@ export default function Component({ params }: { params: { id: string } }) {
             <p className="text-gray-600 bg-gray-100 p-4 rounded-md">{article?.summary}</p>
           </div>
 
-          {pageType === '00' ? (
-            <BytemdViewer content={article?.content ?? ''} />
-          ) : (
-            <div dangerouslySetInnerHTML={{ __html: details }} />
-          )}
+          <BytemdViewer content={article?.content ?? ''} />
         </CardContent>
       </div>
 
       <Card className="sticky top-14 w-64 hidden lg:block h-fit max-h-[calc(100vh-4rem)] overflow-y-auto">
         <CardContent className="p-4">
           <h3 className="text-lg font-semibold mb-4">目录</h3>
-          <Anchor content={details || article?.content || ''}></Anchor>
+          <Anchor content={article?.content || ''}></Anchor>
         </CardContent>
       </Card>
     </div>

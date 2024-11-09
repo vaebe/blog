@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 import { Eye } from 'lucide-react'
+import { getJumpArticleDetailsUrl } from '@/lib/utils'
 
 // 类型定义
 type GroupedArticles = Record<string, Article[]>
@@ -67,7 +68,7 @@ const ArticleInfo = ({ info }: { info: Article }) => {
 
   return (
     <Link
-      href={`/article/${info.id}`}
+      href={getJumpArticleDetailsUrl(info)}
       target="_blank"
       className="block hover:bg-accent rounded-lg transition-colors duration-200 p-4"
     >
