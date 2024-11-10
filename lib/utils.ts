@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 
 interface SendJson {
   code?: number
-  data?: any
+  data?: unknown
   msg?: string
 }
 export function sendJson(opts: SendJson) {

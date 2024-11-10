@@ -53,7 +53,7 @@ export default function PublishArticle() {
       } else {
         toast({ title: '失败', description: '发布文章时出现错误', variant: 'destructive' })
       }
-    } catch (error) {
+    } catch {
       toast({ title: '失败', description: '发布文章时出现错误', variant: 'destructive' })
     }
   }

@@ -8,7 +8,7 @@ import { imagekitUploadFile } from '@/lib/imagekit'
 import { toast } from '@/components/hooks/use-toast'
 
 async function uploadImages(files: File[]) {
-  let resultData = []
+  const resultData: Record<'url' | 'alt' | 'title', string>[] = []
 
   for (const item of files) {
     const res = await imagekitUploadFile({ file: item, fileName: item.name })

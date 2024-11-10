@@ -1,6 +1,7 @@
 import { getFileHash } from '@/lib/utils'
 import dayjs from 'dayjs'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface ImagekitUploadFileRes {
   fileId: string
   name: string
@@ -26,7 +27,7 @@ async function getFileInfoByFileHash(hash: string) {
 }
 
 // 获取文件上传 token
-async function getImagekitToken(info: Record<string, any>) {
+async function getImagekitToken(info: Record<string, string | number>) {
   const res = await fetch('/api/imagekit/getToken', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
