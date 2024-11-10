@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Article } from '@prisma/client'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -9,29 +8,6 @@ import Link from 'next/link'
 import { Eye } from 'lucide-react'
 import { getJumpArticleDetailsUrl } from '@/lib/utils'
 
-// 类型定义
-type GroupedArticles = Record<string, Article[]>
-type FetchStatus = 'idle' | 'loading' | 'error' | 'success'
-
-// 动画配置
-const fadeAnimation = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  exit: { opacity: 0 }
-}
-
-const sectionAnimation = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.3 }
-}
-
-// 常量
-const LOADING_YEARS = 2
-const ARTICLES_PER_YEAR = 3
-const API_ENDPOINT = '/api/articles/all'
-
-// 组件
 const LoadingSkeleton = () => (
   <Card>
     <CardContent className="p-4">
@@ -45,22 +21,22 @@ const LoadingSkeleton = () => (
 )
 
 const LoadingState = () => (
-  <motion.div {...fadeAnimation} className="space-y-12">
-    {Array.from({ length: LOADING_YEARS }).map((_, yearIndex) => (
+  <div className="space-y-12">
+    {Array.from({ length: 2 }).map((_, yearIndex) => (
       <div key={yearIndex} className="space-y-4">
         <Skeleton className="h-10 w-24 mb-6" />
-        {Array.from({ length: ARTICLES_PER_YEAR }).map((_, articleIndex) => (
+        {Array.from({ length: 3 }).map((_, articleIndex) => (
           <LoadingSkeleton key={articleIndex} />
         ))}
       </div>
     ))}
-  </motion.div>
+  </div>
 )
 
 const ErrorState = ({ message }: { message: string }) => (
-  <motion.div {...fadeAnimation} className="text-center py-10">
+  <div className="text-center py-10">
     <p className="text-xl text-destructive">{message || '嗯 ? 这里貌似出现了一些问题!'}</p>
-  </motion.div>
+  </div>
 )
 
 const ArticleInfo = ({ info }: { info: Article }) => {
@@ -84,12 +60,14 @@ const ArticleInfo = ({ info }: { info: Article }) => {
   )
 }
 
+type GroupedArticles = Record<string, Article[]>
+
 const ArticleList = ({ articleInfo }: { articleInfo: GroupedArticles }) => (
   <>
     {Object.entries(articleInfo)
       .sort(([a], [b]) => Number(b) - Number(a))
       .map(([year, articles]) => (
-        <motion.section key={year} {...sectionAnimation} className="mb-12">
+        <div key={year} className="mb-12">
           <h2 className="text-3xl font-bold mb-6">{year}</h2>
           <div className="space-y-4">
             {articles.map((article) => (
@@ -98,16 +76,18 @@ const ArticleList = ({ articleInfo }: { articleInfo: GroupedArticles }) => (
               </Card>
             ))}
           </div>
-        </motion.section>
+        </div>
       ))}
   </>
 )
 
 const NoResults = () => (
-  <motion.div {...fadeAnimation} className="text-center py-10">
+  <div className="text-center py-10">
     <p className="text-xl text-muted-foreground">这里曾经有一些东西 , 现在不见了!</p>
-  </motion.div>
+  </div>
 )
+
+type FetchStatus = 'idle' | 'loading' | 'error' | 'success'
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<GroupedArticles>({})
@@ -126,7 +106,7 @@ export default function ArticlesPage() {
     setStatus('loading')
 
     try {
-      const res = await fetch(API_ENDPOINT)
+      const res = await fetch('/api/articles/all')
       if (!res.ok) throw new Error('Network response was not ok')
 
       const data = await res.json()
@@ -162,9 +142,5 @@ export default function ArticlesPage() {
     }
   }
 
-  return (
-    <div className="max-w-4xl mx-auto px-2">
-      <AnimatePresence mode="wait">{renderContent()}</AnimatePresence>
-    </div>
-  )
+  return <div className="max-w-4xl mx-auto px-2">{renderContent()}</div>
 }
