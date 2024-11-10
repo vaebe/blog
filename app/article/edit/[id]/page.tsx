@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, use } from 'react';
 import { toast } from '@/components/hooks/use-toast'
 import { PublishDialog } from '@/app/article/PublishDialog'
 import { useRouter } from 'next/navigation'
@@ -9,7 +9,8 @@ import { useImmer } from 'use-immer'
 import { PublishArticleInfo } from '@/types'
 import { HeaderComponent } from '@/app/article/Header'
 
-export default function PublishArticle({ params }: { params: { id: string } }) {
+export default function PublishArticle(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params);
   const [content, setContent] = useState('')
 
   const [articleInfo, updateArticleInfo] = useImmer<PublishArticleInfo>({
