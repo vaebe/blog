@@ -148,7 +148,7 @@ export function PublishDialog({
           description: '图片上传失败了!'
         })
       }
-    } catch (error) {
+    } catch {
       toast({
         variant: 'destructive',
         title: '警告',

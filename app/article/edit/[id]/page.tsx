@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState, use } from 'react'
 import { toast } from '@/components/hooks/use-toast'
 import { PublishDialog } from '@/app/article/PublishDialog'
 import { useRouter } from 'next/navigation'
@@ -10,7 +10,7 @@ import { PublishArticleInfo } from '@/types'
 import { HeaderComponent } from '@/app/article/Header'
 
 export default function PublishArticle(props: { params: Promise<{ id: string }> }) {
-  const params = use(props.params);
+  const params = use(props.params)
   const [content, setContent] = useState('')
 
   const [articleInfo, updateArticleInfo] = useImmer<PublishArticleInfo>({
@@ -75,7 +75,7 @@ export default function PublishArticle(props: { params: Promise<{ id: string }> 
       } else {
         toast({ title: '失败', description: '编辑文章时出现错误', variant: 'destructive' })
       }
-    } catch (error) {
+    } catch {
       toast({ title: '失败', description: '编辑文章时出现错误', variant: 'destructive' })
     }
   }

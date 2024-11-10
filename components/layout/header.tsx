@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { BlogLogo } from '@/components/blog-logo'
+import { Session } from 'next-auth'
 
 function NavList() {
   return (
@@ -47,14 +48,14 @@ function UserAvatarItem({
   )
 }
 
-function UserAvatar({ session }: { session: any }) {
+function UserAvatar({ session }: { session: Session }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <div className="flex items-center space-x-2 cursor-pointer">
           <Avatar className="w-8 h-8">
-            <AvatarImage src={session.user.image ?? ''} alt="user" />
-            <AvatarFallback>{session.user.name ?? 'll'}</AvatarFallback>
+            <AvatarImage src={session?.user?.image ?? ''} alt="user" />
+            <AvatarFallback>{session?.user?.name ?? 'll'}</AvatarFallback>
           </Avatar>
 
           <span>{session?.user?.name ?? 'll'}</span>

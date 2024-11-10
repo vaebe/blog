@@ -1,4 +1,4 @@
-'use client' // 声明为客户端组件
+'use client'
 
 import { useRef, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
@@ -13,7 +13,7 @@ const SPACING = 15
 
 let w = typeof window !== 'undefined' ? window.innerWidth : 0
 let h = typeof window !== 'undefined' ? window.innerHeight : 0
-let offsetY = typeof window !== 'undefined' ? window.scrollY : 0
+const offsetY = typeof window !== 'undefined' ? window.scrollY : 0
 
 function getForceOnPoint(x: number, y: number, z: number, noise: any) {
   return (noise(x / SCALE, y / SCALE, z) - 0.5) * 2 * Math.PI

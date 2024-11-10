@@ -2,8 +2,9 @@ import dayjs from 'dayjs'
 import { sendJson } from '@/lib/utils'
 import { kv } from '@vercel/kv'
 import { prisma } from '@/prisma'
+import { AnyObject } from '@/types'
 
-async function addArticle(info: any) {
+async function addArticle(info: AnyObject) {
   const {
     article_id,
     title,

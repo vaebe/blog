@@ -32,6 +32,7 @@ export async function GET(req: Request) {
 
     return sendJson({ data: res })
   } catch (error) {
+    console.error(error)
     return sendJson({ code: -1, msg: 'Failed to fetch article' })
   }
 }

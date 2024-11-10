@@ -50,7 +50,11 @@ async function fetchPinnedRepos() {
   }
 
   const res = await response.json()
-  return res?.data?.user?.pinnedItems?.edges?.map((edge: any) => edge.node) || []
+  return (
+    res?.data?.user?.pinnedItems?.edges?.map(
+      (edge: Record<string, string | number>) => edge.node
+    ) || []
+  )
 }
 
 export async function GET() {

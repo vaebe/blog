@@ -77,8 +77,6 @@
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "@types/rss": "^0.0.32",
     "@types/uuid": "^10.0.0",
-    "eslint": "^9.14.0",
-    "eslint-config-next": "15.0.3",
     "eslint-config-prettier": "^9.1.0",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
@@ -87,7 +85,9 @@
     "prettier": "^3.3.3",
     "sass": "^1.79.4",
     "tailwindcss": "^3.4.14",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.3"
   },
   "lint-staged": {
     "**/*.{tsx,ts}": [
