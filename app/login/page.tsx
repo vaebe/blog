@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/hooks/use-toast'
-import { motion, AnimatePresence } from 'framer-motion'
 import { FullScreenLoading } from '@/components/screen-loading'
 
 interface LoginFormProps {
@@ -106,7 +105,7 @@ const LoginForm = ({ setIsLoading }: LoginFormProps) => {
           </div>
         </div>
         <Button className="w-full" type="submit">
-          登录
+          账号密码登录
         </Button>
       </form>
 
@@ -156,38 +155,30 @@ const LoginPage = () => {
     <div className="flex items-center justify-center min-h-screen dark:from-gray-900 dark:to-gray-800 transition-all duration-500">
       <FullScreenLoading isLoading={isLoading}></FullScreenLoading>
 
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md p-8 space-y-4 bg-white dark:bg-gray-800 rounded-2xl shadow transition-all duration-300 hover:shadow-xl"
-        >
-          <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">登录</h2>
-          </div>
+      <div className="w-full max-w-md p-8 space-y-4 bg-white dark:bg-gray-800 rounded-2xl shadow transition-all duration-300 hover:shadow-xl">
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">登录</h2>
+        </div>
 
-          <LoginForm setIsLoading={setIsLoading} />
+        <LoginForm setIsLoading={setIsLoading} />
+
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                或者使用
+              </span>
+            </div>
+          </div>
 
           <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                  或者使用
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <GithubLoginButton onClick={handleGithubLogin} />
-            </div>
+            <GithubLoginButton onClick={handleGithubLogin} />
           </div>
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      </div>
     </div>
   )
 }
