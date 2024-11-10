@@ -39,7 +39,7 @@ interface SocialStatsSectionProps {
 
 // 社交媒体统计区块
 const SocialStatsSection = ({ platform, stats }: SocialStatsSectionProps) => (
-  <div className="flex flex-col items-center space-y-4">
+  <div className="flex flex-col space-y-4">
     <Link href={SOCIAL_LINKS[platform].url} target="_blank" rel="noopener noreferrer">
       <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
         <Icon icon={SOCIAL_LINKS[platform].icon} className="mr-2" />
@@ -99,7 +99,7 @@ const UserInfo = ({
     <Image
       src={githubUserInfo?.avatar_url ?? userIcon}
       alt={`${githubUserInfo?.login}'s avatar`}
-      className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 shadow-lg"
+      className="w-32 h-32 rounded-lg border-1 border-white dark:border-gray-800 shadow"
       width={128}
       height={128}
       priority
