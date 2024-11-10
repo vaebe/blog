@@ -64,6 +64,7 @@ export async function GET(req: Request) {
       }
     })
   } catch (error) {
+    console.error(error)
     return sendJson({ code: -1, msg: '获取留言信息失败' })
   }
 }

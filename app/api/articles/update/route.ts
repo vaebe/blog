@@ -20,6 +20,7 @@ export async function PUT(req: Request) {
 
     return sendJson({ data: updatedArticle })
   } catch (error) {
-    return sendJson({ code: -1, msg: 'Failed to update article' })
+    console.error(error)
+    return sendJson({ code: -1, msg: '跟新文章数据失败!' })
   }
 }

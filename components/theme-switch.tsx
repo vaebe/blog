@@ -12,7 +12,7 @@ const themes = [
 ] as const
 
 export function ThemeSwitch() {
-  const { theme, setTheme, resolvedTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 

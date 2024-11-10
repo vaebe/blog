@@ -16,6 +16,7 @@ export async function GET(req: Request) {
 
     return sendJson({ data: article })
   } catch (error) {
-    return sendJson({ code: -1, msg: 'Failed to fetch article' })
+    console.error(error)
+    return sendJson({ code: -1, msg: '获取文章详情失败!' })
   }
 }

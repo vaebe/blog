@@ -105,7 +105,7 @@ export default function AIChatPage() {
     const scrollElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]')
     if (scrollElement) {
       const observer = new ResizeObserver((entries) => {
-        for (let entry of entries) {
+        for (const entry of entries) {
           if (entry.target === scrollElement) {
             setScrollHeight(entry.target.scrollHeight)
             entry.target.scrollTop = entry.target.scrollHeight
