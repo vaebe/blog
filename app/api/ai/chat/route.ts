@@ -15,7 +15,10 @@ export async function POST(req: Request) {
   const result = await streamText({
     model: openai('qwen-turbo-latest'), // 模型名称
     system: '你是一名优秀的前端开发工程师', // 设置AI助手的系统角色提示
-    messages // 传入用户消息历史
+    messages, // 传入用户消息历史
+    onFinish: ({ finishReason, text, responseMessages, response }) => {
+      console.log(finishReason, text, JSON.stringify(responseMessages), response)
+    }
   })
 
   // 将结果转换为数据流响应并返回
