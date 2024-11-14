@@ -27,7 +27,7 @@ async function getFileInfoByFileHash(hash: string) {
 }
 
 // 获取文件上传 token
-async function getImagekitToken(info: Record<string, string | number>) {
+async function getImagekitToken(info: Record<string, string>) {
   const res = await fetch('/api/imagekit/getToken', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -56,7 +56,7 @@ export async function imagekitUploadFile({ file, fileName }: ImagekitUploadFileO
 
   const payload = {
     fileName,
-    tags: fileHash,
+    customMetadata: JSON.stringify({ md5: fileHash }),
     folder: `/blog/${dayjs().format('YYYY-MM-DD')}`
   }
 
