@@ -12,7 +12,7 @@ export async function GET(req: Request) {
 
     const query = {
       type: 'file',
-      searchQuery: `tags IN ["${fileHash}"]`,
+      searchQuery: `"customMetadata.md5" = "${fileHash}"`,
       limit: '1'
     }
 
