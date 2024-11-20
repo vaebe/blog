@@ -13,16 +13,23 @@ const ADMIN_APIS = [
   '/api/imagekit/getToken'
 ]
 
+// 用户登录后可以访问的 api
+const USER_APIS = ['/api/conversation']
+
 export default withAuth(
   function middleware(req) {
     console.log('request:', req.method, req.url)
 
     const token = req.nextauth.token
+    const path = req.nextUrl.pathname
+
+    // 用户无权访问返回 401
+    if (!token && USER_APIS.some((item) => path.startsWith(item))) {
+      return sendJson({ code: 401, msg: '无权限' })
+    }
 
     if (token?.role !== '00') {
-      const path = req.nextUrl.pathname
-
-      if (path.startsWith('/api') && ADMIN_APIS.some((item) => path.startsWith(item))) {
+      if (ADMIN_APIS.some((item) => path.startsWith(item))) {
         // 如果没有访问接口的权限返回 401
         return sendJson({ code: 401, msg: '无权限' })
       }
@@ -37,7 +44,7 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: function ({ token, req }) {
+      authorized: function () {
         // 这里返回 false 会到登录页面可以做额外的鉴权
         return true
       }
