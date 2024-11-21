@@ -20,7 +20,7 @@ export default function AIChatPage() {
 
   async function createConversation() {
     try {
-      const res = await fetch('/api/ai/conversation', {
+      const res = await fetch('/api/ai/conversation/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
