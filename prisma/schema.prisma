@@ -45,10 +45,6 @@ model User {
   // 留言
   messages      Message[]
 
-  // AI 对话
-  AIConversation AIConversation[]
-  AIMessage      AIMessage[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -146,7 +142,6 @@ model AIConversation {
   id        String   @id @default(cuid())
   name      String? // 对话名称，可选
   userId    String // 所属用户
-  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -157,16 +152,20 @@ model AIConversation {
 }
 
 model AIMessage {
-  id             String         @id @default(cuid())
-  content        String         @db.LongText
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  authorId       String // 消息作者
-  author         User           @relation(fields: [authorId], references: [id])
-  conversationId String // 所属对话分组
-  conversation   AIConversation @relation(fields: [conversationId], references: [id])
+  id                      String   @id @default(cuid())
+  role                    String // 'system' | 'user' | 'assistant' | 'data' | 'tool'
+  content                 String   @db.LongText
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  userId                  String // 所属用户
+  conversationId          String // 所属对话分组
+  experimentalAttachments Json? // experimental_attachments: 存储为 JSON 数据
+  toolInvocations         Json? // 存储 toolInvocations
+  annotations             Json? // 存储额外注释
 
-  @@index([authorId])
+  conversation AIConversation @relation(fields: [conversationId], references: [id])
+
+  @@index([userId])
   @@index([conversationId])
   @@map("ai_message")
 }
