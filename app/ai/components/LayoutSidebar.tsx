@@ -3,13 +3,18 @@ import { OpenOrCloseSiderbarIcon } from './OpenOrCloseSiderbarIcon'
 import { NewChatIcon } from './NewChatIcon'
 import { AiSharedDataContext } from './AiSharedDataContext'
 import { useContext, useEffect } from 'react'
+import { getConversation } from '@/app/ai/lib/api'
 
 function LayoutSidebar() {
-  const { conversationList, getConversation } = useContext(AiSharedDataContext)
+  const { setAiSharedData, aiSharedData } = useContext(AiSharedDataContext)
 
   useEffect(() => {
-    getConversation()
-  }, [])
+    getConversation().then((res) => {
+      setAiSharedData((d) => {
+        d.conversationList = res
+      })
+    })
+  }, [setAiSharedData])
 
   return (
     <div className="w-64 p-2 border-r bg-background">
@@ -19,7 +24,7 @@ function LayoutSidebar() {
       </div>
 
       <ScrollArea className="flex-1 h-[92vh]">
-        {conversationList.map((item) => {
+        {aiSharedData.conversationList.map((item) => {
           return (
             <div
               key={item.id}

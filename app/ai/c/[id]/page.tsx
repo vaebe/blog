@@ -11,7 +11,7 @@ import { useContext } from 'react'
 import { LayoutHeader } from '@/app/ai/components/LayoutHeader'
 
 export default function AIChatPage() {
-  const { aiSharedData } = useContext(AiSharedDataContext)
+  const { aiSharedData, setAiSharedData } = useContext(AiSharedDataContext)
 
   const { messages, input, handleInputChange, handleSubmit, isLoading, stop, append } = useChat({
     api: '/api/ai/chat',
@@ -29,8 +29,13 @@ export default function AIChatPage() {
   }
 
   useEffect(() => {
-    append({ content: aiSharedData.aiFirstMsg, role: 'user' })
-  }, [])
+    if (aiSharedData.aiFirstMsg) {
+      append({ content: aiSharedData.aiFirstMsg, role: 'user' })
+      setAiSharedData((d) => {
+        d.aiFirstMsg = ''
+      })
+    }
+  }, [aiSharedData.aiFirstMsg, append, setAiSharedData])
 
   return (
     <div className="h-screen w-full">
