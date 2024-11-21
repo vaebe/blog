@@ -15,9 +15,10 @@ function LayoutHeader() {
   const { aiSharedData } = useContext(AiSharedDataContext)
 
   return (
-    <div className="w-full flex items-center justify-between">
+    <div className="w-full flex items-center justify-between pt-2 px-8">
       <div className="flex items-center">
-        {!aiSharedData.layoutSidebar && (
+        {/* 用户已经登录且侧边栏未打开 */}
+        {status === 'authenticated' && !aiSharedData.layoutSidebar && (
           <div>
             <OpenOrCloseSiderbarIcon state={true}></OpenOrCloseSiderbarIcon>
             <NewChatIcon></NewChatIcon>

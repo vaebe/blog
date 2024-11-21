@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { Message } from 'ai/react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card } from '@/components/ui/card'
@@ -61,7 +61,6 @@ interface MessageListProps {
 
 function MessageList({ messages, chatStarted, isLoading }: MessageListProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
-  const [scrollHeight, setScrollHeight] = useState(0)
 
   useEffect(() => {
     const scrollElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]')
@@ -69,7 +68,6 @@ function MessageList({ messages, chatStarted, isLoading }: MessageListProps) {
       const observer = new ResizeObserver((entries) => {
         for (const entry of entries) {
           if (entry.target === scrollElement) {
-            setScrollHeight(entry.target.scrollHeight)
             entry.target.scrollTop = entry.target.scrollHeight
           }
         }
@@ -84,13 +82,9 @@ function MessageList({ messages, chatStarted, isLoading }: MessageListProps) {
   }, [messages])
 
   return (
-    <ScrollArea
-      className="h-[calc(100vh-160px)]"
-      ref={scrollAreaRef}
-      style={{ height: `calc(100vh - 160px)`, maxHeight: `calc(100vh - 160px)` }}
-    >
-      <div className="p-4" style={{ minHeight: `${scrollHeight}px` }}>
-        {!chatStarted && <div className="text-center text-gray-500 mt-8">开始与 AI 助手对话</div>}
+    <ScrollArea ref={scrollAreaRef} style={{ height: `calc(100vh - 100px)` }}>
+      <div className="p-4 w-full md:w-10/12 mx-auto">
+        {!chatStarted && <div className="text-center text-gray-500">开始与 AI 助手对话</div>}
 
         {messages.map((message) => (
           <MessageInfo key={message.id} message={message}></MessageInfo>
