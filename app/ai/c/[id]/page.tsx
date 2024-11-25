@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useChat } from 'ai/react'
 import { MessageList } from '@/app/ai/components/MessageList'
 import { AiSharedDataContext } from '@/app/ai/components/AiSharedDataContext'
@@ -9,7 +9,9 @@ import { LayoutHeader } from '@/app/ai/components/LayoutHeader'
 import { StartAConversationPrompt } from '../../components/StartAConversationPrompt'
 import { Sender } from '../../components/Sender'
 
-export default function AIChatPage() {
+export default function AIChatPage(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params)
+
   const { aiSharedData, setAiSharedData } = useContext(AiSharedDataContext)
 
   const { messages, input, handleInputChange, handleSubmit, isLoading, stop, append } = useChat({
@@ -22,20 +24,25 @@ export default function AIChatPage() {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (input.trim()) {
-      handleSubmit(e)
+      handleSubmit(e, { data: { conversationId: params.id } })
       if (!chatStarted) setChatStarted(true)
     }
   }
 
   useEffect(() => {
     if (aiSharedData.aiFirstMsg) {
-      append({ content: aiSharedData.aiFirstMsg, role: 'user' })
+      append(
+        { content: aiSharedData.aiFirstMsg, role: 'user' },
+        {
+          data: { conversationId: params.id }
+        }
+      )
       setAiSharedData((d) => {
         d.aiFirstMsg = ''
       })
       if (!chatStarted) setChatStarted(true)
     }
-  }, [aiSharedData.aiFirstMsg, append, chatStarted, setAiSharedData])
+  }, [aiSharedData.aiFirstMsg, append, chatStarted, setAiSharedData, params.id])
 
   return (
     <div className="h-screen w-full">

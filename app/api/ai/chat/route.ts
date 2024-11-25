@@ -2,6 +2,7 @@ import { CoreMessage, streamText } from 'ai'
 import { createOpenAI } from '@ai-sdk/openai'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
+import { console } from 'inspector'
 
 export async function POST(req: Request) {
   // 未登录返回 null
@@ -11,7 +12,15 @@ export async function POST(req: Request) {
   if (session?.user.id) {
   }
 
-  const { messages }: { messages: CoreMessage[] } = await req.json()
+  interface ReqProps {
+    messages: CoreMessage[]
+    data: Record<string, string | number>
+  }
+
+  const { messages, data }: ReqProps = await req.json()
+
+  // conversationId 对话id
+  console.log(data.conversationId)
 
   // 创建AI的客户端实例
   const openai = createOpenAI({
