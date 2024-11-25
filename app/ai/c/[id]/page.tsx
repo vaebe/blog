@@ -9,6 +9,7 @@ import { MessageList } from '@/app/ai/components/MessageList'
 import { AiSharedDataContext } from '@/app/ai/components/AiSharedDataContext'
 import { useContext } from 'react'
 import { LayoutHeader } from '@/app/ai/components/LayoutHeader'
+import { StartAConversationPrompt } from '../../components/StartAConversationPrompt'
 
 export default function AIChatPage() {
   const { aiSharedData, setAiSharedData } = useContext(AiSharedDataContext)
@@ -34,18 +35,17 @@ export default function AIChatPage() {
       setAiSharedData((d) => {
         d.aiFirstMsg = ''
       })
+      if (!chatStarted) setChatStarted(true)
     }
-  }, [aiSharedData.aiFirstMsg, append, setAiSharedData])
+  }, [aiSharedData.aiFirstMsg, append, chatStarted, setAiSharedData])
 
   return (
     <div className="h-screen w-full">
       <LayoutHeader></LayoutHeader>
 
-      <MessageList
-        messages={messages}
-        chatStarted={chatStarted}
-        isLoading={isLoading}
-      ></MessageList>
+      <StartAConversationPrompt chatStarted={chatStarted}></StartAConversationPrompt>
+
+      <MessageList messages={messages} isLoading={isLoading}></MessageList>
 
       <div className="flex justify-center p-2 md:w-10/12 mx-auto">
         <form onSubmit={onSubmit} className="w-full flex space-x-2">

@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Loader2, User } from 'lucide-react'
 import { BytemdViewer } from '@/components/bytemd/viewer'
+import { cn } from '@/lib/utils'
 
 function UserMessage({ message }: { message: Message }) {
   return (
@@ -55,11 +56,11 @@ function MessageInfo({ message }: { message: Message }) {
 
 interface MessageListProps {
   messages: Message[]
-  chatStarted: boolean
   isLoading: boolean
+  className?: string
 }
 
-function MessageList({ messages, chatStarted, isLoading }: MessageListProps) {
+function MessageList({ messages, isLoading, className }: MessageListProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -82,21 +83,23 @@ function MessageList({ messages, chatStarted, isLoading }: MessageListProps) {
   }, [messages])
 
   return (
-    <ScrollArea ref={scrollAreaRef} style={{ height: `calc(100vh - 100px)` }}>
-      <div className="p-4 w-full md:w-10/12 mx-auto">
-        {!chatStarted && <div className="text-center text-gray-500">开始与 AI 助手对话</div>}
+    <>
+      {!!messages.length && (
+        <ScrollArea ref={scrollAreaRef} style={{ height: `calc(100vh - 200px)`, width: '100%' }}>
+          <div className={cn('p-4 w-full md:w-10/12 mx-auto', className)}>
+            {messages.map((message) => (
+              <MessageInfo key={message.id} message={message}></MessageInfo>
+            ))}
 
-        {messages.map((message) => (
-          <MessageInfo key={message.id} message={message}></MessageInfo>
-        ))}
-
-        {isLoading && (
-          <div className="flex justify-center items-center mt-4">
-            <Loader2 className="h-6 w-6 animate-spin" />
+            {isLoading && (
+              <div className="flex justify-center items-center mt-4">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </ScrollArea>
+        </ScrollArea>
+      )}
+    </>
   )
 }
 
