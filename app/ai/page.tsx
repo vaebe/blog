@@ -1,9 +1,6 @@
 'use client'
 
 import { useState, useContext } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Send, StopCircle } from 'lucide-react'
 import { LayoutHeader } from './components/LayoutHeader'
 import { toast } from '@/components/hooks/use-toast'
 import { useRouter } from 'next/navigation'
@@ -12,6 +9,7 @@ import { AiSharedDataContext } from './components/AiSharedDataContext'
 import { MessageList } from '@/app/ai/components/MessageList'
 import { useChat } from 'ai/react'
 import { StartAConversationPrompt } from './components/StartAConversationPrompt'
+import { Sender } from './components/Sender'
 
 export default function AIChatPage() {
   const { setAiSharedData } = useContext(AiSharedDataContext)
@@ -77,25 +75,13 @@ export default function AIChatPage() {
         <MessageList messages={messages} isLoading={isLoading} className="md:w-8/12"></MessageList>
 
         <div className="flex justify-center p-2 md:w-8/12 mx-auto">
-          <form onSubmit={onSubmit} className="w-full flex space-x-2">
-            <Input
-              value={input}
-              onChange={handleInputChange}
-              placeholder="在此处输入您的消息..."
-              disabled={isLoading}
-              className="flex-grow"
-            />
-            <Button type="submit" disabled={isLoading || !input.trim()}>
-              <Send className="h-4 w-4 mr-2" />
-              Send
-            </Button>
-            {isLoading && (
-              <Button type="button" variant="outline" onClick={() => stop()}>
-                <StopCircle className="h-4 w-4 mr-2" />
-                Stop
-              </Button>
-            )}
-          </form>
+          <Sender
+            onSubmit={onSubmit}
+            input={input}
+            handleInputChange={handleInputChange}
+            isLoading={isLoading}
+            stop={stop}
+          ></Sender>
         </div>
       </div>
     </div>
