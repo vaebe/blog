@@ -58,7 +58,6 @@ export default function AIChatPage() {
 
     if (status === 'authenticated') {
       createConversation()
-      return
     } else {
       handleSubmit(e)
     }

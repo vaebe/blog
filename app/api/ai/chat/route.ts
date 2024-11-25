@@ -2,14 +2,56 @@ import { CoreMessage, streamText } from 'ai'
 import { createOpenAI } from '@ai-sdk/openai'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions'
-import { console } from 'inspector'
+import { prisma } from '@/prisma'
+import { randomUUID } from 'crypto'
+
+interface SaveMsgProps {
+  aiMsg: string
+  userMsg: string
+  usage: { promptTokens: number; completionTokens: number; totalTokens: number }
+  userId: string
+  conversationId: string
+}
+
+async function saveMsg(opts: SaveMsgProps) {
+  const { aiMsg, userMsg, usage, userId, conversationId } = opts
+  const data = [
+    {
+      id: randomUUID().replaceAll('-', ''),
+      role: 'user',
+      content: userMsg,
+      conversationId,
+      userId,
+      token: usage.completionTokens
+    },
+    {
+      id: randomUUID().replaceAll('-', ''),
+      role: 'assistant',
+      content: aiMsg,
+      conversationId,
+      userId,
+      token: usage.promptTokens
+    }
+  ]
+
+  try {
+    for (const item of data) {
+      await prisma.aIMessage.create({
+        data: item
+      })
+    }
+  } catch (error) {
+    console.log(`保存 ai 对话信息失败: ${error}`)
+  }
+}
 
 export async function POST(req: Request) {
   // 未登录返回 null
   const session = await getServerSession(authOptions)
 
+  const userId = session?.user.id
   // 判断用户 id 是否存在执行对应的逻辑
-  if (session?.user.id) {
+  if (userId) {
   }
 
   interface ReqProps {
@@ -20,7 +62,7 @@ export async function POST(req: Request) {
   const { messages, data }: ReqProps = await req.json()
 
   // conversationId 对话id
-  console.log(data.conversationId)
+  const conversationId = data?.conversationId
 
   // 创建AI的客户端实例
   const openai = createOpenAI({
@@ -34,8 +76,24 @@ export async function POST(req: Request) {
     model: openai('qwen-turbo-latest'), // 模型名称
     system: '你是一名优秀的前端开发工程师', // 设置AI助手的系统角色提示
     messages, // 传入用户消息历史
-    onFinish: ({ finishReason, text, responseMessages, response }) => {
-      console.log(finishReason, text, JSON.stringify(responseMessages), response)
+    onFinish({ text, usage }) {
+      if (userId && conversationId) {
+        saveMsg({
+          aiMsg: text,
+          userMsg: messages[messages.length - 1].content as string,
+          usage: usage,
+          userId,
+          conversationId: `${conversationId}`
+        })
+      }
+
+      console.log(messages, {
+        aiMsg: text,
+        userMsg: messages[messages.length - 1].content as string,
+        usage: usage,
+        userId,
+        conversationId: `${conversationId}`
+      })
     }
   })
 

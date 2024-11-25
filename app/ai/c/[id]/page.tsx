@@ -42,7 +42,9 @@ export default function AIChatPage(props: { params: Promise<{ id: string }> }) {
       })
       if (!chatStarted) setChatStarted(true)
     }
-  }, [aiSharedData.aiFirstMsg, append, chatStarted, setAiSharedData, params.id])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="h-screen w-full">

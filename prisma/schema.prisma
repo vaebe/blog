@@ -157,6 +157,7 @@ model AIMessage {
   content                 String   @db.LongText
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
+  token                   Int
   userId                  String // 所属用户
   conversationId          String // 所属对话分组
   experimentalAttachments Json? // experimental_attachments: 存储为 JSON 数据
