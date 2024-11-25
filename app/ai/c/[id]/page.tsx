@@ -6,26 +6,49 @@ import { MessageList } from '@/app/ai/components/MessageList'
 import { AiSharedDataContext } from '@/app/ai/components/AiSharedDataContext'
 import { useContext } from 'react'
 import { LayoutHeader } from '@/app/ai/components/LayoutHeader'
-import { StartAConversationPrompt } from '../../components/StartAConversationPrompt'
-import { Sender } from '../../components/Sender'
+import { StartAConversationPrompt } from '@/app/ai/components/StartAConversationPrompt'
+import { Sender } from '@/app/ai/components/Sender'
+import { toast } from '@/components/hooks/use-toast'
+import { AIMessage } from '@prisma/client'
 
 export default function AIChatPage(props: { params: Promise<{ id: string }> }) {
   const params = use(props.params)
 
+  const conversationId = params.id
+
   const { aiSharedData, setAiSharedData } = useContext(AiSharedDataContext)
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, stop, append } = useChat({
-    api: '/api/ai/chat',
-    keepLastMessageOnError: true
-  })
+  const { messages, input, handleInputChange, handleSubmit, isLoading, stop, append, setMessages } =
+    useChat({
+      api: '/api/ai/chat',
+      keepLastMessageOnError: true
+    })
 
   const [chatStarted, setChatStarted] = useState(false)
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (input.trim()) {
-      handleSubmit(e, { data: { conversationId: params.id } })
-      if (!chatStarted) setChatStarted(true)
+  async function setMsg() {
+    try {
+      const url = `/api/ai/messages/details?id=${conversationId}`
+      const res = await fetch(url).then((res) => res.json())
+
+      if (res.code !== 0) {
+        toast({ title: '失败', description: '获取对象详情失败!', variant: 'destructive' })
+        return
+      }
+
+      const list = res.data?.map((item: AIMessage) => ({
+        content: item.content,
+        role: item.role,
+        id: item.id
+      }))
+
+      setMessages(list)
+
+      if (list.length) {
+        setChatStarted(true)
+      }
+    } catch {
+      toast({ title: '失败', description: '获取对象详情失败!', variant: 'destructive' })
     }
   }
 
@@ -34,17 +57,27 @@ export default function AIChatPage(props: { params: Promise<{ id: string }> }) {
       append(
         { content: aiSharedData.aiFirstMsg, role: 'user' },
         {
-          data: { conversationId: params.id }
+          data: { conversationId }
         }
       )
       setAiSharedData((d) => {
         d.aiFirstMsg = ''
       })
       if (!chatStarted) setChatStarted(true)
+    } else {
+      setMsg()
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (input.trim()) {
+      handleSubmit(e, { data: { conversationId } })
+      if (!chatStarted) setChatStarted(true)
+    }
+  }
 
   return (
     <div className="h-screen w-full">

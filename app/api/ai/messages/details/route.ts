@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 
     const message = await prisma.aIMessage.findMany({
       where: {
-        id,
+        conversationId: id,
         userId: session.user.id
       },
       orderBy: { createdAt: 'asc' }
