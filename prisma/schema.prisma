@@ -140,7 +140,8 @@ model Subscriber {
 // =============================== AI 对话 ===============================
 model AIConversation {
   id        String   @id @default(cuid())
-  name      String? // 对话名称，可选
+  name      String // 对话名称，可选
+  desc      String? // 对话描述
   userId    String // 所属用户
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
