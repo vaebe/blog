@@ -1,6 +1,9 @@
 import { Button } from '@/components/ui/button'
-import { Send, StopCircle } from 'lucide-react'
+import { ArrowUpIcon, StopCircle } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/hooks/use-toast'
+import { useEffect, useRef } from 'react'
+import { cn } from '@/lib/utils'
 
 interface SenderProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
@@ -10,28 +13,67 @@ interface SenderProps {
   ) => void
   isLoading: boolean
   stop: () => void
+  className?: string
 }
 
-function Sender({ onSubmit, input, handleInputChange, isLoading, stop }: SenderProps) {
+function Sender({ onSubmit, input, handleInputChange, isLoading, stop, className }: SenderProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const adjustHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`
+    }
+  }
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      adjustHeight()
+    }
+  }, [])
+
+  const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    handleInputChange(event)
+    adjustHeight()
+  }
+
   return (
-    <form onSubmit={onSubmit} className="w-full flex items-end space-x-2 relative">
+    <form onSubmit={onSubmit} className="w-full relative">
       <Textarea
-        disabled={isLoading}
+        ref={textareaRef}
+        placeholder="Send a message..."
         value={input}
-        onChange={handleInputChange}
-        placeholder="在此处输入您的消息..."
-        rows={2}
-        className="pr-14"
+        onChange={handleInput}
+        className={cn(
+          'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-xl text-base bg-muted',
+          className
+        )}
+        rows={3}
+        autoFocus
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault()
+
+            if (isLoading) {
+              toast({
+                description: 'Please wait for the model to finish its response!',
+                variant: 'destructive'
+              })
+            } else {
+              // todo 会车提交消息
+            }
+          }
+        }}
       />
 
-      <div className=" absolute bottom-0 right-0 z-10">
-        <Button type="submit" disabled={isLoading || !input.trim()}>
-          <Send className="h-4 w-4" />
+      <div className="absolute bottom-1 right-1">
+        <Button type="submit" size="sm" disabled={isLoading || !input.trim()}>
+          <ArrowUpIcon size={18} />
         </Button>
 
         {isLoading && (
-          <Button type="button" variant="outline" onClick={() => stop()}>
-            <StopCircle className="h-4 w-4" />
+          <Button type="button" size="sm" variant="outline" onClick={() => stop()}>
+            <StopCircle size={18} />
           </Button>
         )}
       </div>
