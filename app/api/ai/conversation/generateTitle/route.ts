@@ -21,7 +21,7 @@ function generatePromptText(list: Array<AIMessage>) {
       - 标题不超过18个字。
       - 描述不超过50字。
       - 保持语言简洁明了。
-      - 输出结果格式为：{"title":"","description":""}。
+      - 输出结果格式为：{"name":"","desc":""}。
   `
 }
 
@@ -65,7 +65,18 @@ export async function GET(req: Request) {
       prompt: generatePromptText(conversationData) // 设置AI助手的系统角色提示
     })
 
-    return sendJson({ data: JSON.parse(result.text) })
+    const info = JSON.parse(result.text)
+
+    // 将数据保存到数据库
+    await prisma.aIConversation.update({
+      where: { id: conversationId },
+      data: {
+        name: info.name,
+        desc: info.desc
+      }
+    })
+
+    return sendJson({ data: info })
   } catch (error) {
     console.error(`生成对话名称失败:${error}`)
     return sendJson({ code: -1, msg: `生成对话名称 ${error}` })
