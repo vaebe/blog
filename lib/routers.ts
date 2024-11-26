@@ -15,7 +15,7 @@ export const routerList = [
     icon: 'mynaui:message-dots'
   },
   {
-    path: '/aiChat',
+    path: '/ai',
     name: 'AI 对话',
     linkTarget: '_blank',
     icon: 'prime:microchip-ai'

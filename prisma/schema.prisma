@@ -13,9 +13,9 @@ model Article {
   title      String    @db.Text
   content    String    @db.LongText
   classify   String?   @db.Text
-  coverImg   String?    @db.Text
+  coverImg   String?   @db.Text
   summary    String    @db.Text
-  source     String?    @db.Text // 00 博客创建 01 掘金同步
+  source     String?   @db.Text // 00 博客创建 01 掘金同步
   views      Int       @default(1)
   likes      Int       @default(1)
   favorites  Int       @default(1)
@@ -25,6 +25,7 @@ model Article {
   updatedAt  DateTime? @updatedAt
   deletedAt  DateTime?
   isDeleted  Int?      @default(0)
+
   @@map("article")
 }
 
@@ -42,13 +43,14 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
   // 留言
-  messages  Message[]
- 
+  messages      Message[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   @@map("user")
 }
- 
+
 model Account {
   id                       String  @id @default(cuid())
   userId                   String  @unique
@@ -64,38 +66,38 @@ model Account {
   session_state            String?
   refresh_token_expires_in Int?
   user                     User?   @relation(fields: [userId], references: [id])
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   @@unique([provider, providerAccountId])
   @@index([userId])
   @@map("account")
 }
- 
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id])
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   @@index([userId])
   @@map("session")
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@unique([identifier, token])
   @@map("verification_token")
 }
- 
+
 // Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @unique
@@ -106,14 +108,14 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([userId, credentialID])
   @@map("authenticator")
 }
 
-// 留言
+// =============================== 留言板 ===============================
 model Message {
   id        String   @id @default(cuid())
   content   String
@@ -121,13 +123,51 @@ model Message {
   updatedAt DateTime @updatedAt
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
+
   @@map("message")
 }
 
+// =============================== 订阅 ===============================
 model Subscriber {
-  id         String   @id @default(cuid())
-  email      String   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-    @@map("subscriber")
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("subscriber")
+}
+
+// =============================== AI 对话 ===============================
+model AIConversation {
+  id        String   @id @default(cuid())
+  name      String // 对话名称，可选
+  desc      String? // 对话描述
+  userId    String // 所属用户
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages AIMessage[] // 关联的消息
+
+  @@index([userId])
+  @@map("ai_conversation")
+}
+
+model AIMessage {
+  id                      String   @id @default(cuid())
+  role                    String // 'system' | 'user' | 'assistant' | 'data' | 'tool'
+  content                 String   @db.LongText
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  token                   Int
+  userId                  String // 所属用户
+  conversationId          String // 所属对话分组
+  experimentalAttachments Json? // experimental_attachments: 存储为 JSON 数据
+  toolInvocations         Json? // 存储 toolInvocations
+  annotations             Json? // 存储额外注释
+
+  conversation AIConversation @relation(fields: [conversationId], references: [id])
+
+  @@index([userId])
+  @@index([conversationId])
+  @@map("ai_message")
 }
