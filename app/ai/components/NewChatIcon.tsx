@@ -1,18 +1,25 @@
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Icon } from '@iconify/react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 function NewChatIcon() {
+  const router = useRouter()
+
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Link href="/ai">
-            <Button variant="outline" size="icon">
-              <Icon icon="hugeicons:pencil-edit-02" className="h-6 w-6"></Icon>
-            </Button>
-          </Link>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => {
+              router.push('/ai')
+              router.refresh()
+            }}
+          >
+            <Icon icon="hugeicons:pencil-edit-02" className="h-6 w-6"></Icon>
+          </Button>
         </TooltipTrigger>
         <TooltipContent>
           <p>新聊天</p>
