@@ -1,0 +1,101 @@
+'use client'
+
+import { useState, useEffect, use } from 'react'
+import { useChat } from 'ai/react'
+import { MessageList } from '@/app/ai/components/MessageList'
+import { AiSharedDataContext } from '@/app/ai/components/AiSharedDataContext'
+import { useContext } from 'react'
+import { LayoutHeader } from '@/app/ai/components/LayoutHeader'
+import { StartAConversationPrompt } from '@/app/ai/components/StartAConversationPrompt'
+import { Sender } from '@/app/ai/components/Sender'
+import { toast } from '@/components/hooks/use-toast'
+import { AIMessage } from '@prisma/client'
+
+export default function AIChatPage(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params)
+
+  const conversationId = params.id
+
+  const { aiSharedData, setAiSharedData } = useContext(AiSharedDataContext)
+
+  const { messages, input, handleInputChange, handleSubmit, isLoading, stop, append, setMessages } =
+    useChat({
+      api: '/api/ai/chat',
+      keepLastMessageOnError: true
+    })
+
+  const [chatStarted, setChatStarted] = useState(false)
+
+  async function setMsg() {
+    try {
+      const url = `/api/ai/messages/details?id=${conversationId}`
+      const res = await fetch(url).then((res) => res.json())
+
+      if (res.code !== 0) {
+        toast({ title: '失败', description: '获取对象详情失败!', variant: 'destructive' })
+        return
+      }
+
+      const list = res.data?.map((item: AIMessage) => ({
+        content: item.content,
+        role: item.role,
+        id: item.id
+      }))
+
+      setMessages(list)
+
+      if (list.length) {
+        setChatStarted(true)
+      }
+    } catch {
+      toast({ title: '失败', description: '获取对象详情失败!', variant: 'destructive' })
+    }
+  }
+
+  useEffect(() => {
+    if (aiSharedData.aiFirstMsg) {
+      append(
+        { content: aiSharedData.aiFirstMsg, role: 'user' },
+        {
+          data: { conversationId }
+        }
+      )
+      setAiSharedData((d) => {
+        d.aiFirstMsg = ''
+      })
+      if (!chatStarted) setChatStarted(true)
+    } else {
+      setMsg()
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (input.trim()) {
+      handleSubmit(e, { data: { conversationId } })
+      if (!chatStarted) setChatStarted(true)
+    }
+  }
+
+  return (
+    <div className="h-screen w-full">
+      <LayoutHeader></LayoutHeader>
+
+      <StartAConversationPrompt chatStarted={chatStarted}></StartAConversationPrompt>
+
+      <MessageList messages={messages} isLoading={isLoading}></MessageList>
+
+      <div className="flex justify-center p-2 md:w-10/12 mx-auto">
+        <Sender
+          onSubmit={onSubmit}
+          input={input}
+          handleInputChange={handleInputChange}
+          isLoading={isLoading}
+          stop={stop}
+        ></Sender>
+      </div>
+    </div>
+  )
+}

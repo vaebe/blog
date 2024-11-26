@@ -79,7 +79,7 @@ export const authOptions: AuthOptions = {
     })
   ],
   pages: {
-    signIn: '/login',
+    signIn: '/',
     verifyRequest: '/auth/verify-request'
   },
   session: {
@@ -103,12 +103,17 @@ export const authOptions: AuthOptions = {
       // 如果 user 存在，存储角色信息
       if (user) {
         token.role = user.role // 将角色存储到 token 中
+        token.id = user.id // 将用户 id 存储到 token 中
       }
       return token
     },
     async session({ session, token }) {
       if (token?.role) {
         session.user.role = token.role as string
+      }
+
+      if (token?.id) {
+        session.user.id = token.id as string
       }
       return session
     }
