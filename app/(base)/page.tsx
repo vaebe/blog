@@ -1,7 +1,7 @@
 'use client'
 
 import { JueJinArticles } from './home/JueJinArticles'
-import { GithubProject } from './home/githubProject'
+import { GithubProject } from './home/GithubProject'
 import { UserProfile } from './home/UserProfile'
 import { TechnologyStack } from './home/TechnologyStack'
 
