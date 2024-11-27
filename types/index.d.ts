@@ -1,3 +1,5 @@
+import { Message } from '@prisma/client'
+
 declare global {
   // 扩展 fetch Response 字段
   interface Response {
@@ -18,4 +20,13 @@ export interface PublishArticleInfo {
   classify: string
   coverImg: string
   summary: string
+}
+
+// =================================== 留言板 ===================================
+export interface GuestbookMessage extends Message {
+  author: {
+    name: string
+    email: string
+    image: string
+  }
 }

@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import dayjs from 'dayjs'
-import type { MessageInfo } from './types'
 import { BytemdViewer } from '@/components/bytemd/viewer'
+import { GuestbookMessage } from '@/types'
 
 interface MessagesListProps {
-  list: MessageInfo[]
-  setMessages: Dispatch<SetStateAction<MessageInfo[]>>
+  list: Array<GuestbookMessage>
+  setMessages: Dispatch<SetStateAction<GuestbookMessage[]>>
 }
 
 export function MessagesList({ list, setMessages }: MessagesListProps) {
@@ -43,7 +43,7 @@ export function MessagesList({ list, setMessages }: MessagesListProps) {
   )
 }
 
-export function MessagesListItem({ info, isLast }: { info: MessageInfo; isLast: boolean }) {
+export function MessagesListItem({ info, isLast }: { info: GuestbookMessage; isLast: boolean }) {
   return (
     <>
       <div className="flex items-start">

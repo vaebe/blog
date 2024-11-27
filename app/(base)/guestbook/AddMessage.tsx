@@ -2,10 +2,10 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/hooks/use-toast'
 import { useSession } from 'next-auth/react'
-import { MessageInfo } from './types'
 import { Icon } from '@iconify/react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { BytemdViewer } from '@/components/bytemd/viewer'
+import { GuestbookMessage } from '@/types'
 
 interface MessageInputProps {
   message: string
@@ -84,7 +84,7 @@ function MessageControls({
 }
 
 interface AddMessageProps {
-  setMessages: Dispatch<SetStateAction<MessageInfo[]>>
+  setMessages: Dispatch<SetStateAction<GuestbookMessage[]>>
 }
 
 export function AddMessage({ setMessages }: AddMessageProps) {
