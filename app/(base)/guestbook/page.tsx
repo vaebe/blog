@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import { Header } from './Header'
 import { AddMessage } from './AddMessage'
-import type { MessageInfo } from './types'
 import { MessagesList } from './MessagesList'
+import { GuestbookMessage } from '@/types'
 
 export default function GuestBook() {
-  const [messages, setMessages] = useState<Array<MessageInfo>>([])
+  const [messages, setMessages] = useState<Array<GuestbookMessage>>([])
 
   return (
     <div className="min-h-screen max-w-4xl mx-auto px-2">
