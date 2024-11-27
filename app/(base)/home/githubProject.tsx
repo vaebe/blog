@@ -30,15 +30,13 @@ function LoadingComponent() {
 
 function ProjectInfo({ repos }: { repos: GithubPinnedRepoInfo[] }) {
   return (
-    <div className="divide-y divide-gray-200 dark:divide-gray-700">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {repos.map((repo) => (
-        <div key={repo.id} className="group py-4 first:pt-0 last:pb-0">
-          <Link
-            href={repo.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block transition duration-300 ease-in-out hover:bg-black/10 dark:hover:bg-white/10 rounded p-2"
-          >
+        <div
+          key={repo.id}
+          className="hover:bg-black/10 dark:hover:bg-white/10 rounded p-2 transition duration-300 ease-in-out"
+        >
+          <Link href={repo.url} target="_blank" rel="noopener noreferrer">
             <h3 className="text-lg font-semibold mb-2 transition duration-300">{repo.name}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
               {repo.description || 'No description available'}
@@ -90,7 +88,7 @@ export function GithubProject() {
   }, [])
 
   return (
-    <ContentCard title="GitHub 项目" titleIcon="mdi:github">
+    <ContentCard title="GitHub 项目">
       {isLoading ? <LoadingComponent /> : <ProjectInfo repos={repos} />}
 
       {repos.length === 0 && !isLoading && <NoFound />}

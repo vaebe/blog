@@ -28,14 +28,16 @@ function LoadingComponent() {
 
 function ArticleInfo({ articles }: { articles: Article[] }) {
   return (
-    <div key="content" className="divide-y divide-gray-200 dark:divide-gray-700">
+    <div key="content" className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {articles?.map((article) => (
-        <div key={article.id} className="group py-4 first:pt-0 last:pb-0">
+        <div
+          key={article.id}
+          className="block transition duration-300 ease-in-out hover:bg-black/10 dark:hover:bg-white/10 rounded p-2"
+        >
           <Link
             href={`https://juejin.cn/post/${article.id}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block transition duration-300 ease-in-out hover:bg-black/10 dark:hover:bg-white/10 rounded p-2"
           >
             <h3 className="text-lg font-semibold mb-2 transition duration-300">{article.title}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
@@ -86,7 +88,7 @@ export function JueJinArticles() {
   }, [])
 
   return (
-    <ContentCard title="掘金文章" titleIcon="simple-icons:juejin">
+    <ContentCard title="掘金文章">
       {isLoading ? <LoadingComponent /> : <ArticleInfo articles={articles} />}
 
       {articles.length === 0 && !isLoading && <NoFound />}
