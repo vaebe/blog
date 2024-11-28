@@ -14,7 +14,7 @@ import { Sender } from './components/Sender'
 export default function AIChatPage() {
   const { setAiSharedData } = useContext(AiSharedDataContext)
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, stop } = useChat({
+  const { messages, input, setInput, handleSubmit, isLoading, stop } = useChat({
     api: '/api/ai/chat',
     keepLastMessageOnError: true
   })
@@ -35,11 +35,25 @@ export default function AIChatPage() {
         toast({ title: '失败', description: '创建对话失败!', variant: 'destructive' })
         return
       }
+
+      const conversationId = res.data.id
+
       setAiSharedData((d) => {
         d.aiFirstMsg = input
+        d.conversationList = [
+          {
+            desc: '',
+            id: conversationId,
+            name: 'New Chat',
+            userId: '',
+            createdAt: new Date(),
+            updatedAt: new Date()
+          },
+          ...d.conversationList
+        ]
       })
 
-      router.push(`/ai/${res.data.id}`)
+      router.replace(`/ai/${conversationId}`)
     } catch {
       toast({ title: '失败', description: '创建对话失败!', variant: 'destructive' })
     }
@@ -49,9 +63,7 @@ export default function AIChatPage() {
 
   const { status } = useSession()
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
+  const onSubmit = () => {
     if (!input.trim()) {
       return
     }
@@ -59,10 +71,9 @@ export default function AIChatPage() {
     if (status === 'authenticated') {
       createConversation()
     } else {
-      handleSubmit(e)
+      handleSubmit(undefined)
+      if (!chatStarted) setChatStarted(true)
     }
-
-    if (!chatStarted) setChatStarted(true)
   }
 
   return (
@@ -71,15 +82,16 @@ export default function AIChatPage() {
 
       <div className="w-full h-full flex flex-col items-center justify-center">
         <StartAConversationPrompt chatStarted={chatStarted}></StartAConversationPrompt>
+
         <MessageList messages={messages} isLoading={isLoading} className="md:w-8/12"></MessageList>
 
         <div className="flex justify-center p-2 md:w-8/12 mx-auto">
           <Sender
             onSubmit={onSubmit}
             input={input}
-            handleInputChange={handleInputChange}
             isLoading={isLoading}
             stop={stop}
+            setInput={setInput}
           ></Sender>
         </div>
       </div>

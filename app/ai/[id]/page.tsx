@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useEffect, use } from 'react'
 import { useChat } from 'ai/react'
 import { MessageList } from '@/app/ai/components/MessageList'
 import { AiSharedDataContext } from '@/app/ai/components/AiSharedDataContext'
@@ -10,6 +10,7 @@ import { StartAConversationPrompt } from '@/app/ai/components/StartAConversation
 import { Sender } from '@/app/ai/components/Sender'
 import { toast } from '@/components/hooks/use-toast'
 import { AIMessage } from '@prisma/client'
+import { useRouter } from 'next/navigation'
 
 export default function AIChatPage(props: { params: Promise<{ id: string }> }) {
   const params = use(props.params)
@@ -18,13 +19,14 @@ export default function AIChatPage(props: { params: Promise<{ id: string }> }) {
 
   const { aiSharedData, setAiSharedData } = useContext(AiSharedDataContext)
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, stop, append, setMessages } =
-    useChat({
+  const { messages, input, handleSubmit, setInput, isLoading, stop, append, setMessages } = useChat(
+    {
       api: '/api/ai/chat',
       keepLastMessageOnError: true
-    })
+    }
+  )
 
-  const [chatStarted, setChatStarted] = useState(false)
+  const router = useRouter()
 
   async function setMsg() {
     try {
@@ -36,19 +38,47 @@ export default function AIChatPage(props: { params: Promise<{ id: string }> }) {
         return
       }
 
-      const list = res.data?.map((item: AIMessage) => ({
+      const data = res?.data ?? []
+
+      if (!data.length) {
+        router.replace('/ai')
+        return
+      }
+
+      const list = data.map((item: AIMessage) => ({
         content: item.content,
         role: item.role,
         id: item.id
       }))
 
       setMessages(list)
-
-      if (list.length) {
-        setChatStarted(true)
-      }
     } catch {
       toast({ title: '失败', description: '获取对象详情失败!', variant: 'destructive' })
+    }
+  }
+
+  // 生成对话标题
+  async function generateConversationTitle() {
+    try {
+      const url = `/api/ai/conversation/generateTitle?conversationId=${conversationId}`
+      const res = await fetch(url).then((res) => res.json())
+
+      if (res.code !== 0) {
+        return
+      }
+
+      const conversationName = res.data?.name
+
+      setAiSharedData((d) => {
+        d.conversationList = d.conversationList.map((item) => {
+          if (item.id === conversationId && conversationName) {
+            item.name = conversationName
+          }
+          return item
+        })
+      })
+    } catch {
+      console.error('生成对话标题失败!')
     }
   }
 
@@ -59,11 +89,13 @@ export default function AIChatPage(props: { params: Promise<{ id: string }> }) {
         {
           data: { conversationId }
         }
-      )
+      ).then(() => {
+        generateConversationTitle()
+      })
+
       setAiSharedData((d) => {
         d.aiFirstMsg = ''
       })
-      if (!chatStarted) setChatStarted(true)
     } else {
       setMsg()
     }
@@ -71,29 +103,25 @@ export default function AIChatPage(props: { params: Promise<{ id: string }> }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (input.trim()) {
-      handleSubmit(e, { data: { conversationId } })
-      if (!chatStarted) setChatStarted(true)
-    }
+  const onSubmit = () => {
+    handleSubmit(undefined, { data: { conversationId } })
   }
 
   return (
-    <div className="h-screen w-full">
+    <div className="flex flex-col h-screen">
       <LayoutHeader></LayoutHeader>
 
-      <StartAConversationPrompt chatStarted={chatStarted}></StartAConversationPrompt>
+      <StartAConversationPrompt chatStarted={!!messages.length}></StartAConversationPrompt>
 
       <MessageList messages={messages} isLoading={isLoading}></MessageList>
 
-      <div className="flex justify-center p-2 md:w-10/12 mx-auto">
+      <div className="flex justify-center md:w-10/12 mx-auto pb-6">
         <Sender
           onSubmit={onSubmit}
           input={input}
-          handleInputChange={handleInputChange}
           isLoading={isLoading}
           stop={stop}
+          setInput={setInput}
         ></Sender>
       </div>
     </div>

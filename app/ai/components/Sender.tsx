@@ -6,23 +6,23 @@ import { useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
 
 interface SenderProps {
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
+  onSubmit: () => void
   input: string
-  handleInputChange: (
-    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
-  ) => void
+  setInput: (value: string) => void
   isLoading: boolean
   stop: () => void
   className?: string
 }
 
-function Sender({ onSubmit, input, handleInputChange, isLoading, stop, className }: SenderProps) {
+function Sender({ onSubmit, input, setInput, isLoading, stop, className }: SenderProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const adjustHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`
+
+      console.log(textareaRef.current.scrollHeight, '-=-=-=-=')
     }
   }
 
@@ -33,19 +33,31 @@ function Sender({ onSubmit, input, handleInputChange, isLoading, stop, className
   }, [])
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    handleInputChange(event)
+    setInput(event.target.value)
     adjustHeight()
   }
 
+  function sendMsg() {
+    if (isLoading || !input.trim()) {
+      return
+    }
+
+    onSubmit()
+
+    setTimeout(() => {
+      adjustHeight()
+    }, 0)
+  }
+
   return (
-    <form onSubmit={onSubmit} className="w-full relative">
+    <div className="w-full relative">
       <Textarea
         ref={textareaRef}
         placeholder="Send a message..."
         value={input}
         onChange={handleInput}
         className={cn(
-          'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-xl text-base bg-muted',
+          'min-h-[24px] max-h-[calc(45dvh)] overflow-hidden resize-none rounded-xl text-base bg-muted',
           className
         )}
         rows={3}
@@ -60,14 +72,14 @@ function Sender({ onSubmit, input, handleInputChange, isLoading, stop, className
                 variant: 'destructive'
               })
             } else {
-              // todo 会车提交消息
+              sendMsg()
             }
           }
         }}
       />
 
       <div className="absolute bottom-1 right-1">
-        <Button type="submit" size="sm" disabled={isLoading || !input.trim()}>
+        <Button size="sm" disabled={isLoading || !input.trim()} onClick={sendMsg}>
           <ArrowUpIcon size={18} />
         </Button>
 
@@ -77,7 +89,7 @@ function Sender({ onSubmit, input, handleInputChange, isLoading, stop, className
           </Button>
         )}
       </div>
-    </form>
+    </div>
   )
 }
 
