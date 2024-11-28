@@ -4,8 +4,8 @@ import { useToast } from '@/components/hooks/use-toast'
 import { useSession } from 'next-auth/react'
 import { Icon } from '@iconify/react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { BytemdViewer } from '@/components/bytemd/viewer'
 import { GuestbookMessage } from '@/types'
+import { Markdown } from '@/components/markdown'
 
 interface MessageInputProps {
   message: string
@@ -28,7 +28,7 @@ const MessageInput = ({ message, onChange }: MessageInputProps) => {
 const MessagePreview = ({ message }: { message: string }) => {
   return (
     <div className="min-h-24">
-      <BytemdViewer content={message}></BytemdViewer>
+      <Markdown>{message}</Markdown>
     </div>
   )
 }
