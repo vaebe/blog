@@ -16,8 +16,7 @@ export default function AiLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <AiSharedDataContext.Provider value={{ aiSharedData, setAiSharedData }}>
-      <div className={cn('flex h-screen bg-white dark:bg-black')}>
-        {/* 用户已登录 */}
+      <div className={cn('flex h-screen bg-white dark:bg-black ')}>
         {status === 'authenticated' && aiSharedData.layoutSidebar && <LayoutSidebar />}
 
         <div className="flex-1 flex flex-col">{children}</div>

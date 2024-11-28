@@ -6,8 +6,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Loader2, User } from 'lucide-react'
-import { BytemdViewer } from '@/components/bytemd/viewer'
 import { cn } from '@/lib/utils'
+import { Markdown } from '@/components/markdown'
 
 function UserMessage({ message }: { message: Message }) {
   return (
@@ -33,7 +33,7 @@ function AssistantMessage({ message }: { message: Message }) {
       </Avatar>
 
       <Card className="max-w-[80%] p-2">
-        <BytemdViewer content={message.content ?? ''}></BytemdViewer>
+        <Markdown>{message.content ?? ''}</Markdown>
       </Card>
     </>
   )
@@ -85,8 +85,8 @@ function MessageList({ messages, isLoading, className }: MessageListProps) {
   return (
     <>
       {!!messages.length && (
-        <ScrollArea ref={scrollAreaRef} style={{ height: `calc(100vh - 200px)`, width: '100%' }}>
-          <div className={cn('p-4 w-full md:w-10/12 mx-auto', className)}>
+        <ScrollArea ref={scrollAreaRef} style={{ height: `calc(100vh - 150px)`, width: '100%' }}>
+          <div className={cn('w-full md:w-10/12 mx-auto', className)}>
             {messages.map((message) => (
               <MessageInfo key={message.id} message={message}></MessageInfo>
             ))}
