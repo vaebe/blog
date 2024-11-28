@@ -41,7 +41,7 @@ async function saveMsg(opts: SaveMsgProps) {
       })
     }
   } catch (error) {
-    console.log(`保存 ai 对话信息失败: ${error}`)
+    console.error(`保存 ai 对话信息失败: ${error}`)
   }
 }
 
@@ -86,14 +86,6 @@ export async function POST(req: Request) {
           conversationId: `${conversationId}`
         })
       }
-
-      console.log(messages, {
-        aiMsg: text,
-        userMsg: messages[messages.length - 1].content as string,
-        usage: usage,
-        userId,
-        conversationId: `${conversationId}`
-      })
     }
   })
 

@@ -39,7 +39,7 @@ export default function AIChatPage() {
         d.aiFirstMsg = input
       })
 
-      router.push(`/ai/c/${res.data.id}`)
+      router.push(`/ai/${res.data.id}`)
     } catch {
       toast({ title: '失败', description: '创建对话失败!', variant: 'destructive' })
     }
