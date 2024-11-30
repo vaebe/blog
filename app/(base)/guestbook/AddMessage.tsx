@@ -11,6 +11,7 @@ interface MessageInputProps {
   message: string
   onChange: (value: string) => void
 }
+
 // 留言输入组件
 const MessageInput = ({ message, onChange }: MessageInputProps) => {
   return (

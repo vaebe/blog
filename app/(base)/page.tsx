@@ -1,5 +1,3 @@
-'use client'
-
 import { JueJinArticles } from './home/JueJinArticles'
 import { GithubProject } from './home/GithubProject'
 import { UserProfile } from './home/UserProfile'

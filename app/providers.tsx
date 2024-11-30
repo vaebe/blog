@@ -1,5 +1,6 @@
 'use client'
 
+import '@/lib/date'
 import { ThemeProvider } from 'next-themes'
 import { SessionProvider } from 'next-auth/react'
 import { Toaster } from '@/components/ui/toaster'
