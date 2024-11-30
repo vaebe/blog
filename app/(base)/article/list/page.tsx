@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card'
 import Link from 'next/link'
 import { Eye } from 'lucide-react'
 import { getJumpArticleDetailsUrl } from '@/lib/utils'
+import { NoFound } from '@/components/no-found'
 
 type GroupedArticles = Record<string, Article[]>
 
@@ -44,12 +45,6 @@ const ArticleList = ({ articleInfo }: { articleInfo: GroupedArticles }) => (
         </div>
       ))}
   </>
-)
-
-const NoResults = () => (
-  <div className="text-center py-10">
-    <p className="text-xl text-muted-foreground">这里曾经有一些东西 , 现在不见了!</p>
-  </div>
 )
 
 const groupArticlesByYear = (articles: Article[]): GroupedArticles => {
@@ -101,7 +96,7 @@ export default async function ArticlesPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-2">
-      {Object.keys(articles).length > 0 ? <ArticleList articleInfo={articles} /> : <NoResults />}
+      {Object.keys(articles).length > 0 ? <ArticleList articleInfo={articles} /> : <NoFound />}
     </div>
   )
 }

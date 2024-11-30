@@ -1,5 +1,3 @@
-'use client'
-
 import LayoutHeader from '@/components/layout/header'
 import LayoutFooter from '@/components/layout/footer'
 import { ThemeSwitch } from '@/components/theme-switch'
