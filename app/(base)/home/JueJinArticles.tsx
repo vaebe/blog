@@ -13,8 +13,8 @@ function NoFound() {
 
 function LoadingComponent() {
   return (
-    <div className="space-y-6">
-      {[...Array(3)].map((_, index) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {[...Array(6)].map((_, index) => (
         <div key={index}>
           <Skeleton className="h-6 w-3/4 mb-2" />
           <Skeleton className="h-4 w-full mb-2" />
