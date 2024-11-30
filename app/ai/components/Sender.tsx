@@ -21,8 +21,6 @@ function Sender({ onSubmit, input, setInput, isLoading, stop, className }: Sende
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`
-
-      console.log(textareaRef.current.scrollHeight, '-=-=-=-=')
     }
   }
 
