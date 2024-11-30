@@ -3,9 +3,9 @@ import { NewChatIcon } from './NewChatIcon'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useSession } from 'next-auth/react'
 import { Icon } from '@iconify/react'
-import Link from 'next/link'
 import { AiSharedDataContext } from './AiSharedDataContext'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
+import { LoginDialog } from '@/components/login-dialog'
 
 function LayoutHeader() {
   const title = `${process.env.NEXT_PUBLIC_GITHUB_USER_NAME?.toLocaleUpperCase()} AI 小助手`
@@ -13,6 +13,8 @@ function LayoutHeader() {
   const { data: session, status } = useSession()
 
   const { aiSharedData } = useContext(AiSharedDataContext)
+
+  const [showLoginDialog, setShowLoginDialog] = useState<boolean>(false)
 
   return (
     <div className="w-full flex items-center justify-between pt-2 px-8">
@@ -30,12 +32,13 @@ function LayoutHeader() {
 
       <div>
         {status === 'unauthenticated' && (
-          <Link href="/login">
-            <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-white dark:bg-gray-800 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 shadow-sm hover:shadow-md">
-              <Icon icon="ri:aed-line" className="mr-2 w-5 h-5" />
-              登录
-            </div>
-          </Link>
+          <div
+            className="flex items-center cursor-pointer space-x-2 px-3 py-1 rounded-full bg-white dark:bg-gray-800 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 shadow-sm hover:shadow-md"
+            onClick={() => setShowLoginDialog(true)}
+          >
+            <Icon icon="ri:aed-line" className="mr-2 w-5 h-5" />
+            登录
+          </div>
         )}
 
         {status === 'authenticated' && (
@@ -49,6 +52,8 @@ function LayoutHeader() {
           </div>
         )}
       </div>
+
+      <LoginDialog isOpen={showLoginDialog} onClose={() => setShowLoginDialog(false)}></LoginDialog>
     </div>
   )
 }
