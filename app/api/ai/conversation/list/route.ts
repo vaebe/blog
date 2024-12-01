@@ -20,7 +20,8 @@ export async function GET(req: Request) {
 
     const list = await prisma.aIConversation.findMany({
       where: {
-        userId: session!.user.id
+        userId: session!.user.id,
+        deletedAt: null
       },
       orderBy: { createdAt: 'desc' },
       skip: skip,
