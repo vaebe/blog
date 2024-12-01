@@ -21,7 +21,7 @@ function GithubLoginButton({ setIsLoading }: Props) {
 
   return (
     <Button
-      className="w-full flex justify-center items-center dark:bg-black"
+      className="w-full flex justify-center items-cente bg-black dark:bg-white"
       onClick={handleGithubLogin}
     >
       <Icon icon="mdi:github" className="mr-2 h-5 w-5" />
