@@ -165,7 +165,7 @@ model AIMessage {
   toolInvocations         Json? // 存储 toolInvocations
   annotations             Json? // 存储额外注释
 
-  conversation AIConversation @relation(fields: [conversationId], references: [id])
+  conversation AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([conversationId])
