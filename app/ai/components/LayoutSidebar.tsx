@@ -36,7 +36,7 @@ function LayoutSidebar() {
           return (
             <div
               key={item.id}
-              className={`p-2 h-10 rounded text-white mb-0.5 hover:bg-white/10 cursor-pointer truncate ${id === item.id ? 'bg-white/20' : ''}`}
+              className={`p-2 h-10 rounded dark:text-white mb-0.5 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer truncate ${id === item.id ? 'bg-black/10 dark:bg-white/10' : ''}`}
               onClick={() => switchConversation(item.id)}
             >
               {item.name}
