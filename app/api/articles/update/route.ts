@@ -21,6 +21,6 @@ export async function PUT(req: Request) {
     return sendJson({ data: updatedArticle })
   } catch (error) {
     console.error(error)
-    return sendJson({ code: -1, msg: '跟新文章数据失败!' })
+    return sendJson({ code: -1, msg: '更新文章数据失败!' })
   }
 }
