@@ -47,7 +47,8 @@ export default function AIChatPage() {
             name: 'New Chat',
             userId: '',
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            deletedAt: null
           },
           ...d.conversationList
         ]
