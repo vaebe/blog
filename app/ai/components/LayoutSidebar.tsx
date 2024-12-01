@@ -156,14 +156,14 @@ function Operate({ info }: { info: AIConversation }) {
         <DropdownMenuContent>
           <DropdownMenuItem className="cursor-pointer" onSelect={editDialog.show}>
             <div className="flex items-center">
-              <Icon icon="lucide:feather" className="w-5 h-5 mx-2" />
+              <Icon icon="lucide:edit" className="w-5 h-5 mx-2" />
               <span>重命名</span>
             </div>
           </DropdownMenuItem>
 
           <DropdownMenuItem className="cursor-pointer" onSelect={deleteDialog.show}>
             <div className="flex items-center">
-              <Icon icon="lucide:log-out" className="w-5 h-5 mx-2" />
+              <Icon icon="fluent:delete-12-regular" className="w-5 h-5 mx-2" />
               <span>删除</span>
             </div>
           </DropdownMenuItem>
