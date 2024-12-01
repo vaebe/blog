@@ -6,6 +6,7 @@ import { Icon } from '@iconify/react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { GuestbookMessage } from '@/types'
 import { Markdown } from '@/components/markdown'
+import { LoginDialog } from '@/components/login-dialog'
 
 interface MessageInputProps {
   message: string
@@ -88,7 +89,9 @@ interface AddMessageProps {
   setMessages: Dispatch<SetStateAction<GuestbookMessage[]>>
 }
 
-export function AddMessage({ setMessages }: AddMessageProps) {
+function AddMessage({ setMessages }: AddMessageProps) {
+  const [showLoginDialog, setShowLoginDialog] = useState<boolean>(false)
+
   const [messageView, setMessageView] = useState(false)
   const [message, setMessage] = useState('')
   const { toast } = useToast()
@@ -151,11 +154,16 @@ export function AddMessage({ setMessages }: AddMessageProps) {
           />
         </div>
       ) : (
-        <Button onClick={sendMsg} className="my-4">
+        <Button className="my-4" onClick={() => setShowLoginDialog(true)}>
           <Icon icon="memory:user" className="mr-2" width="20px" />
           登录后才可以留言！
         </Button>
       )}
+
+      <LoginDialog isOpen={showLoginDialog} onClose={() => setShowLoginDialog(false)}></LoginDialog>
     </div>
   )
 }
+
+export { AddMessage }
+export default AddMessage
