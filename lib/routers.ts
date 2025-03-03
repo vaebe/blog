@@ -13,11 +13,5 @@ export const routerList = [
     path: '/guestbook',
     name: '留言板',
     icon: 'mynaui:message-dots'
-  },
-  {
-    path: '/ai',
-    name: 'AI 对话',
-    linkTarget: '_blank',
-    icon: 'prime:microchip-ai'
   }
 ]
