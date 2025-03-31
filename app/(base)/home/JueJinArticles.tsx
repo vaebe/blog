@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 import { Article } from '@prisma/client'
+import { TimeInSeconds } from '@/lib/enums'
 
 function NoFound() {
   return <p className="text-center text-gray-500 dark:text-gray-400 py-8">No articles found.</p>
@@ -71,7 +72,9 @@ export function JueJinArticles() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch('/api/articles/all').then((res) => res.json())
+        const res = await fetch('/api/articles/all', {
+          next: { revalidate: TimeInSeconds.oneHour }
+        }).then((res) => res.json())
 
         if (res.code === 0) {
           const list: Article[] = res?.data || []
