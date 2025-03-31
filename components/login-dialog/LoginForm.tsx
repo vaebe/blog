@@ -5,7 +5,7 @@ import { signIn } from 'next-auth/react'
 import { Icon } from '@iconify/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/components/hooks/use-toast'
+import { toast } from 'sonner'
 import { EmailLoginButton } from './EmailLoginButton'
 
 interface Props {
@@ -15,7 +15,6 @@ interface Props {
 const LoginForm = ({ setIsLoading }: Props) => {
   const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
-  const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,15 +29,15 @@ const LoginForm = ({ setIsLoading }: Props) => {
     setIsLoading(false)
 
     if (res?.error) {
-      toast({ title: '登录失败', description: '请检查您的用户名和密码', variant: 'destructive' })
+      toast('请检查您的用户名和密码!')
     } else {
-      toast({ title: '登录成功', description: '欢迎回来！' })
+      toast('欢迎回来！')
     }
   }
 
   function handleEmailLogin() {
     if (!account) {
-      toast({ title: '登录失败', description: '请输入邮箱', variant: 'destructive' })
+      toast(`请输入邮箱!`)
       return
     }
 
@@ -47,7 +46,7 @@ const LoginForm = ({ setIsLoading }: Props) => {
     signIn('email', { email: account, callbackUrl: '/auth/verify-request?provider=email' }).catch(
       (error) => {
         setIsLoading(false)
-        toast({ title: '登录失败', description: error, variant: 'destructive' })
+        toast(`登录失败： ${error}`)
       }
     )
   }
@@ -86,7 +85,7 @@ const LoginForm = ({ setIsLoading }: Props) => {
             />
           </div>
         </div>
-        <Button className="w-full" type="submit">
+        <Button className="w-full cursor-pointer" type="submit">
           账号密码登录
         </Button>
       </form>

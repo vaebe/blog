@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import dayjs from 'dayjs'
 import { GuestbookMessage } from '@/types'
-import { Markdown } from '@/components/markdown'
+import { BytemdViewer } from '@/components/bytemd/viewer'
 
 interface MessagesListProps {
   list: Array<GuestbookMessage>
@@ -60,7 +60,7 @@ export function MessagesListItem({ info, isLast }: { info: GuestbookMessage; isL
             </span>
           </p>
 
-          <Markdown>{info.content}</Markdown>
+          <BytemdViewer content={info.content}></BytemdViewer>
         </div>
       </div>
 

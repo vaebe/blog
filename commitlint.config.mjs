@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/no-anonymous-default-export
-export default { extends: ['@commitlint/config-conventional'] }
+const config = { extends: ['@commitlint/config-conventional'] }
+export default config

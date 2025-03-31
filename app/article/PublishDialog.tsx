@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { toast } from '@/components/hooks/use-toast'
+import { toast } from 'sonner'
 import { PublishArticleInfo } from '@/types'
 import { Updater } from 'use-immer'
 import Image from 'next/image'
@@ -110,12 +110,12 @@ export function PublishDialog({
 }: PublishDialogProps) {
   const validateForm = (): boolean => {
     if (!articleInfo.classify) {
-      toast({ variant: 'destructive', title: '警告', description: '文章分类不能为空' })
+      toast('文章分类不能为空!')
       return false
     }
 
     if (!articleInfo.summary?.trim()) {
-      toast({ variant: 'destructive', title: '警告', description: '文章简介不能为空' })
+      toast('文章简介不能为空!')
       return false
     }
 
@@ -142,18 +142,10 @@ export function PublishDialog({
           console.log(res.data)
         })
       } else {
-        toast({
-          variant: 'destructive',
-          title: '警告',
-          description: '图片上传失败了!'
-        })
+        toast('图片上传失败!')
       }
     } catch {
-      toast({
-        variant: 'destructive',
-        title: '警告',
-        description: '图片上传失败，似乎遇到了一些什么问题!'
-      })
+      toast('图片上传失败，似乎遇到了一些什么问题!')
     } finally {
       event.target.value = ''
     }

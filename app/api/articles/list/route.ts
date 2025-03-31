@@ -41,6 +41,6 @@ export async function GET(req: Request) {
       }
     })
   } catch (error) {
-    return sendJson({ code: -1, msg: `获取文章列表失败: ${error}` })
+    return sendJson({ code: -1, msg: `获取文章列表失败：${error}` })
   }
 }

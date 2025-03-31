@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { useToast } from '@/components/hooks/use-toast'
+import { toast } from 'sonner'
 import { useSession } from 'next-auth/react'
 import { Icon } from '@iconify/react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { GuestbookMessage } from '@/types'
-import { Markdown } from '@/components/markdown'
 import { LoginDialog } from '@/components/login-dialog'
+import { BytemdViewer } from '@/components/bytemd/viewer'
 
 interface MessageInputProps {
   message: string
@@ -30,7 +30,7 @@ const MessageInput = ({ message, onChange }: MessageInputProps) => {
 const MessagePreview = ({ message }: { message: string }) => {
   return (
     <div className="min-h-24">
-      <Markdown>{message}</Markdown>
+      <BytemdViewer content={message}></BytemdViewer>
     </div>
   )
 }
@@ -94,12 +94,11 @@ function AddMessage({ setMessages }: AddMessageProps) {
 
   const [messageView, setMessageView] = useState(false)
   const [message, setMessage] = useState('')
-  const { toast } = useToast()
   const { data: session, status } = useSession()
 
   const sendMsg = async () => {
     if (!message.trim()) {
-      toast({ title: '留言失败', description: '留言内容不能为空!', variant: 'destructive' })
+      toast('留言内容不能为空!')
       return
     }
 
@@ -115,11 +114,11 @@ function AddMessage({ setMessages }: AddMessageProps) {
     }).then((res) => res.json())
 
     if (res.code !== 0) {
-      toast({ description: res.msg, variant: 'destructive' })
+      toast(res.msg)
       return
     }
 
-    toast({ title: '留言成功', description: '今天天气貌似不错!' })
+    toast('留言成功!')
 
     setMessageView(false)
 
@@ -154,7 +153,7 @@ function AddMessage({ setMessages }: AddMessageProps) {
           />
         </div>
       ) : (
-        <Button className="my-4" onClick={() => setShowLoginDialog(true)}>
+        <Button className="my-4 cursor-pointer" onClick={() => setShowLoginDialog(true)}>
           <Icon icon="memory:user" className="mr-2" width="20px" />
           登录后才可以留言！
         </Button>

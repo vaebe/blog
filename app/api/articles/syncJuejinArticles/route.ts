@@ -105,6 +105,6 @@ export async function GET(req: Request) {
 
     return sendJson({ data: syncArticleNameList, msg: '同步掘金文章成功' })
   } catch (error) {
-    return sendJson({ code: -1, msg: `同步掘金文章失败: ${error}` })
+    return sendJson({ code: -1, msg: `同步掘金文章失败：${error}` })
   }
 }

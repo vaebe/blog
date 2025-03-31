@@ -22,6 +22,6 @@ export async function GET() {
 
     return sendJson({ data: articles })
   } catch (error) {
-    return sendJson({ code: -1, msg: `获取所有文章失败: ${error}` })
+    return sendJson({ code: -1, msg: `获取所有文章失败：${error}` })
   }
 }

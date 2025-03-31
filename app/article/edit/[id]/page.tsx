@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, use } from 'react'
-import { toast } from '@/components/hooks/use-toast'
+import { toast } from 'sonner'
 import { PublishDialog } from '@/app/article/PublishDialog'
 import { useRouter } from 'next/navigation'
 import { BytemdEditor } from '@/components/bytemd/editor'
@@ -27,7 +27,7 @@ export default function PublishArticle(props: { params: Promise<{ id: string }> 
       const res = await fetch(`/api/articles/details?id=${params.id}`).then((res) => res.json())
 
       if (res.code !== 0) {
-        toast({ variant: 'destructive', title: '警告', description: '获取文章详情失败!' })
+        toast('获取文章详情失败!')
         return
       }
 
@@ -51,12 +51,12 @@ export default function PublishArticle(props: { params: Promise<{ id: string }> 
     setPublishDialogShow(false)
 
     if (!articleInfo.title) {
-      toast({ title: '警告', description: '文章标题不能为空', variant: 'destructive' })
+      toast('文章标题不能为空!')
       return
     }
 
     if (!content) {
-      toast({ title: '警告', description: '文章内容不能为空', variant: 'destructive' })
+      toast('文章内容不能为空!')
       return
     }
 
@@ -71,12 +71,12 @@ export default function PublishArticle(props: { params: Promise<{ id: string }> 
 
       if (res.code === 0) {
         router.push('/article/list')
-        toast({ title: '成功', description: '编辑成功!' })
+        toast('编辑成功!')
       } else {
-        toast({ title: '失败', description: '编辑文章时出现错误', variant: 'destructive' })
+        toast('编辑文章时出现错误!')
       }
     } catch {
-      toast({ title: '失败', description: '编辑文章时出现错误', variant: 'destructive' })
+      toast('编辑文章时出现错误!')
     }
   }
 

@@ -58,6 +58,6 @@ export async function POST(req: Request) {
 
     return sendJson({ msg: '邮件发送成功' })
   } catch (error) {
-    return sendJson({ code: -1, msg: `发送邮件失败: ${error}` })
+    return sendJson({ code: -1, msg: `发送邮件失败：${error}` })
   }
 }
