@@ -41,4 +41,3 @@ npx prisma generate
 ```bash
 npx shadcn@latest add scroll-area
 ```
-

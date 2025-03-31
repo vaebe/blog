@@ -1,6 +1,8 @@
 .dark {
   .markdown-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif,
+      'Apple Color Emoji', 'Segoe UI Emoji';
     color: #ffffff;
     // background-color: #0d1117;
     font-size: 16px;
@@ -10,20 +12,20 @@
 
   .markdown-body::before {
     display: table;
-    content: "";
+    content: '';
   }
 
   .markdown-body::after {
     display: table;
     clear: both;
-    content: "";
+    content: '';
   }
 
-  .markdown-body>*:first-child {
+  .markdown-body > *:first-child {
     margin-top: 0 !important;
   }
 
-  .markdown-body>*:last-child {
+  .markdown-body > *:last-child {
     margin-bottom: 0 !important;
   }
 
@@ -59,7 +61,7 @@
   }
 
   .markdown-body hr {
-    height: .25em;
+    height: 0.25em;
     padding: 0;
     margin: 24px 0;
     background-color: #30363d;
@@ -131,18 +133,18 @@
   .markdown-body h5 code,
   .markdown-body h6 tt,
   .markdown-body h6 code {
-    padding: 0 .2em;
+    padding: 0 0.2em;
     font-size: inherit;
   }
 
   .markdown-body h1 {
-    padding-bottom: .3em;
+    padding-bottom: 0.3em;
     font-size: 2em;
     border-bottom: 1px solid #21262d;
   }
 
   .markdown-body h2 {
-    padding-bottom: .3em;
+    padding-bottom: 0.3em;
     font-size: 1.5em;
     border-bottom: 1px solid #21262d;
   }
@@ -156,11 +158,11 @@
   }
 
   .markdown-body h5 {
-    font-size: .875em;
+    font-size: 0.875em;
   }
 
   .markdown-body h6 {
-    font-size: .85em;
+    font-size: 0.85em;
     color: #8b949e;
   }
 
@@ -183,12 +185,12 @@
     margin-bottom: 0;
   }
 
-  .markdown-body li>p {
+  .markdown-body li > p {
     margin-top: 16px;
   }
 
-  .markdown-body li+li {
-    margin-top: .25em;
+  .markdown-body li + li {
+    margin-top: 0.25em;
   }
 
   .markdown-body dl {
@@ -243,11 +245,11 @@
     background-color: #0d1117;
   }
 
-  .markdown-body img[align=right] {
+  .markdown-body img[align='right'] {
     padding-left: 20px;
   }
 
-  .markdown-body img[align=left] {
+  .markdown-body img[align='left'] {
     padding-right: 20px;
   }
 
@@ -262,7 +264,7 @@
     overflow: hidden;
   }
 
-  .markdown-body span.frame>span {
+  .markdown-body span.frame > span {
     display: block;
     float: left;
     width: auto;
@@ -290,7 +292,7 @@
     clear: both;
   }
 
-  .markdown-body span.align-center>span {
+  .markdown-body span.align-center > span {
     display: block;
     margin: 13px auto 0;
     overflow: hidden;
@@ -308,7 +310,7 @@
     clear: both;
   }
 
-  .markdown-body span.align-right>span {
+  .markdown-body span.align-right > span {
     display: block;
     margin: 13px 0 0;
     overflow: hidden;
@@ -338,7 +340,7 @@
     overflow: hidden;
   }
 
-  .markdown-body span.float-right>span {
+  .markdown-body span.float-right > span {
     display: block;
     margin: 13px auto 0;
     overflow: hidden;
@@ -347,7 +349,7 @@
 
   .markdown-body code,
   .markdown-body tt {
-    padding: .2em .4em;
+    padding: 0.2em 0.4em;
     margin: 0;
     font-size: 85%;
     background-color: rgba(110, 118, 129, 0.4);
@@ -359,7 +361,7 @@
     display: none;
   }
 
-  .markdown-body pre>code {
+  .markdown-body pre > code {
     color: #fffc;
   }
 
@@ -371,7 +373,7 @@
     word-wrap: normal;
   }
 
-  .markdown-body pre>code {
+  .markdown-body pre > code {
     padding: 0;
     margin: 0;
     font-size: 100%;
@@ -441,11 +443,11 @@
   }
 
   .markdown-body [data-footnote-ref]::before {
-    content: "[";
+    content: '[';
   }
 
   .markdown-body [data-footnote-ref]::after {
-    content: "]";
+    content: ']';
   }
 
   .markdown-body .footnotes {
@@ -469,7 +471,7 @@
     bottom: -8px;
     left: -24px;
     pointer-events: none;
-    content: "";
+    content: '';
     border: 2px solid #1f6feb;
     border-radius: 6px;
   }
@@ -494,7 +496,7 @@
     cursor: pointer;
   }
 
-  .markdown-body .task-list-item+.task-list-item {
+  .markdown-body .task-list-item + .task-list-item {
     margin-top: 3px;
   }
 
@@ -503,12 +505,12 @@
   }
 
   .markdown-body .task-list-item-checkbox {
-    margin: 0 .2em .25em -1.6em;
+    margin: 0 0.2em 0.25em -1.6em;
     vertical-align: middle;
   }
 
   .markdown-body .contains-task-list:dir(rtl) .task-list-item-checkbox {
-    margin: 0 -1.6em .25em .2em;
+    margin: 0 -1.6em 0.25em 0.2em;
   }
 
   .markdown-body ::-webkit-calendar-picker-indicator {

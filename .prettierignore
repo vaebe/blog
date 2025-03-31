@@ -2,3 +2,5 @@ node_modules
 build
 .next
 dist
+pnpm-lock.yaml
+components/ui/*
