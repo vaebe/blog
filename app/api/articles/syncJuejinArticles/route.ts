@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import { sendJson } from '@/lib/utils'
-import { kv } from '@vercel/kv'
 import { prisma } from '@/prisma'
 import { AnyObject } from '@/types'
 
@@ -70,8 +69,6 @@ async function getArticles(index: number) {
   }
 }
 
-const LastSyncTimeKey = 'blogLastSyncTime'
-
 export async function GET(req: Request) {
   syncArticleNameList = []
 
@@ -83,23 +80,10 @@ export async function GET(req: Request) {
     return sendJson({ code: -1, msg: '无效的 API 密钥' })
   }
 
-  // 获取上次同步时间
-  const lastSyncTime = await kv.get<string>(LastSyncTimeKey)
-
-  console.log('lastSyncTime\r\n', lastSyncTime)
-
-  // 检查是否在一个小时内
-  if (lastSyncTime) {
-    return sendJson({ code: -1, msg: '一个小时内只能请求一次' })
-  }
-
   try {
     const index = 0
 
     await getArticles(index)
-
-    // 更新上次同步时间, 设置一小时有效期
-    await kv.set(LastSyncTimeKey, dayjs().format('YYYY-MM-DD HH:mm:ss'), { ex: 3600 })
 
     console.log(syncArticleNameList)
 
