@@ -23,7 +23,11 @@ export function ThemeSwitch() {
     <div className="fixed bottom-4 right-4">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" className="p-2 rounded-full" aria-label="Theme switcher">
+          <Button
+            size="icon"
+            className="p-2 rounded-full cursor-pointer"
+            aria-label="Theme switcher"
+          >
             <Icon
               icon={themes.find((t) => t.value === theme)?.icon || themes[0].icon}
               className="w-5 h-5 text-white dark:text-black"

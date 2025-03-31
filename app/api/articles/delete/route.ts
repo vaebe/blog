@@ -11,6 +11,6 @@ export async function DELETE(req: Request) {
 
     return sendJson({ msg: 'success' })
   } catch (error) {
-    return sendJson({ code: -1, msg: `删除文章失败: ${error}` })
+    return sendJson({ code: -1, msg: `删除文章失败：${error}` })
   }
 }

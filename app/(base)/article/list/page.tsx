@@ -37,7 +37,7 @@ const ArticleList = ({ articleInfo }: { articleInfo: GroupedArticles }) => (
           <h2 className="text-3xl font-bold mb-6">{year}</h2>
           <div className="space-y-4">
             {articles.map((article) => (
-              <Card key={article.id}>
+              <Card key={article.id} className="p-0">
                 <ArticleInfo info={article} />
               </Card>
             ))}

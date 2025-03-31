@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { toast } from '@/components/hooks/use-toast'
+import { toast } from 'sonner'
 import { PublishDialog } from '@/app/article/PublishDialog'
 import { useRouter } from 'next/navigation'
 import { BytemdEditor } from '@/components/bytemd/editor'
@@ -29,12 +29,12 @@ export default function PublishArticle() {
     setPublishDialogShow(false)
 
     if (!articleInfo.title) {
-      toast({ title: '警告', description: '文章标题不能为空', variant: 'destructive' })
+      toast('文章标题不能为空!')
       return
     }
 
     if (!content) {
-      toast({ title: '警告', description: '文章内容不能为空', variant: 'destructive' })
+      toast('文章内容不能为空!')
       return
     }
 
@@ -49,12 +49,12 @@ export default function PublishArticle() {
 
       if (res.code === 0) {
         router.push('/article/list')
-        toast({ title: '成功', description: '文章发布成功!' })
+        toast('文章发布成功!')
       } else {
-        toast({ title: '失败', description: '发布文章时出现错误', variant: 'destructive' })
+        toast('发布文章时出现错误!')
       }
     } catch {
-      toast({ title: '失败', description: '发布文章时出现错误', variant: 'destructive' })
+      toast('发布文章时出现错误!')
     }
   }
 
