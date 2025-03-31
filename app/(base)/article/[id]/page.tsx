@@ -3,7 +3,7 @@
 import { useEffect, useState, use } from 'react'
 import { Article } from '@prisma/client'
 import { Card, CardContent } from '@/components/ui/card'
-import { toast } from '@/components/hooks/use-toast'
+import { toast } from 'sonner'
 import { getReadingTime } from '@/lib/getReadingTime'
 import { Anchor } from './anchor/index'
 import { BytemdViewer } from '@/components/bytemd/viewer'
@@ -18,7 +18,7 @@ export default function Component(props: { params: Promise<{ id: string }> }) {
     async function fetchArticleDetails() {
       const res = await fetch(`/api/articles/details?id=${params.id}`).then((res) => res.json())
       if (res.code !== 0) {
-        toast({ variant: 'destructive', title: '警告', description: '获取文章详情失败!' })
+        toast('获取文章详情失败!')
         return null
       }
       return res.data

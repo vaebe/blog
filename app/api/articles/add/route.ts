@@ -22,6 +22,6 @@ export async function POST(req: Request) {
     })
     return sendJson({ data: newArticle })
   } catch (error) {
-    sendJson({ code: -1, msg: `创建文章失败 ${error}` })
+    sendJson({ code: -1, msg: `创建文章失败：${error}` })
   }
 }
