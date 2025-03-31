@@ -1,7 +1,6 @@
 {
   "name": "blog",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.2.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -40,7 +39,6 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@tailwindcss/typography": "^0.5.16",
     "@vercel/analytics": "^1.5.0",
-    "@vercel/kv": "^3.0.0",
     "bcrypt": "^5.1.1",
     "bytemd": "^1.22.0",
     "class-variance-authority": "^0.7.1",
