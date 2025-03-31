@@ -10,7 +10,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <SessionProvider>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         {children}
-        <Toaster position="bottom-center" />
+        <Toaster position="bottom-right" />
       </ThemeProvider>
     </SessionProvider>
   )
