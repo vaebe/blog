@@ -42,7 +42,7 @@ interface SocialStatsSectionProps {
 const SocialStatsSection = ({ platform, stats }: SocialStatsSectionProps) => (
   <div className="flex flex-col space-y-4">
     <Link href={SOCIAL_LINKS[platform].url} target="_blank" rel="noopener noreferrer">
-      <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center hover:text-blue-500 dark:hover:text-blue-400">
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center lg:items-start hover:text-blue-500 dark:hover:text-blue-400">
         <Icon icon={SOCIAL_LINKS[platform].icon} className="mr-2" />
         {SOCIAL_LINKS[platform].label}
       </h3>
@@ -57,26 +57,27 @@ const SocialStatsSection = ({ platform, stats }: SocialStatsSectionProps) => (
 
 // 加载骨架屏组件
 const SkeletonStatItem = () => (
-  <div className="flex items-center space-x-2">
-    <Skeleton className="w-5 h-5 rounded-full" />
-    <Skeleton className="w-20 h-4" />
-    <Skeleton className="w-10 h-4" />
+  <div className="inline-flex items-center space-x-2">
+    <Skeleton className="w-6 h-6 rounded-full" />
+    <Skeleton className="w-14 h-6" />
+    <Skeleton className="w-8 h-6" />
   </div>
 )
 
 const UserProfileSkeleton = () => (
   <div className="space-y-8">
-    <div className="flex flex-col items-center md:flex-row md:items-center md:space-x-6">
-      <Skeleton className="w-32 h-32 rounded-full" />
+    <div className="flex flex-col items-center md:flex-row md:space-x-6">
+      <Skeleton className="w-32 h-32 rounded-lg border-1 border-white dark:border-gray-800 shadow" />
       <div className="mt-4 md:mt-0 flex-1">
         <Skeleton className="w-48 h-8 mb-2" />
-        <Skeleton className="w-full h-20" />
+        <Skeleton className="w-full h-22" />
       </div>
     </div>
+
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {[0, 1].map((section) => (
-        <div key={section} className="flex flex-col items-center space-y-4">
-          <Skeleton className="w-24 h-6 mb-2" />
+        <div key={section} className="flex flex-col items-center lg:items-start space-y-4">
+          <Skeleton className="w-30 h-7" />
           <div className="flex flex-col items-center space-y-2 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0">
             {[0, 1, 2].map((item) => (
               <SkeletonStatItem key={item} />
