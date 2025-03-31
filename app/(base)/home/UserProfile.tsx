@@ -8,6 +8,7 @@ import type { GithubUserInfo } from '@/types/github'
 import Link from 'next/link'
 import Image from 'next/image'
 import userIcon from '@/public/user-icon.png'
+import { TimeInSeconds } from '@/lib/enums'
 
 // 社交媒体链接配置
 const SOCIAL_LINKS = {
@@ -129,8 +130,8 @@ const useUserData = () => {
     const fetchData = async () => {
       try {
         const [githubRes, juejinRes] = await Promise.all([
-          fetch('/api/proxy/github/userInfo'),
-          fetch('/api/proxy/juejin/userInfo')
+          fetch('/api/proxy/github/userInfo', { next: { revalidate: TimeInSeconds.oneHour } }),
+          fetch('/api/proxy/juejin/userInfo', { next: { revalidate: TimeInSeconds.oneHour } })
         ])
 
         const [githubData, juejinData] = await Promise.all([githubRes.json(), juejinRes.json()])
