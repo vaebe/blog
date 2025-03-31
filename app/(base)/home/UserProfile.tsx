@@ -40,9 +40,14 @@ interface SocialStatsSectionProps {
 
 // 社交媒体统计区块
 const SocialStatsSection = ({ platform, stats }: SocialStatsSectionProps) => (
-  <div className="flex flex-col space-y-4">
-    <Link href={SOCIAL_LINKS[platform].url} target="_blank" rel="noopener noreferrer">
-      <h3 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center lg:items-start hover:text-blue-500 dark:hover:text-blue-400">
+  <div className="flex flex-col items-center lg:items-start space-y-4">
+    <Link
+      href={SOCIAL_LINKS[platform].url}
+      className="flex justify-center lg:justify-items-start"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <h3 className="inline-flex items-center text-xl font-semibold text-gray-800 dark:text-white hover:text-blue-500 dark:hover:text-blue-400">
         <Icon icon={SOCIAL_LINKS[platform].icon} className="mr-2" />
         {SOCIAL_LINKS[platform].label}
       </h3>
@@ -74,7 +79,7 @@ const UserProfileSkeleton = () => (
       </div>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {[0, 1].map((section) => (
         <div key={section} className="flex flex-col items-center lg:items-start space-y-4">
           <Skeleton className="w-30 h-7" />
@@ -180,7 +185,7 @@ export function UserProfile() {
         <div key="content" className="space-y-8">
           <UserInfo githubUserInfo={githubUserInfo} description={Userdescription} />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <SocialStatsSection
               platform="juejin"
               stats={[
