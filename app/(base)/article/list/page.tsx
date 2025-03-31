@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Eye } from 'lucide-react'
 import { getJumpArticleDetailsUrl } from '@/lib/utils'
 import { NoFound } from '@/components/no-found'
+import { TimeInSeconds } from '@/lib/enums'
 
 type GroupedArticles = Record<string, Article[]>
 
@@ -58,7 +59,7 @@ const groupArticlesByYear = (articles: Article[]): GroupedArticles => {
 async function getArticles() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/articles/all`, {
-      next: { revalidate: 1800 } // 缓存 30分钟 or 使用 cache: 'no-store' 不缓存
+      next: { revalidate: TimeInSeconds.oneHour } // 缓存 1小时 or 使用 cache: 'no-store' 不缓存
     })
 
     if (!res.ok) {
