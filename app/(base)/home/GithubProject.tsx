@@ -75,10 +75,10 @@ export function GithubProject() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch('/api/proxy/github/pinnedRepos',{
-              next: { revalidate: TimeInSeconds.oneHour } 
-            }).then((res) => res.json())
-            
+        const res = await fetch('/api/proxy/github/pinnedRepos', {
+          next: { revalidate: TimeInSeconds.oneHour }
+        }).then((res) => res.json())
+
         if (res.code === 0) {
           setRepos(res.data)
         }
