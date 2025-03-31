@@ -6,6 +6,7 @@ import { Icon } from '@iconify/react'
 import type { GithubPinnedRepoInfo } from '@/types/github'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
+import { TimeInSeconds } from '@/lib/enums'
 
 function NoFound() {
   return (
@@ -74,7 +75,10 @@ export function GithubProject() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch('/api/proxy/github/pinnedRepos').then((res) => res.json())
+        const res = await fetch('/api/proxy/github/pinnedRepos',{
+              next: { revalidate: TimeInSeconds.oneHour } 
+            }).then((res) => res.json())
+            
         if (res.code === 0) {
           setRepos(res.data)
         }

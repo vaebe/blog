@@ -1,9 +1,5 @@
 import { sendJson } from '@/lib/utils'
-import { kv } from '@vercel/kv'
-import type { GithubPinnedRepoInfo } from '@/types/github'
-import { TimeInSeconds } from '@/lib/enums'
 
-const InfoKey = 'blog-github-pinned-repo-info'
 const GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql'
 
 const buildQuery = (username: string) => `
@@ -59,14 +55,7 @@ async function fetchPinnedRepos() {
 
 export async function GET() {
   try {
-    const cachedInfo = await kv.get<GithubPinnedRepoInfo>(InfoKey)
-    if (cachedInfo) {
-      return sendJson({ data: cachedInfo })
-    }
-
     const pinnedRepos = await fetchPinnedRepos()
-    await kv.set(InfoKey, pinnedRepos, { ex: TimeInSeconds.oneWeek })
-
     return sendJson({ data: pinnedRepos })
   } catch (error) {
     console.error(error)
