@@ -17,7 +17,10 @@ const ArticleInfo = ({ info }: { info: Article }) => {
       target="_blank"
       className="block hover:bg-accent rounded-lg transition-colors duration-200 p-4"
     >
-      <h3 className="text-lg font-medium mb-2">{info.title}</h3>
+      <h3 className="text-lg font-medium">{info.title}</h3>
+
+      <p className="my-4">{info.summary}</p>
+
       <div className="flex items-center text-sm text-muted-foreground">
         <time dateTime={info.createdAt.toString()}>{date}</time>
         <span className="ml-4 flex items-center">
@@ -34,8 +37,8 @@ const ArticleList = ({ articleInfo }: { articleInfo: GroupedArticles }) => (
     {Object.entries(articleInfo)
       .sort(([a], [b]) => Number(b) - Number(a))
       .map(([year, articles]) => (
-        <div key={year} className="mb-12">
-          <h2 className="text-3xl font-bold mb-6">{year}</h2>
+        <div key={year}>
+          <h2 className="text-3xl font-bold my-8">{year}</h2>
           <div className="space-y-4">
             {articles.map((article) => (
               <Card key={article.id} className="p-0">
