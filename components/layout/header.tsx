@@ -17,15 +17,18 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { LoginDialog } from '@/components/login-dialog'
+import { usePathname } from 'next/navigation'
 
 function NavList() {
+  const pathname = usePathname()
+
   return (
     <ul className="flex space-x-1">
       {routerList.map((item) => (
         <li key={item.path}>
           <Link
             href={item.path}
-            className="flex items-center px-2 md:px-4 py-0.5 text-lg font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-100 ease-in-out"
+            className={`flex items-center px-2 md:px-4 py-0.5 text-lg font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-100 ease-in-out ${pathname === item.path ? 'bg-gray-100 dark:bg-white/10' : ''}`}
           >
             <Icon icon={item.icon} width={22} height={22} className="mr-1"></Icon>
             <span className="hidden md:block">{item.name}</span>
