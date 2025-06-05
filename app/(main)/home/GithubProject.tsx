@@ -1,31 +1,12 @@
-'use client'
-
 import { ContentCard } from './ContentCard'
-import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 import type { GithubPinnedRepoInfo } from '@/types/github'
-import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 import { TimeInSeconds } from '@/lib/enums'
 
 function NoFound() {
   return (
     <div className="text-center text-gray-500 dark:text-gray-400 py-8">No repositories found.</div>
-  )
-}
-
-function LoadingComponent() {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {[...Array(6)].map((_, index) => (
-        <div key={index}>
-          <Skeleton className="h-6 w-3/4 mb-2" />
-          <Skeleton className="h-4 w-full mb-2" />
-          <Skeleton className="h-4 w-1/4" />
-          {index < 2 && <div className="my-6 border-b border-gray-200 dark:border-gray-700"></div>}
-        </div>
-      ))}
-    </div>
   )
 }
 
@@ -68,34 +49,24 @@ function ProjectInfo({ repos }: { repos: GithubPinnedRepoInfo[] }) {
   )
 }
 
-export function GithubProject() {
-  const [repos, setRepos] = useState<GithubPinnedRepoInfo[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+async function getGithubPinnedRepoInfo() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/proxy/github/pinnedRepos`, {
+      next: { revalidate: TimeInSeconds.oneHour }
+    })
+    const json = await res.json()
+    return json.code === 0 ? json.data : {}
+  } catch {
+    return {}
+  }
+}
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const res = await fetch('/api/proxy/github/pinnedRepos', {
-          next: { revalidate: TimeInSeconds.oneHour }
-        }).then((res) => res.json())
-
-        if (res.code === 0) {
-          setRepos(res.data)
-        }
-      } catch (error) {
-        console.error('Failed to fetch GitHub data:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    loadData()
-  }, [])
+export async function GithubProject() {
+  const repos = await getGithubPinnedRepoInfo()
 
   return (
     <ContentCard title="GitHub 项目">
-      {isLoading ? <LoadingComponent /> : <ProjectInfo repos={repos} />}
-
-      {repos.length === 0 && !isLoading && <NoFound />}
+      {repos.length === 0 ? <NoFound /> : <ProjectInfo repos={repos} />}
     </ContentCard>
   )
 }
