@@ -13,20 +13,12 @@ const ADMIN_APIS = [
   '/api/imagekit/getToken'
 ]
 
-// 用户登录后可以访问的 api
-const USER_APIS = ['/api/conversation']
-
 export default withAuth(
   function middleware(req) {
     console.log('request:', req.method, req.url)
 
     const token = req.nextauth.token
     const path = req.nextUrl.pathname
-
-    // 用户无权访问返回 401
-    if (!token && USER_APIS.some((item) => path.startsWith(item))) {
-      return sendJson({ code: 401, msg: '无权限' })
-    }
 
     if (token?.role !== '00') {
       if (ADMIN_APIS.some((item) => path.startsWith(item))) {
