@@ -119,7 +119,7 @@ const UserInfo = ({ githubUserInfo }: { githubUserInfo?: GithubUserInfo }) => (
   </div>
 )
 
-const fetchUserInfo = async (path: string) => {
+async function fetchUserInfo(path: string) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/proxy/${path}/userInfo`, {
       next: { revalidate: TimeInSeconds.oneHour }
