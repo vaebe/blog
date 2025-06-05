@@ -8,7 +8,7 @@ interface Props {
 function EmailLoginButton({ onClick }: Props) {
   return (
     <Button className="w-full flex justify-center items-center cursor-pointer" onClick={onClick}>
-      <Icon icon="mdi:email" className="mr-2 h-5 w-5" />
+      <Icon icon="mdi:email" className="mr-1 h-6! w-6!" />
       邮箱登录
     </Button>
   )

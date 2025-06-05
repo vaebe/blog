@@ -6,24 +6,36 @@ import { Icon } from '@iconify/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
-import { EmailLoginButton } from './EmailLoginButton'
+// import { EmailLoginButton } from './EmailLoginButton'
 
 interface Props {
   setIsLoading: (status: boolean) => void
+  closeDialog: () => void
 }
 
-const LoginForm = ({ setIsLoading }: Props) => {
+const LoginForm = ({ setIsLoading, closeDialog }: Props) => {
   const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (!account) {
+      toast(`请输入邮箱!`)
+      return
+    }
+
+    if (!password) {
+      toast(`请输入密码!`)
+      return
+    }
+
     setIsLoading(true)
 
     const res = await signIn('credentials', {
       account,
-      password
+      password,
+      redirect: false
     })
 
     setIsLoading(false)
@@ -31,25 +43,27 @@ const LoginForm = ({ setIsLoading }: Props) => {
     if (res?.error) {
       toast('请检查您的用户名和密码!')
     } else {
+      closeDialog()
       toast('欢迎回来！')
     }
   }
 
-  function handleEmailLogin() {
-    if (!account) {
-      toast(`请输入邮箱!`)
-      return
-    }
+  // function handleEmailLogin() {
+  //   if (!account) {
+  //     toast(`请输入邮箱!`)
+  //     return
+  //   }
 
-    setIsLoading(true)
+  //   setIsLoading(true)
 
-    signIn('email', { email: account, callbackUrl: '/auth/verify-request?provider=email' }).catch(
-      (error) => {
-        setIsLoading(false)
-        toast(`登录失败： ${error}`)
-      }
-    )
-  }
+  //   signIn('email', {
+  //     email: account,
+  //     callbackUrl: '/auth/verify-request?provider=email'
+  //   }).catch((error) => {
+  //     setIsLoading(false)
+  //     toast(`登录失败： ${error}`)
+  //   })
+  // }
 
   return (
     <>
@@ -90,7 +104,7 @@ const LoginForm = ({ setIsLoading }: Props) => {
         </Button>
       </form>
 
-      <EmailLoginButton onClick={handleEmailLogin}></EmailLoginButton>
+      {/* <EmailLoginButton onClick={handleEmailLogin}></EmailLoginButton> */}
     </>
   )
 }

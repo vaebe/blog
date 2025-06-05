@@ -30,7 +30,7 @@ const LoginDialog = ({ isOpen, onClose }: Props) => {
 
         <FullScreenLoading isLoading={isLoading} message="正在登录..."></FullScreenLoading>
 
-        <LoginForm setIsLoading={setIsLoading} />
+        <LoginForm setIsLoading={setIsLoading} closeDialog={onClose} />
 
         <div className="w-full my-1 h-[1px] bg-gray-300 dark:bg-gray-600"></div>
 
