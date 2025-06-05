@@ -1,9 +1,5 @@
-'use client'
-
 import { Icon } from '@iconify/react'
 import { ContentCard } from './ContentCard'
-import { useEffect, useState } from 'react'
-import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 import { Article } from '@prisma/client'
 import { TimeInSeconds } from '@/lib/enums'
@@ -12,22 +8,7 @@ function NoFound() {
   return <p className="text-center text-gray-500 dark:text-gray-400 py-8">No articles found.</p>
 }
 
-function LoadingComponent() {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {[...Array(6)].map((_, index) => (
-        <div key={index}>
-          <Skeleton className="h-6 w-3/4 mb-2" />
-          <Skeleton className="h-4 w-full mb-2" />
-          <Skeleton className="h-4 w-1/4" />
-          {index < 2 && <div className="my-6 border-b border-gray-200 dark:border-gray-700"></div>}
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function ArticleInfo({ articles }: { articles: Article[] }) {
+function ArticleList({ articles }: { articles: Article[] }) {
   return (
     <div key="content" className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {articles?.map((article) => (
@@ -65,36 +46,26 @@ function ArticleInfo({ articles }: { articles: Article[] }) {
   )
 }
 
-export function JueJinArticles() {
-  const [articles, setArticles] = useState<Article[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+async function getJueJinArticles() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/articles/all`, {
+      next: { revalidate: TimeInSeconds.oneHour }
+    })
+    const json = await res.json()
+    return json.code === 0 ? json.data : []
+  } catch {
+    return []
+  }
+}
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const res = await fetch('/api/articles/all', {
-          next: { revalidate: TimeInSeconds.oneHour }
-        }).then((res) => res.json())
+export async function JueJinArticles() {
+  const list = (await getJueJinArticles()) as Article[]
 
-        if (res.code === 0) {
-          const list: Article[] = res?.data || []
-          const sortedData = list.sort((a, b) => b.likes - a.likes).slice(0, 6)
-          setArticles(sortedData)
-        }
-      } catch (error) {
-        console.error('Failed to fetch articles:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    loadData()
-  }, [])
+  const articles = list.sort((a, b) => b.likes - a.likes).slice(0, 6)
 
   return (
     <ContentCard title="掘金文章">
-      {isLoading ? <LoadingComponent /> : <ArticleInfo articles={articles} />}
-
-      {articles.length === 0 && !isLoading && <NoFound />}
+      {articles.length === 0 ? <NoFound /> : <ArticleList articles={articles} />}
     </ContentCard>
   )
 }
