@@ -22,7 +22,7 @@ function GithubLoginButton({ setIsLoading }: Props) {
       className="w-full flex justify-center items-cente bg-black dark:bg-white cursor-pointer"
       onClick={handleGithubLogin}
     >
-      <Icon icon="mdi:github" className="mr-2 h-5 w-5" />
+      <Icon icon="mdi:github" className="mr-1 h-6! w-6!" />
       Github 登录
     </Button>
   )

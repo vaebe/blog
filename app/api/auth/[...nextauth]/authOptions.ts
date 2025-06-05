@@ -40,23 +40,21 @@ export const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        try {
-          const user = await prisma.user.findUnique({
-            where: { email: credentials?.account, password: credentials?.password }
-          })
+        const user = await prisma.user.findUnique({
+          where: { email: credentials?.account, password: credentials?.password }
+        })
 
+        if (!user) {
+          return null
+        } else {
           return {
-            id: user!.id,
+            id: user.id,
             name: user?.name,
             email: user?.email,
             image: user?.image,
-            role: user?.role
+            role: user.role
           }
-        } catch (error) {
-          console.error('授权过程中发生错误:', error)
         }
-
-        return null
       }
     }),
     GitHubProvider({
