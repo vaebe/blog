@@ -34,9 +34,9 @@ export interface ArticleInfo {
   is_markdown: number
   app_html_content: string
   version: number
-  web_html_content: any
-  meta_info: any
-  catalog: any
+  web_html_content: string
+  meta_info: string
+  catalog: string
   homepage_top_time: number
   homepage_top_status: number
   content_count: number
