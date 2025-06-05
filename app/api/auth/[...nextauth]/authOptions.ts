@@ -10,7 +10,11 @@ import { v4 as uuidv4 } from 'uuid'
 const AUTH_GITHUB_CLIENT_ID = process.env.AUTH_GITHUB_CLIENT_ID
 const AUTH_GITHUB_CLIENT_SECRET = process.env.AUTH_GITHUB_CLIENT_SECRET
 
-// 更新用户头像
+function createAvatar() {
+  return `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${uuidv4().replaceAll('-', '')}&size=64`
+}
+
+// 更新用户头像-这里不走接口，更安全
 async function updateUserProfilePicture(user?: AnyObject) {
   if (!user) {
     return
@@ -61,7 +65,7 @@ export const authOptions: AuthOptions = {
       clientId: AUTH_GITHUB_CLIENT_ID ?? '',
       clientSecret: AUTH_GITHUB_CLIENT_SECRET ?? '',
       httpOptions: {
-        timeout: 10000 // 将超时时间设置为10秒（10000毫秒）
+        timeout: 20000 // 将超时时间设置为10秒（10000毫秒）
       }
     }),
     EmailProvider({
@@ -86,10 +90,10 @@ export const authOptions: AuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ account, user }) {
-      // todo 邮箱登录没有头像则设置一个默认头像
-      if (account?.type === 'email' && !user?.image) {
-        user.image = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${uuidv4().replaceAll('-', '')}&size=64`
+    async signIn({ user }) {
+      // 登录没有头像则设置一个默认头像
+      if (!user?.image) {
+        user.image = createAvatar()
         updateUserProfilePicture(user)
       }
       return true
