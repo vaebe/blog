@@ -1,7 +1,7 @@
 import { Article } from '@prisma/client'
 import { Card } from '@/components/ui/card'
 import Link from 'next/link'
-import { Eye } from 'lucide-react'
+import { Eye, ThumbsUp, Star } from 'lucide-react'
 import { getJumpArticleDetailsUrl } from '@/lib/utils'
 import { NoFound } from '@/components/no-found'
 import { TimeInSeconds } from '@/lib/enums'
@@ -21,12 +21,23 @@ const ArticleInfo = ({ info }: { info: Article }) => {
 
       <p className="my-4">{info.summary}</p>
 
-      <div className="flex items-center text-sm text-muted-foreground">
+      <div className="flex items-center text-sm text-muted-foreground space-x-4">
         <time dateTime={info.createdAt.toString()}>{date}</time>
-        <span className="ml-4 flex items-center">
+
+        <p className=" flex items-center">
+          <ThumbsUp className="w-4 h-4 mr-1" aria-hidden="true" />
+          <span>{info.likes}</span>
+        </p>
+
+        <p className="flex items-center">
+          <Star className="w-4 h-4 mr-1" aria-hidden="true" />
+          <span>{info.favorites}</span>
+        </p>
+
+        <p className=" flex items-center">
           <Eye className="w-4 h-4 mr-1" aria-hidden="true" />
           <span>{info.views}</span>
-        </span>
+        </p>
       </div>
     </Link>
   )
