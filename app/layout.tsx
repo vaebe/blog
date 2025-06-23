@@ -46,10 +46,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh" suppressHydrationWarning>
-      <Script
-        src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
-        strategy="lazyOnload"
-      />
       <body
         className={cn(
           'min-h-screen flex flex-col bg-white dark:bg-black text-black dark:text-white',
@@ -59,6 +55,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>{children}</Providers>
         <Analytics />
       </body>
+
+       <Script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"/>
     </html>
   )
 }
