@@ -90,8 +90,6 @@ interface AddMessageProps {
 }
 
 function AddMessage({ setMessages }: AddMessageProps) {
-  const [showLoginDialog, setShowLoginDialog] = useState<boolean>(false)
-
   const [messageView, setMessageView] = useState(false)
   const [message, setMessage] = useState('')
   const { data: session, status } = useSession()
@@ -153,13 +151,13 @@ function AddMessage({ setMessages }: AddMessageProps) {
           />
         </div>
       ) : (
-        <Button className="my-4 cursor-pointer" onClick={() => setShowLoginDialog(true)}>
-          <Icon icon="memory:user" className="mr-2" width="20px" />
-          登录后才可以留言！
-        </Button>
+        <LoginDialog>
+          <Button className="my-4 cursor-pointer">
+            <Icon icon="memory:user" className="mr-2" width="20px" />
+            登录后才可以留言！
+          </Button>
+        </LoginDialog>
       )}
-
-      <LoginDialog isOpen={showLoginDialog} onClose={() => setShowLoginDialog(false)}></LoginDialog>
     </div>
   )
 }
