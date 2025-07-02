@@ -29,7 +29,7 @@ const MessageInput = ({ message, onChange }: MessageInputProps) => {
 // 留言预览组件
 const MessagePreview = ({ message }: { message: string }) => {
   return (
-    <div className="min-h-24">
+    <div className="min-h-44">
       <BytemdViewer content={message}></BytemdViewer>
     </div>
   )
