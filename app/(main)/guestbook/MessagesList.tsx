@@ -3,6 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import dayjs from 'dayjs'
 import { GuestbookMessage } from '@/types'
 import { BytemdViewer } from '@/components/bytemd/viewer'
+import { Card } from "@/components/ui/card"
+import { toast } from 'sonner'
 
 interface MessagesListProps {
   list: Array<GuestbookMessage>
@@ -21,6 +23,7 @@ export function MessagesList({ list, setMessages }: MessagesListProps) {
           setMessages(res.data.list)
         }
       } catch (error) {
+        toast('获取留言列表失败！')
         console.error('Failed to fetch messages', error)
       } finally {
         setLoading(false)
@@ -31,40 +34,35 @@ export function MessagesList({ list, setMessages }: MessagesListProps) {
   }, [setMessages])
 
   if (loading) {
-    return <div className="text-center">加载中...</div>
+    return <div className="text-center">正在获取留言...</div>
   }
 
   return (
-    <div className="space-y-2">
-      {list.map((message, index) => (
-        <MessagesListItem info={message} key={message.id} isLast={index === list.length - 1} />
+    <div className="space-y-4">
+      {list.map((message) => (
+        <MessagesListItem info={message} key={message.id} />
       ))}
     </div>
   )
 }
 
-export function MessagesListItem({ info, isLast }: { info: GuestbookMessage; isLast: boolean }) {
+export function MessagesListItem({ info }: { info: GuestbookMessage; }) {
   return (
-    <>
-      <div className="flex items-start">
-        <Avatar className="mt-2">
+    <Card className='px-4' >
+      <div className="flex space-x-4">
+        <Avatar>
           <AvatarImage src={info?.author?.image} alt="用户头像" />
           <AvatarFallback>{info?.author?.name}</AvatarFallback>
         </Avatar>
-
-        <div className="ml-4 w-full">
-          <p>
-            <span className="mr-2 text-lg font-medium">{info?.author?.name ?? '未知'}</span>
-            <span className="text-gray-500 text-xs">
-              {dayjs(info.createdAt).locale('zh-cn').fromNow()}
-            </span>
-          </p>
-
-          <BytemdViewer content={info.content}></BytemdViewer>
-        </div>
+        <p>
+          <span className="mr-2 text-lg font-medium">{info?.author?.name ?? '未知'}</span>
+          <span className="text-gray-500 text-xs">
+            {dayjs(info.createdAt).locale('zh-cn').fromNow()}
+          </span>
+        </p>
       </div>
 
-      {!isLast && <p className="h-[20px] w-[3px] bg-gray-200 ml-4 dark:bg-gray-800"></p>}
-    </>
+      <BytemdViewer content={info.content}></BytemdViewer>
+    </Card>
   )
 }

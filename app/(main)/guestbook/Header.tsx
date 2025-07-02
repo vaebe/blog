@@ -2,7 +2,7 @@ export function Header() {
   return (
     <div className="my-6">
       <h2 className="text-4xl font-bold">欢迎来到我的留言板</h2>
-      <p className="my-2 text-sm text-gray-300">
+      <p className="my-2 text-sm text-gray-400">
         牢记社会主义核心价值观:富强、民主、文明、和谐，自由、平等、公正、法治，爱国、敬业、诚信、友善🤔!
       </p>
 
