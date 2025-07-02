@@ -13,30 +13,45 @@ import {
 } from '@/components/ui/dialog'
 
 interface Props {
-  isOpen: boolean
-  onClose: () => void
+  children: React.ReactNode
+  onClose?: () => void
 }
 
-const LoginDialog = ({ isOpen, onClose }: Props) => {
+const LoginDialog = ({ onClose, children }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
 
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  function openDialog() {
+    setIsOpen(true)
+  }
+
+  function closeDialog() {
+    setIsOpen(false)
+    onClose?.()
+  }
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>登录</DialogTitle>
-          <DialogDescription>请选择下方任意一种方式登录</DialogDescription>
-        </DialogHeader>
+    <>
+      <div onClick={openDialog}>{children}</div>
 
-        <FullScreenLoading isLoading={isLoading} message="正在登录..."></FullScreenLoading>
+      <Dialog open={isOpen} onOpenChange={closeDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>登录</DialogTitle>
+            <DialogDescription>请选择下方任意一种方式登录</DialogDescription>
+          </DialogHeader>
 
-        <LoginForm setIsLoading={setIsLoading} closeDialog={onClose} />
+          <FullScreenLoading isLoading={isLoading} message="正在登录..."></FullScreenLoading>
 
-        <div className="w-full my-1 h-[1px] bg-gray-300 dark:bg-gray-600"></div>
+          <LoginForm setIsLoading={setIsLoading} closeDialog={closeDialog} />
 
-        <GithubLoginButton setIsLoading={setIsLoading} />
-      </DialogContent>
-    </Dialog>
+          <div className="w-full my-1 h-[1px] bg-gray-300 dark:bg-gray-600"></div>
+
+          <GithubLoginButton setIsLoading={setIsLoading} />
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 

@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import dayjs from 'dayjs'
 import { GuestbookMessage } from '@/types'
 import { BytemdViewer } from '@/components/bytemd/viewer'
-import { Card } from "@/components/ui/card"
+import { Card } from '@/components/ui/card'
 import { toast } from 'sonner'
 
 interface MessagesListProps {
@@ -46,9 +46,9 @@ export function MessagesList({ list, setMessages }: MessagesListProps) {
   )
 }
 
-export function MessagesListItem({ info }: { info: GuestbookMessage; }) {
+export function MessagesListItem({ info }: { info: GuestbookMessage }) {
   return (
-    <Card className='px-4' >
+    <Card className="px-4">
       <div className="flex space-x-4">
         <Avatar>
           <AvatarImage src={info?.author?.image} alt="用户头像" />
