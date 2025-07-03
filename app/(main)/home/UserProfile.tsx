@@ -1,11 +1,11 @@
 import { Icon } from '@iconify/react'
-import type { JuejinUserInfo } from '@/types/juejin'
 import Link from 'next/link'
 import Image from 'next/image'
 import userIcon from '@/public/user-icon.png'
-import { TimeInSeconds } from '@/lib/enums'
 import type { GithubUserInfo } from '@/lib/github/fetch-user-info'
 import { fetchGithubUserInfo } from '@/lib/github/fetch-user-info'
+import type { JuejinUserInfo } from '@/lib/juejin/fetch-user-info'
+import { fetchJuejinUserInfo } from '@/lib/juejin/fetch-user-info'
 
 // 统计项组件
 const StatItem = ({ icon, label, value }: { icon: string; label: string; value?: number }) => (
@@ -78,7 +78,15 @@ function GitHubSocialStatsSection({ info }: { info?: GithubUserInfo }) {
   )
 }
 
-function JuejinSocialStatsSection({ info }: { info?: JuejinUserInfo }) {
+async function JuejinSocialStatsSection() {
+  let info: JuejinUserInfo | undefined
+
+  try {
+    info = await fetchJuejinUserInfo()
+  } catch {
+    info = undefined
+  }
+
   return (
     <SocialStatsSection
       platform="juejin"
@@ -120,31 +128,7 @@ const UserInfo = ({ githubUserInfo }: { githubUserInfo?: GithubUserInfo }) => (
   </div>
 )
 
-async function fetchUserInfo(path: string) {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/proxy/${path}/userInfo`, {
-      next: { revalidate: TimeInSeconds.oneHour }
-    })
-    const json = await res.json()
-    return json.code === 0 ? json.data : {}
-  } catch {
-    return {}
-  }
-}
-
-interface GetDataRes {
-  githubUserInfo?: GithubUserInfo
-  juejinUserInfo?: JuejinUserInfo
-}
-
-export async function getData() {
-  const [juejinUserInfo] = await Promise.all([fetchUserInfo('juejin')])
-  return { juejinUserInfo } as GetDataRes
-}
-
 export async function UserProfile() {
-  const { juejinUserInfo } = await getData()
-
   let githubUserInfo: GithubUserInfo | undefined
   try {
     githubUserInfo = await fetchGithubUserInfo()
@@ -157,7 +141,7 @@ export async function UserProfile() {
       <UserInfo githubUserInfo={githubUserInfo} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <JuejinSocialStatsSection info={juejinUserInfo}></JuejinSocialStatsSection>
+        <JuejinSocialStatsSection></JuejinSocialStatsSection>
         <GitHubSocialStatsSection info={githubUserInfo}></GitHubSocialStatsSection>
       </div>
     </div>
