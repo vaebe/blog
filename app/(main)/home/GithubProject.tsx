@@ -1,8 +1,7 @@
 import { ContentCard } from './ContentCard'
 import { Icon } from '@iconify/react'
-import type { GithubPinnedRepoInfo } from '@/types/github'
 import Link from 'next/link'
-import { TimeInSeconds } from '@/lib/enums'
+import { fetchPinnedRepos, GithubPinnedRepoInfo } from '@/lib/github/fetch-pinned-repos'
 
 function NoFound() {
   return (
@@ -49,20 +48,14 @@ function ProjectInfo({ repos }: { repos: GithubPinnedRepoInfo[] }) {
   )
 }
 
-async function getGithubPinnedRepoInfo() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/proxy/github/pinnedRepos`, {
-      next: { revalidate: TimeInSeconds.oneHour }
-    })
-    const json = await res.json()
-    return json.code === 0 ? json.data : {}
-  } catch {
-    return {}
-  }
-}
-
 export async function GithubProject() {
-  const repos = await getGithubPinnedRepoInfo()
+  let repos: GithubPinnedRepoInfo[] = []
+
+  try {
+    repos = await fetchPinnedRepos()
+  } catch {
+    repos = []
+  }
 
   return (
     <ContentCard title="GitHub 项目">

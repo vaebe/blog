@@ -1,16 +1,3 @@
-export interface GithubPinnedRepoInfo {
-  id: number
-  name: string
-  description: string
-  url: string
-  stargazerCount: number
-  forkCount: number
-  primaryLanguage: {
-    name: string
-    color: string
-  }
-}
-
 export interface GithubUserInfo {
   login: string
   id: number
@@ -33,11 +20,11 @@ export interface GithubUserInfo {
   name: string
   company: string
   blog: string
-  location: any
-  email: any
-  hireable: any
+  location: string
+  email: string
+  hireable: string
   bio: string
-  twitter_username: any
+  twitter_username: string
   public_repos: number
   public_gists: number
   followers: number
