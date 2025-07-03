@@ -1,10 +1,10 @@
 import { Icon } from '@iconify/react'
 import type { JuejinUserInfo } from '@/types/juejin'
-import type { GithubUserInfo } from '@/types/github'
 import Link from 'next/link'
 import Image from 'next/image'
 import userIcon from '@/public/user-icon.png'
 import { TimeInSeconds } from '@/lib/enums'
+import { fetchGithubUserInfo, GithubUserInfo } from '@/lib/github/fetch-user-info'
 
 // 统计项组件
 const StatItem = ({ icon, label, value }: { icon: string; label: string; value?: number }) => (
@@ -137,15 +137,19 @@ interface GetDataRes {
 }
 
 export async function getData() {
-  const [githubUserInfo, juejinUserInfo] = await Promise.all([
-    fetchUserInfo('github'),
-    fetchUserInfo('juejin')
-  ])
-  return { githubUserInfo, juejinUserInfo } as GetDataRes
+  const [juejinUserInfo] = await Promise.all([fetchUserInfo('juejin')])
+  return { juejinUserInfo } as GetDataRes
 }
 
 export async function UserProfile() {
-  const { githubUserInfo, juejinUserInfo } = await getData()
+  const { juejinUserInfo } = await getData()
+
+  let githubUserInfo: GithubUserInfo | undefined
+  try {
+    githubUserInfo = await fetchGithubUserInfo()
+  } catch {
+    githubUserInfo = undefined
+  }
 
   return (
     <div key="content" className="space-y-8">
