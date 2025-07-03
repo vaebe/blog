@@ -4,7 +4,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import userIcon from '@/public/user-icon.png'
 import { TimeInSeconds } from '@/lib/enums'
-import { fetchGithubUserInfo, GithubUserInfo } from '@/lib/github/fetch-user-info'
+import type { GithubUserInfo } from '@/lib/github/fetch-user-info'
+import { fetchGithubUserInfo } from '@/lib/github/fetch-user-info'
 
 // 统计项组件
 const StatItem = ({ icon, label, value }: { icon: string; label: string; value?: number }) => (
