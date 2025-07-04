@@ -1,132 +1,75 @@
 'use client'
 
-import { ChangeEvent, memo } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import Image from 'next/image'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription
+  DialogDescription,
+  DialogFooter
 } from '@/components/ui/dialog'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { toast } from 'sonner'
-import { PublishArticleInfo } from '@/types'
-import { Updater } from 'use-immer'
-import Image from 'next/image'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { imagekitUploadFile } from '@/lib/imagekit'
+import { PublishArticleInfo } from '@/types'
 
 const CATEGORIES = ['后端', '前端', 'Android', 'iOS', '人工智能', '阅读'] as const
-type Category = (typeof CATEGORIES)[number]
 
-interface ImageUploadProps {
-  coverImg?: string
-  onImageUpload: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
-}
+const formSchema = z.object({
+  classify: z.string().min(1, '请选择分类'),
+  summary: z.string().min(1, '请输入摘要'),
+  coverImg: z.string().optional()
+})
 
-const ImageUpload = memo(({ coverImg, onImageUpload }: ImageUploadProps) => (
-  <div className="grid gap-2">
-    <Label htmlFor="cover">文章封面:</Label>
-    <div className="flex items-center justify-between border border-input rounded p-1 cursor-pointer overflow-hidden">
-      <div className="w-[192px] h-[128px] border border-dashed rounded overflow-hidden">
-        {coverImg && (
-          <Image
-            src={coverImg}
-            alt="Cover"
-            width={192}
-            height={128}
-            className="max-w-full h-auto"
-            priority
-          />
-        )}
-      </div>
-
-      <div className="p-4 w-[200px] text-center">
-        <label htmlFor="coverImgInput" className="cursor-pointer">
-          <div>
-            <span className="block text-2xl mb-2">+</span>
-            <span>点击添加封面</span>
-          </div>
-          <input
-            id="coverImgInput"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={onImageUpload}
-          />
-        </label>
-      </div>
-    </div>
-    <p className="text-sm text-gray-500 mt-1">建议尺寸: 192*128px (封面仅展示在首页信息流中)</p>
-  </div>
-))
-
-// 当使用 React DevTools 调试应用时，它会显示组件的名称
-// 当组件发生错误时，React 会在错误信息中包含组件名
-ImageUpload.displayName = 'ImageUpload'
-
-interface CategorySelectorProps {
-  selectedCategory?: Category
-  onCategorySelect: (category: Category) => void
-}
-const CategorySelector = memo(({ selectedCategory, onCategorySelect }: CategorySelectorProps) => (
-  <div className="grid gap-2">
-    <Label htmlFor="category">
-      分类<span className="text-red-500">*</span>:
-    </Label>
-    <div className="flex flex-wrap gap-2">
-      {CATEGORIES.map((cat) => (
-        <Button
-          key={cat}
-          variant={selectedCategory === cat ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => onCategorySelect(cat)}
-        >
-          {cat}
-        </Button>
-      ))}
-    </div>
-  </div>
-))
-
-CategorySelector.displayName = 'CategorySelector'
+type FormValues = z.infer<typeof formSchema>
 
 interface PublishDialogProps {
-  isOpen: boolean
+  children: React.ReactNode
   articleInfo: PublishArticleInfo
-  updateArticleInfo: Updater<PublishArticleInfo>
-  onClose: () => void
-  onPublish: () => void
+  onPublish: (data: FormValues) => void
 }
 
-export function PublishDialog({
-  isOpen,
-  articleInfo,
-  updateArticleInfo,
-  onClose,
-  onPublish
-}: PublishDialogProps) {
-  const validateForm = (): boolean => {
-    if (!articleInfo.classify) {
-      toast('文章分类不能为空!')
-      return false
-    }
+export type PublishDialogRef = {
+  setInitialData: (info: FormValues) => void
+}
 
-    if (!articleInfo.summary?.trim()) {
-      toast('文章简介不能为空!')
-      return false
-    }
+export function PublishDialog({ onPublish, children, articleInfo }: PublishDialogProps) {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
-    return true
-  }
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema)
+  })
 
-  const handlePublish = () => {
-    if (validateForm()) {
-      onPublish()
+  const { watch, setValue, handleSubmit, reset } = form
+
+  useEffect(() => {
+    if (articleInfo) {
+      reset(articleInfo)
     }
-  }
+  }, [articleInfo, reset])
+
+  const coverImg = watch('coverImg')
 
   const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     try {
@@ -136,65 +79,137 @@ export function PublishDialog({
       const res = await imagekitUploadFile({ file, fileName: file.name })
 
       if (res?.code === 0 && res.data?.url) {
-        updateArticleInfo((draft) => {
-          draft.coverImg = res.data.url ?? ''
-
-          console.log(res.data)
-        })
+        setValue('coverImg', res.data.url)
+        toast.success('封面上传成功')
       } else {
-        toast('图片上传失败!')
+        toast.error('图片上传失败')
       }
     } catch {
-      toast('图片上传失败，似乎遇到了一些什么问题!')
+      toast.error('上传图片失败，请稍后重试')
     } finally {
       event.target.value = ''
     }
   }
 
-  const handleCategorySelect = (category: Category) => {
-    updateArticleInfo((draft) => {
-      draft.classify = category
-    })
+  const onSubmit = (data: FormValues) => {
+    onPublish(data)
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>发布文章</DialogTitle>
-          <DialogDescription>请填写文章的必要信息以完成发布</DialogDescription>
-        </DialogHeader>
+    <>
+      <div onClick={() => setIsOpen(true)}>{children}</div>
 
-        <div className="grid gap-4 py-4">
-          <CategorySelector
-            selectedCategory={articleInfo.classify as Category}
-            onCategorySelect={handleCategorySelect}
-          />
-          <ImageUpload coverImg={articleInfo.coverImg} onImageUpload={handleImageUpload} />
-          <div className="grid gap-2">
-            <Label htmlFor="summary">
-              编辑摘要<span className="text-red-500">*</span>:
-            </Label>
-            <Textarea
-              id="summary"
-              value={articleInfo.summary}
-              onChange={(e) =>
-                updateArticleInfo((draft) => {
-                  draft.summary = e.target.value
-                })
-              }
-              placeholder="请输入文章摘要"
-              rows={4}
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            取消
-          </Button>
-          <Button onClick={handlePublish}>确定并发布</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
+        <DialogContent className="sm:max-w-[520px]">
+          <DialogHeader>
+            <DialogTitle>发布文章</DialogTitle>
+            <DialogDescription>请填写必要信息以完成发布</DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
+              {/* 分类选择 */}
+              <FormField
+                control={form.control}
+                name="classify"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      分类<span className="text-destructive">*</span>:
+                    </FormLabel>
+                    <Select value={field.value} onValueChange={(value) => field.onChange(value)}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="请选择分类" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {CATEGORIES.map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {cat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* 封面上传 */}
+              <FormField
+                control={form.control}
+                name="coverImg"
+                render={() => (
+                  <FormItem>
+                    <FormLabel htmlFor="coverImgInput">文章封面</FormLabel>
+                    <label
+                      htmlFor="coverImgInput"
+                      className="flex gap-4 items-center border rounded-md cursor-pointer hover:bg-muted transition"
+                    >
+                      <div className="w-full min-h-[262px] h-auto border border-dashed rounded bg-muted/30 flex items-center justify-center overflow-hidden">
+                        {coverImg ? (
+                          <Image
+                            src={coverImg}
+                            alt="Cover"
+                            width={192}
+                            height={128}
+                            className="object-cover w-full h-full"
+                            priority
+                          />
+                        ) : (
+                          <span className="text-muted-foreground">暂无封面</span>
+                        )}
+                      </div>
+                      <input
+                        id="coverImgInput"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                    </label>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      建议尺寸: 192×128 px（仅在首页展示）
+                    </p>
+                  </FormItem>
+                )}
+              />
+
+              {/* 摘要 */}
+              <FormField
+                control={form.control}
+                name="summary"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="summary">
+                      编辑摘要<span className="text-destructive">*</span>:
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea {...field} id="summary" placeholder="请输入文章摘要" rows={4} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="cursor-pointer"
+                  onClick={() => setIsOpen(false)}
+                >
+                  取消
+                </Button>
+                <Button type="submit" className="cursor-pointer">
+                  确定并发布
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
