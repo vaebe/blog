@@ -2,7 +2,6 @@
 
 import { useEffect, useState, use } from 'react'
 import { Article } from '@prisma/client'
-import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { getReadingTime } from '@/lib/getReadingTime'
 import { Anchor } from './anchor/index'
@@ -36,7 +35,7 @@ export default function Component(props: { params: Promise<{ id: string }> }) {
   }, [params.id])
 
   return (
-    <div className="relative max-w-4xl mx-auto my-2">
+    <div className="max-w-4xl mx-auto my-2">
       <div className="space-y-4 border-b pb-4">
         <h1 className="text-2xl font-bold">{article?.title}</h1>
         <div className="text-gray-500 flex items-center">
@@ -44,21 +43,19 @@ export default function Component(props: { params: Promise<{ id: string }> }) {
         </div>
       </div>
 
-      <div className="mt-4">
-        <div className="mb-4 bg-black/10 dark:bg-white/10 p-2 rounded-md">
-          <h2 className="text-lg mb-2 text-gray-600 dark:text-gray-300">导读:</h2>
-          <p className="text-gray-500 dark:text-gray-400">{article?.summary}</p>
-        </div>
-
-        <BytemdViewer content={article?.content ?? ''} />
+      <div className=" mt-4 bg-black/5 dark:bg-white/10 p-2 rounded-md">
+        <h2 className="text-lg mb-2 text-gray-600 dark:text-gray-300">导读:</h2>
+        <p className="text-gray-500 dark:text-gray-400">{article?.summary}</p>
       </div>
 
-      <Card className="absolute -right-64 top-0 w-64 hidden xl:block">
-        <CardContent className="p-2">
-          <h3 className="text-lg font-semibold mb-4">章节</h3>
-          <Anchor content={article?.content || ''}></Anchor>
-        </CardContent>
-      </Card>
+      <div className="bg-black/5 dark:bg-white/10 p-2 rounded-md my-4">
+        <h3 className="text-lg font-semibold mb-4">章节目录</h3>
+        <Anchor content={article?.content || ''}></Anchor>
+      </div>
+
+      <div className="bg-black/5 dark:bg-white/10 p-2 rounded-md">
+        <BytemdViewer content={article?.content ?? ''} />
+      </div>
     </div>
   )
 }
