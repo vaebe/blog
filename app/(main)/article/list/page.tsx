@@ -21,23 +21,25 @@ const ArticleInfo = ({ info }: { info: Article }) => {
 
       <p className="my-4">{info.summary}</p>
 
-      <div className="flex items-center text-sm text-muted-foreground space-x-4">
+      <div className="flex items-center justify-between text-sm text-muted-foreground ">
+        <div className="flex items-center space-x-4">
+          <p className=" flex items-center">
+            <ThumbsUp className="w-4 h-4 mr-1" aria-hidden="true" />
+            <span>{info.likes}</span>
+          </p>
+
+          <p className="flex items-center">
+            <Star className="w-4 h-4 mr-1" aria-hidden="true" />
+            <span>{info.favorites}</span>
+          </p>
+
+          <p className=" flex items-center">
+            <Eye className="w-4 h-4 mr-1" aria-hidden="true" />
+            <span>{info.views}</span>
+          </p>
+        </div>
+
         <time dateTime={info.createdAt.toString()}>{date}</time>
-
-        <p className=" flex items-center">
-          <ThumbsUp className="w-4 h-4 mr-1" aria-hidden="true" />
-          <span>{info.likes}</span>
-        </p>
-
-        <p className="flex items-center">
-          <Star className="w-4 h-4 mr-1" aria-hidden="true" />
-          <span>{info.favorites}</span>
-        </p>
-
-        <p className=" flex items-center">
-          <Eye className="w-4 h-4 mr-1" aria-hidden="true" />
-          <span>{info.views}</span>
-        </p>
       </div>
     </Link>
   )
@@ -49,7 +51,13 @@ const ArticleList = ({ articleInfo }: { articleInfo: GroupedArticles }) => (
       .sort(([a], [b]) => Number(b) - Number(a))
       .map(([year, articles]) => (
         <div key={year}>
-          <h2 className="text-3xl font-bold my-8">{year}</h2>
+          <div className="my-8 flex items-center">
+            <h2 className="text-3xl font-bold">{year}</h2>
+            <p className="ml-4 text-lg text-black/50 dark:text-white/50">
+              {articles.length ?? 0} 篇
+            </p>
+          </div>
+
           <div className="space-y-4">
             {articles.map((article) => (
               <Card key={article.id} className="p-0">
