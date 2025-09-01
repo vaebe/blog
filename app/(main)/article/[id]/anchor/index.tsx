@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useRef } from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import { generateUUID } from '@/lib/utils'
 import './index.css'
 
 interface Heading {
@@ -31,7 +31,7 @@ export const Anchor: React.FC<AnchorProps> = ({ content }) => {
       ).map((elem) => {
         const element = elem as HTMLElement
         if (!element.id) {
-          element.id = uuidv4()
+          element.id = generateUUID()
         }
         return {
           id: element.id,

@@ -1,5 +1,4 @@
-import { randomUUID } from 'crypto'
-import { sendJson } from '@/lib/utils'
+import { sendJson, generateUUID } from '@/lib/utils'
 import { prisma } from '@/prisma'
 
 export async function POST(req: Request) {
@@ -9,7 +8,7 @@ export async function POST(req: Request) {
 
     const newArticle = await prisma.article.create({
       data: {
-        id: randomUUID().replaceAll('-', ''),
+        id: generateUUID(),
         title,
         content,
         classify,
