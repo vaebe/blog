@@ -12,13 +12,17 @@ export async function GET(req: Request) {
   }
 
   try {
-    await saveGitHubPinnedReposToCache()
-    const syncArticleNameList = await getArticles(0)
+    console.log('开始同步 GitHub 置顶仓库...')
+    const gitHubPinnedReposToCacheRes = await saveGitHubPinnedReposToCache()
+    console.log(gitHubPinnedReposToCacheRes)
 
+    console.log('开始同步掘金文章...')
+    const syncArticleNameList = await getArticles(0)
+    console.log('同步掘金文章完成')
     console.log(syncArticleNameList)
 
-    return sendJson({ data: syncArticleNameList, msg: '同步掘金文章成功' })
+    return sendJson({ data: syncArticleNameList, msg: '同步数据成功' })
   } catch (error) {
-    return sendJson({ code: -1, msg: `同步掘金文章失败：${error}` })
+    return sendJson({ code: -1, msg: `同步数据失败：${error}` })
   }
 }

@@ -75,7 +75,7 @@ async function getPinnedRepos(): Promise<ApiRes<GithubPinnedRepoInfo[]>> {
     const edges: Edges = res?.data?.user?.pinnedItems?.edges ?? []
     const data = edges.map((edge) => edge.node as GithubPinnedRepoInfo) || []
 
-    return { code: 200, data, msg: '获取 GitHub 置顶项目成功' }
+    return { code: 0, data, msg: '获取 GitHub 置顶项目成功' }
   } catch (error) {
     return { code: -1, msg: `获取 GitHub 置顶项目失败：${error}` }
   }
@@ -87,7 +87,7 @@ export async function saveGitHubPinnedReposToCache(): Promise<ApiRes> {
   try {
     const res = await getPinnedRepos()
 
-    if (res.code !== 200) {
+    if (res.code !== 0) {
       return { code: -1, msg: res.msg }
     }
 
@@ -97,12 +97,11 @@ export async function saveGitHubPinnedReposToCache(): Promise<ApiRes> {
       return { code: -1, msg: '获取 GitHub 置顶项目失败' }
     }
 
-    await createCacheData({
+    return createCacheData({
       key: CacheDataKey,
       data: JSON.stringify(data),
       desc: 'GitHub 置顶项目'
     })
-    return { code: 200, msg: '保存 GitHub 置顶项目成功' }
   } catch (error) {
     return { code: -1, msg: `保存 GitHub 置顶项目失败：${error}` }
   }
@@ -111,18 +110,20 @@ export async function saveGitHubPinnedReposToCache(): Promise<ApiRes> {
 export async function fetchPinnedRepos(): Promise<ApiRes<GithubPinnedRepoInfo[]>> {
   try {
     const res = await getCacheData(CacheDataKey)
+    console.log('Cache fetch result:', res)
 
-    if (res.code !== 200) {
+    if (res.code !== 0) {
       return { code: -1, msg: '获取缓存数据失败' }
     }
 
     const raw = res.data?.data
     if (!raw) {
-      return { code: 200, data: [], msg: '缓存数据为空' }
+      return { code: 0, data: [], msg: '缓存数据为空' }
     }
 
     const data = JSON.parse(raw) as GithubPinnedRepoInfo[]
-    return { code: 200, data, msg: '获取缓存数据成功' }
+
+    return { code: 0, data, msg: '获取缓存数据成功' }
   } catch (error) {
     return { code: -1, msg: `获取缓存数据失败：${error}` }
   }
