@@ -1,6 +1,6 @@
 import { sendJson } from '@/lib/utils'
 import { getArticles } from './juejin-data'
-import { saveGitHubPinnedReposToCache } from '@/lib/github/fetch-pinned-repos'
+import { saveGitHubPinnedReposToCache } from '@/lib/github/pinned-repos'
 
 export async function GET(req: Request) {
   const apiKey = req.headers.get('x-api-key')

@@ -1,7 +1,7 @@
 import { ContentCard } from './ContentCard'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
-import { fetchPinnedRepos, GithubPinnedRepoInfo } from '@/lib/github/fetch-pinned-repos'
+import { fetchPinnedRepos, GithubPinnedRepoInfo } from '@/lib/github/pinned-repos'
 
 function NoFound() {
   return (
