@@ -5,13 +5,13 @@ import EmailProvider from 'next-auth/providers/email'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from '@/prisma/index'
 import { AnyObject } from '@/types'
-import { v4 as uuidv4 } from 'uuid'
+import { generateUUID } from '@/lib/utils'
 
 const AUTH_GITHUB_CLIENT_ID = process.env.AUTH_GITHUB_CLIENT_ID
 const AUTH_GITHUB_CLIENT_SECRET = process.env.AUTH_GITHUB_CLIENT_SECRET
 
 function createAvatar() {
-  return `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${uuidv4().replaceAll('-', '')}&size=64`
+  return `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${generateUUID()}&size=64`
 }
 
 // 更新用户头像-这里不走接口，更安全

@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from 'clsx'
 import { NextResponse } from 'next/server'
 import { twMerge } from 'tailwind-merge'
 import { Article } from '@prisma/client'
+import { v4 as uuidv4 } from 'uuid'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -46,4 +47,8 @@ export async function getFileHash(file: File) {
 // 获取跳转文章详情路径
 export function getJumpArticleDetailsUrl(info: Article) {
   return info.source === '00' ? `/article/${info.id}` : `https://juejin.cn/post/${info.id}`
+}
+
+export function generateUUID() {
+  return uuidv4().replaceAll('-', '')
 }

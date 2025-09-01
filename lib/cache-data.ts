@@ -1,8 +1,7 @@
 import { z } from 'zod'
 import type { ApiRes } from './utils'
 import { prisma } from '@/prisma'
-import { randomUUID } from 'crypto'
-import { TimeInSeconds } from './enums'
+import { generateUUID } from '@/lib/utils'
 import type { CacheData } from '@prisma/client'
 
 const createCacheDataSchema = z.object({
@@ -34,7 +33,7 @@ export async function createCacheData(
         desc: desc
       },
       create: {
-        id: randomUUID().replaceAll('-', ''),
+        id: generateUUID(),
         key: key,
         data: data,
         desc: desc
