@@ -3,6 +3,7 @@ import { ContentCard } from './ContentCard'
 import Link from 'next/link'
 import { Article } from '@prisma/client'
 import { TimeInSeconds } from '@/lib/enums'
+import dayjs from 'dayjs'
 
 function NoFound() {
   return <p className="text-center text-gray-500 dark:text-gray-400 py-8">No articles found.</p>
@@ -38,6 +39,10 @@ function ArticleList({ articles }: { articles: Article[] }) {
                 <Icon icon="mdi:eye" className="w-4 h-4 mr-1 text-blue-500" />
                 {article.views}
               </span>
+              <span className="flex items-center">
+                <Icon icon="mdi:clock-time-five-outline" className="w-4 h-4 mr-1" />
+                {dayjs(article.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+              </span>
             </div>
           </Link>
         </div>
@@ -61,7 +66,11 @@ async function getJueJinArticles() {
 export async function JueJinArticles() {
   const list = (await getJueJinArticles()) as Article[]
 
-  const articles = list.sort((a, b) => b.likes - a.likes).slice(0, 6)
+  // 先安收藏数排序获取前六个，然后根据创建时间排序
+  const articles = list
+    .sort((a, b) => b.likes - a.likes)
+    .slice(0, 6)
+    .sort((a, b) => dayjs(b.createdAt).unix() - dayjs(a.createdAt).unix())
 
   return (
     <ContentCard title="掘金文章">
