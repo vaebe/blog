@@ -35,12 +35,13 @@ export interface GithubUserInfo {
   updated_at: string
 }
 
-const GITHUB_API_URL = `https://api.github.com/users/${process.env.NEXT_PUBLIC_GITHUB_USER_NAME}`
+const GITHUB_USER_NAME = process.env.NEXT_PUBLIC_GITHUB_USER_NAME
+const GITHUB_API_URL = `https://api.github.com/users/${GITHUB_USER_NAME}`
 
 export async function fetchGithubUserInfo() {
   const token = process.env.GITHUB_API_TOKEN
 
-  if (!process.env.NEXT_PUBLIC_GITHUB_USER_NAME || !token) {
+  if (!GITHUB_USER_NAME || !token) {
     throw new Error('GitHub 用户名或 Token 未配置')
   }
 

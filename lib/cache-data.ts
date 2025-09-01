@@ -25,7 +25,7 @@ export async function createCacheData(
 
     const { key, data, desc = '' } = parsed.data
 
-    await prisma.cacheData.upsert({
+    const res = await prisma.cacheData.upsert({
       where: {
         key: key
       },
@@ -41,9 +41,9 @@ export async function createCacheData(
       }
     })
 
-    return { code: 200, msg: '创建缓存数据成功！' }
+    return { code: 0, msg: '创建缓存数据成功！', data: res }
   } catch (error) {
-    return { code: -1, msg: `创建文章失败：${error}` }
+    return { code: -1, msg: `创建缓存数据失败：${error}` }
   }
 }
 
@@ -53,7 +53,7 @@ export async function getCacheData(key: string): Promise<ApiRes<CacheData>> {
       return { code: 400, msg: '缓存数据的 key 不能为空！' }
     }
 
-    const response = await fetch(`/api/cache-data?key=${key}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/cache-data?key=${key}`, {
       headers: {
         'Content-Type': 'application/json'
       },
