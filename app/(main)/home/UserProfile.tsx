@@ -3,9 +3,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import userIcon from '@/public/user-icon.png'
 import type { GithubUserInfo } from '@/lib/github/user-info'
-import { fetchGithubUserInfo } from '@/lib/github/user-info'
+import { GithubUserInfoCacheDataKey } from '@/lib/github/user-info'
+import { getCacheDataByKey } from '@/lib/cache-data'
 import type { JuejinUserInfo } from '@/lib/juejin/fetch-user-info'
 import { fetchJuejinUserInfo } from '@/lib/juejin/fetch-user-info'
+import { TimeInSeconds } from '@/lib/enums'
 
 // 统计项组件
 const StatItem = ({ icon, label, value }: { icon: string; label: string; value?: number }) => (
@@ -131,7 +133,10 @@ const UserInfo = ({ githubUserInfo }: { githubUserInfo?: GithubUserInfo }) => (
 export async function UserProfile() {
   let githubUserInfo: GithubUserInfo | undefined
   try {
-    const res = await fetchGithubUserInfo()
+    const res = await getCacheDataByKey<GithubUserInfo>({
+      key: GithubUserInfoCacheDataKey,
+      next: { revalidate: TimeInSeconds.oneHour }
+    })
     if (res.code === 0) {
       githubUserInfo = res.data
     }

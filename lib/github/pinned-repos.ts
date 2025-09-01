@@ -1,5 +1,5 @@
 import { TimeInSeconds } from '../enums'
-import { createCacheData, getCacheData } from '../cache-data'
+import { createCacheData } from '../cache-data'
 import type { ApiRes } from '../utils'
 
 const buildQuery = (username: string) => `
@@ -79,7 +79,7 @@ async function getPinnedRepos(): Promise<ApiRes<GithubPinnedRepoInfo[]>> {
   }
 }
 
-const CacheDataKey = 'github_pinned_repos'
+export const GitHubPinnedReposCacheDataKey = 'github_pinned_repos'
 
 export async function saveGitHubPinnedReposToCache(): Promise<ApiRes> {
   try {
@@ -96,32 +96,11 @@ export async function saveGitHubPinnedReposToCache(): Promise<ApiRes> {
     }
 
     return createCacheData({
-      key: CacheDataKey,
+      key: GitHubPinnedReposCacheDataKey,
       data: JSON.stringify(data),
       desc: 'GitHub 置顶项目'
     })
   } catch (error) {
     return { code: -1, msg: `保存 GitHub 置顶项目失败：${error}` }
-  }
-}
-
-export async function fetchPinnedRepos(): Promise<ApiRes<GithubPinnedRepoInfo[]>> {
-  try {
-    const res = await getCacheData(CacheDataKey)
-
-    if (res.code !== 0) {
-      return { code: -1, msg: '获取缓存数据失败' }
-    }
-
-    const raw = res.data?.data
-    if (!raw) {
-      return { code: 0, data: [], msg: '缓存数据为空' }
-    }
-
-    const data = JSON.parse(raw) as GithubPinnedRepoInfo[]
-
-    return { code: 0, data, msg: '获取缓存数据成功' }
-  } catch (error) {
-    return { code: -1, msg: `获取缓存数据失败：${error}` }
   }
 }

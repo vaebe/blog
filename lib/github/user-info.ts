@@ -1,4 +1,4 @@
-import { createCacheData, getCacheData } from '../cache-data'
+import { createCacheData } from '../cache-data'
 import { TimeInSeconds } from '../enums'
 import { ApiRes } from '../utils'
 
@@ -68,7 +68,7 @@ export async function getGithubUserInfo(): Promise<ApiRes<GithubUserInfo>> {
   }
 }
 
-const CacheDataKey = 'github_user_info'
+export const GithubUserInfoCacheDataKey = 'github_user_info'
 
 export async function saveGithubUserInfoToCache(): Promise<ApiRes> {
   try {
@@ -85,32 +85,11 @@ export async function saveGithubUserInfoToCache(): Promise<ApiRes> {
     }
 
     return createCacheData({
-      key: CacheDataKey,
+      key: GithubUserInfoCacheDataKey,
       data: JSON.stringify(data),
       desc: 'GitHub 用户信息'
     })
   } catch (error) {
     return { code: -1, msg: `保存 GitHub 用户信息失败：${error}` }
-  }
-}
-
-export async function fetchGithubUserInfo(): Promise<ApiRes<GithubUserInfo>> {
-  try {
-    const res = await getCacheData(CacheDataKey)
-
-    if (res.code !== 0) {
-      return { code: -1, msg: '获取缓存数据失败' }
-    }
-
-    const raw = res.data?.data
-    if (!raw) {
-      return { code: 0, msg: '缓存数据为空' }
-    }
-
-    const data = JSON.parse(raw) as GithubUserInfo
-
-    return { code: 0, data, msg: '获取缓存数据成功' }
-  } catch (error) {
-    return { code: -1, msg: `获取缓存数据失败：${error}` }
   }
 }

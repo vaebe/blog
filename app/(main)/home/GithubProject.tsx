@@ -1,7 +1,10 @@
 import { ContentCard } from './ContentCard'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
-import { fetchPinnedRepos, GithubPinnedRepoInfo } from '@/lib/github/pinned-repos'
+import type { GithubPinnedRepoInfo } from '@/lib/github/pinned-repos'
+import { GitHubPinnedReposCacheDataKey } from '@/lib/github/pinned-repos'
+import { getCacheDataByKey } from '@/lib/cache-data'
+import { TimeInSeconds } from '@/lib/enums'
 
 function NoFound() {
   return (
@@ -52,7 +55,11 @@ export async function GithubProject() {
   let repos: GithubPinnedRepoInfo[] = []
 
   try {
-    const res = await fetchPinnedRepos()
+    const res = await getCacheDataByKey<GithubPinnedRepoInfo[]>({
+      key: GitHubPinnedReposCacheDataKey,
+      next: { revalidate: TimeInSeconds.oneHour }
+    })
+
     if (res.code === 0 && res.data) {
       repos = res.data
     }
