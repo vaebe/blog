@@ -47,18 +47,27 @@ export async function createCacheData(
   }
 }
 
-export async function getCacheData(key: string): Promise<ApiRes<CacheData>> {
+interface GetCacheDataProps {
+  key: string
+  next?: NextFetchRequestConfig
+}
+
+// 不向外暴露此方法
+async function getCacheData(props: GetCacheDataProps): Promise<ApiRes<CacheData>> {
   try {
-    if (!key) {
+    if (!props.key) {
       return { code: 400, msg: '缓存数据的 key 不能为空！' }
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/cache-data?key=${key}`, {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      next: { revalidate: TimeInSeconds.oneHour } // 数据缓存一个小时
-    })
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/cache-data?key=${props.key}`,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        next: props.next
+      }
+    )
 
     if (!response.ok) {
       const errorMessage = await response.text()
@@ -66,6 +75,27 @@ export async function getCacheData(key: string): Promise<ApiRes<CacheData>> {
     }
 
     return response.json()
+  } catch (error) {
+    return { code: -1, msg: `获取缓存数据失败：${error}` }
+  }
+}
+
+export async function getCacheDataByKey<T>(props: GetCacheDataProps): Promise<ApiRes<T>> {
+  try {
+    const res = await getCacheData(props)
+
+    if (res.code !== 0) {
+      return { code: -1, msg: '获取缓存数据失败' }
+    }
+
+    const raw = res.data?.data
+    if (!raw) {
+      return { code: 0, msg: '缓存数据为空' }
+    }
+
+    const data = JSON.parse(raw) as T
+
+    return { code: 0, data, msg: '获取缓存数据成功' }
   } catch (error) {
     return { code: -1, msg: `获取缓存数据失败：${error}` }
   }
