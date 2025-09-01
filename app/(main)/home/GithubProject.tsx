@@ -52,7 +52,10 @@ export async function GithubProject() {
   let repos: GithubPinnedRepoInfo[] = []
 
   try {
-    repos = await fetchPinnedRepos()
+    const res = await fetchPinnedRepos()
+    if (res.code === 200 && res.data) {
+      repos = res.data
+    }
   } catch {
     repos = []
   }
