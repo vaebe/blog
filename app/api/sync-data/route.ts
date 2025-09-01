@@ -1,6 +1,7 @@
 import { sendJson } from '@/lib/utils'
 import { getArticles } from './juejin-data'
 import { saveGitHubPinnedReposToCache } from '@/lib/github/pinned-repos'
+import { saveGithubUserInfoToCache } from '@/lib/github/user-info'
 
 export async function GET(req: Request) {
   const apiKey = req.headers.get('x-api-key')
@@ -12,16 +13,19 @@ export async function GET(req: Request) {
   }
 
   try {
+    console.log('开始缓存 GitHub 用户信息...')
+    const githubUserInfoToCacheRes = await saveGithubUserInfoToCache()
+    console.log(githubUserInfoToCacheRes, '/r/n')
+
     console.log('开始同步 GitHub 置顶仓库...')
     const gitHubPinnedReposToCacheRes = await saveGitHubPinnedReposToCache()
-    console.log(gitHubPinnedReposToCacheRes)
+    console.log(gitHubPinnedReposToCacheRes, '/r/n')
 
     console.log('开始同步掘金文章...')
     const syncArticleNameList = await getArticles(0)
-    console.log('同步掘金文章完成')
-    console.log(syncArticleNameList)
+    console.log(syncArticleNameList, '/r/n')
 
-    return sendJson({ data: syncArticleNameList, msg: '同步数据成功' })
+    return sendJson({ code: 0, msg: '同步数据成功' })
   } catch (error) {
     return sendJson({ code: -1, msg: `同步数据失败：${error}` })
   }
