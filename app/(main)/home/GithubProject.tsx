@@ -53,7 +53,7 @@ export async function GithubProject() {
 
   try {
     const res = await fetchPinnedRepos()
-    if (res.code === 200 && res.data) {
+    if (res.code === 0 && res.data) {
       repos = res.data
     }
   } catch {
