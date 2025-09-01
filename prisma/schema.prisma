@@ -139,3 +139,16 @@ model Subscriber {
 
   @@map("subscriber")
 }
+
+// =============================== 缓存数据 ===============================
+model CacheData {
+  id        String    @id @default(cuid())
+  key       String    @unique // 存储数据的 key
+  data      String // 存储的数据 文本 或 json 字符串
+  desc      String // 存储数据的描述
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // 删除时间
+
+  @@map("cache-data")
+}

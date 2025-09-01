@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import { sendJson } from '@/lib/utils'
 import { prisma } from '@/prisma'
 import { AnyObject } from '@/types'
 import { fetchJuejinUserArticles } from '@/lib/juejin/fetch-user-articles'
@@ -43,9 +42,9 @@ async function addArticle(info: AnyObject) {
   })
 }
 
-let syncArticleNameList: string[] = []
+const syncArticleNameList: string[] = []
 
-async function getArticles(index: number) {
+export async function getArticles(index: number) {
   const info = await fetchJuejinUserArticles(index)
 
   for (const item of info.data) {
@@ -60,28 +59,6 @@ async function getArticles(index: number) {
   if (info.has_more) {
     await getArticles(nextIndex)
   }
-}
 
-export async function GET(req: Request) {
-  syncArticleNameList = []
-
-  const apiKey = req.headers.get('x-api-key')
-  const expectedApiKey = process.env.GITHUB_REPOSITORY_API_KEY
-
-  // 验证 API 密钥
-  if (!apiKey || apiKey !== expectedApiKey) {
-    return sendJson({ code: -1, msg: '无效的 API 密钥' })
-  }
-
-  try {
-    const index = 0
-
-    await getArticles(index)
-
-    console.log(syncArticleNameList)
-
-    return sendJson({ data: syncArticleNameList, msg: '同步掘金文章成功' })
-  } catch (error) {
-    return sendJson({ code: -1, msg: `同步掘金文章失败：${error}` })
-  }
+  return syncArticleNameList
 }

@@ -7,11 +7,29 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-interface SendJson {
+interface SendJson<T = unknown> {
   code?: number
-  data?: unknown
+  data?: T
   msg?: string
 }
+
+export interface ApiRes<T = unknown> {
+  code: number
+  msg: string
+  data?: T
+}
+
+export interface PaginationResData<T = unknown> {
+  code: number
+  msg: string
+  data?: {
+    list: T[]
+    total: number
+    currentPage: number
+    totalPages: number
+  }
+}
+
 export function sendJson(opts: SendJson) {
   return NextResponse.json({ code: 0, msg: '', ...opts }, { status: 200 })
 }

@@ -2,7 +2,7 @@ import { sendJson, emailRegex } from '@/lib/utils'
 import { prisma } from '@/prisma'
 import nodemailer from 'nodemailer'
 
-// 添加留言
+// 发送邮件
 export async function POST(req: Request) {
   try {
     const body = await req.json()
