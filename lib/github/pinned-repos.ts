@@ -44,35 +44,33 @@ export interface GithubPinnedRepoInfo {
 type Edges = Record<string, string | number | GithubPinnedRepoInfo>[]
 
 const GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql'
+const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN
+const GITHUB_USER_NAME = process.env.NEXT_PUBLIC_GITHUB_USER_NAME
 
 // 获取 GitHub 置顶项目
 async function getPinnedRepos(): Promise<ApiRes<GithubPinnedRepoInfo[]>> {
-  const username = process.env.NEXT_PUBLIC_GITHUB_USER_NAME
-  const token = process.env.GITHUB_API_TOKEN
-
-  if (!username || !token) {
+  if (!GITHUB_USER_NAME || !GITHUB_API_TOKEN) {
     return { code: -1, msg: 'GitHub 用户名或 token 未配置' }
   }
 
   try {
-    const response = await fetch(GITHUB_GRAPHQL_URL, {
+    const res = await fetch(GITHUB_GRAPHQL_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${GITHUB_API_TOKEN}`
       },
-      body: JSON.stringify({ query: buildQuery(username) }),
+      body: JSON.stringify({ query: buildQuery(GITHUB_USER_NAME) }),
       next: { revalidate: TimeInSeconds.oneHour } // 数据缓存一个小时
     })
 
-    if (!response.ok) {
-      const errorMessage = await response.text()
-      throw new Error(`获取 GitHub 仓库信息失败: ${response.statusText} - ${errorMessage}`)
+    if (!res.ok) {
+      const errMsg = await res.text()
+      return { code: -1, msg: `获取 GitHub 仓库信息失败: ${res.statusText} - ${errMsg}` }
     }
 
-    const res = await response.json()
-
-    const edges: Edges = res?.data?.user?.pinnedItems?.edges ?? []
+    const dataRes = await res.json()
+    const edges: Edges = dataRes?.data?.user?.pinnedItems?.edges ?? []
     const data = edges.map((edge) => edge.node as GithubPinnedRepoInfo) || []
 
     return { code: 0, data, msg: '获取 GitHub 置顶项目成功' }
@@ -110,7 +108,6 @@ export async function saveGitHubPinnedReposToCache(): Promise<ApiRes> {
 export async function fetchPinnedRepos(): Promise<ApiRes<GithubPinnedRepoInfo[]>> {
   try {
     const res = await getCacheData(CacheDataKey)
-    console.log('Cache fetch result:', res)
 
     if (res.code !== 0) {
       return { code: -1, msg: '获取缓存数据失败' }

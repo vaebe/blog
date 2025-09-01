@@ -2,8 +2,8 @@ import { Icon } from '@iconify/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import userIcon from '@/public/user-icon.png'
-import type { GithubUserInfo } from '@/lib/github/fetch-user-info'
-import { fetchGithubUserInfo } from '@/lib/github/fetch-user-info'
+import type { GithubUserInfo } from '@/lib/github/user-info'
+import { fetchGithubUserInfo } from '@/lib/github/user-info'
 import type { JuejinUserInfo } from '@/lib/juejin/fetch-user-info'
 import { fetchJuejinUserInfo } from '@/lib/juejin/fetch-user-info'
 
@@ -131,7 +131,10 @@ const UserInfo = ({ githubUserInfo }: { githubUserInfo?: GithubUserInfo }) => (
 export async function UserProfile() {
   let githubUserInfo: GithubUserInfo | undefined
   try {
-    githubUserInfo = await fetchGithubUserInfo()
+    const res = await fetchGithubUserInfo()
+    if (res.code === 0) {
+      githubUserInfo = res.data
+    }
   } catch {
     githubUserInfo = undefined
   }
