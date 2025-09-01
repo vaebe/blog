@@ -43,6 +43,7 @@ npx prisma generate
 ```bash
 npx shadcn@latest add scroll-area
 ```
-## 性能看起来还行
-<img width="1727" alt="image" src="https://github.com/user-attachments/assets/9f198e59-4d3e-4f3f-a035-3c291a648785" />
 
+## 性能看起来还行
+
+<img width="1727" alt="image" src="https://github.com/user-attachments/assets/9f198e59-4d3e-4f3f-a035-3c291a648785" />

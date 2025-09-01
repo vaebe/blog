@@ -1,17 +1,18 @@
-name: Sync Juejin Articles
+name: Sync Data
 
 on:
   schedule:
     # 每天凌晨 2 点运行
     - cron: '0 2 * * *'
+  workflow_dispatch: # 允许手动触发
 
 jobs:
   sync-articles:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Call Sync Juejin Articles API
+      - name: Start Sync Data
         env:
           API_KEY: ${{ secrets.API_KEY }}
         run: |
-          curl -X GET "https://blog.vaebe.cn/api/articles/syncJuejinArticles" -H "x-api-key: $API_KEY"
+          curl -X GET "https://blog.vaebe.cn/api/sync-data" -H "x-api-key: $API_KEY"
