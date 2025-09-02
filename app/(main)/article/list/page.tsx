@@ -12,11 +12,7 @@ const ArticleInfo = ({ info }: { info: Article }) => {
   const date = new Date(info.createdAt).toLocaleDateString()
 
   return (
-    <Link
-      href={getJumpArticleDetailsUrl(info)}
-      target="_blank"
-      className="block hover:bg-accent rounded-lg transition-colors duration-200 p-4"
-    >
+    <Link href={getJumpArticleDetailsUrl(info)} target="_blank">
       <h3 className="text-lg font-medium">{info.title}</h3>
 
       <p className="my-4">{info.summary}</p>
@@ -60,7 +56,10 @@ const ArticleList = ({ articleInfo }: { articleInfo: GroupedArticles }) => (
 
           <div className="space-y-4">
             {articles.map((article) => (
-              <Card key={article.id} className="p-0">
+              <Card
+                key={article.id}
+                className="hover:bg-accen rounded-lg transition-colors duration-200 p-4"
+              >
                 <ArticleInfo info={article} />
               </Card>
             ))}

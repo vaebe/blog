@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
       </body>
 
-       <Script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"/>
+      <Script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" />
     </html>
   )
 }
