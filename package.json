@@ -101,5 +101,18 @@
     "src/**/*.{tsx,ts}": [
       "eslint --fix"
     ]
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@prisma/client",
+      "@prisma/engines",
+      "@tailwindcss/oxide",
+      "bcrypt",
+      "prisma",
+      "sharp",
+      "simple-git-hooks",
+      "unrs-resolver"
+    ]
   }
 }
