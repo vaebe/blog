@@ -2,6 +2,5 @@ onlyBuiltDependencies:
   - '@prisma/client'
   - '@tailwindcss/oxide'
   - bcrypt
-  - react-p5
   - sharp
   - simple-git-hooks
