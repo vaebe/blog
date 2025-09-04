@@ -9,7 +9,7 @@ export function TechnologyStack() {
         {techStackData.map((tech) => (
           <div
             key={tech}
-            className="flex items-center bg-black/10 dark:bg-white/10 rounded-lg px-3 py-1"
+            className="flex items-center bg-black/5 dark:bg-white/20 rounded-lg px-3 py-1"
           >
             <Icon
               icon={techIcons[tech] ? techIcons[tech] : 'mdi:code-tags'}

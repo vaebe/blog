@@ -8,7 +8,7 @@ interface Props {
 export function ContentCard({ children, title }: Props) {
   return (
     <section className="rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4 flex items-center border-b-4 pb-4">{title}</h2>
+      <h2 className="text-2xl font-semibold mb-4 flex items-center border-b-2 pb-4">{title}</h2>
       {children}
     </section>
   )

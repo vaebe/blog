@@ -68,7 +68,7 @@ export async function GithubProject() {
   }
 
   return (
-    <ContentCard title="GitHub 项目">
+    <ContentCard title="GitHub">
       {repos.length === 0 ? <NoFound /> : <ProjectInfo repos={repos} />}
     </ContentCard>
   )

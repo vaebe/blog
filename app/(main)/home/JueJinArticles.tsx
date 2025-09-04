@@ -73,7 +73,7 @@ export async function JueJinArticles() {
     .sort((a, b) => dayjs(b.createdAt).unix() - dayjs(a.createdAt).unix())
 
   return (
-    <ContentCard title="掘金文章">
+    <ContentCard title="掘金">
       {articles.length === 0 ? <NoFound /> : <ArticleList articles={articles} />}
     </ContentCard>
   )
