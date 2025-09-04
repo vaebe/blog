@@ -1,32 +1,10 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
-model Article {
-  id         String    @id @unique
-  userId     Int
-  title      String    @db.Text
-  content    String    @db.LongText
-  classify   String?   @db.Text
-  coverImg   String?   @db.Text
-  summary    String    @db.Text
-  source     String?   @db.Text // 00 博客创建 01 掘金同步
-  views      Int       @default(1)
-  likes      Int       @default(1)
-  favorites  Int       @default(1)
-  showNumber Int       @default(1)
-  status     String    @db.Text
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime? @updatedAt
-  deletedAt  DateTime?
-  isDeleted  Int?      @default(0)
-
-  @@map("article")
+ 
+generator client {
+  provider = "prisma-client-js"
 }
 
 model User {
@@ -66,25 +44,25 @@ model Account {
   session_state            String?
   refresh_token_expires_in Int?
   user                     User?   @relation(fields: [userId], references: [id])
-
+ 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+ 
   @@unique([provider, providerAccountId])
   @@index([userId])
   @@map("account")
 }
 
 model Session {
-  id           String   @id @default(cuid())
+   id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id])
-
+ 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+ 
   @@index([userId])
   @@map("session")
 }
@@ -93,12 +71,11 @@ model VerificationToken {
   identifier String
   token      String
   expires    DateTime
-
+ 
   @@unique([identifier, token])
   @@map("verification_token")
 }
 
-// Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @unique
   userId               String
@@ -108,11 +85,35 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
-
+ 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+ 
   @@id([userId, credentialID])
   @@map("authenticator")
+}
+
+// =============================== 文章信息 ===============================
+
+model Article {
+  id         String    @id @unique
+  userId     Int
+  title      String    @db.Text
+  content    String    @db.LongText
+  classify   String?   @db.Text
+  coverImg   String?   @db.Text
+  summary    String    @db.Text
+  source     String?   @db.Text // 00 博客创建 01 掘金同步
+  views      Int       @default(1)
+  likes      Int       @default(1)
+  favorites  Int       @default(1)
+  showNumber Int       @default(1)
+  status     String    @db.Text
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
+  deletedAt  DateTime?
+  isDeleted  Int?      @default(0)
+
+  @@map("article")
 }
 
 // =============================== 留言板 ===============================

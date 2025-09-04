@@ -1,5 +1,4 @@
-import { withAuth } from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
 import { sendJson } from '@/lib/utils'
 
 const ADMIN_PAGES = ['/article/add', '/article/edit']
@@ -13,42 +12,25 @@ const ADMIN_APIS = [
   '/api/imagekit/getToken'
 ]
 
-export default withAuth(
-  function middleware(req) {
-    console.log('request:', req.method, req.url)
+export default auth((req) => {
+  const token = req.auth?.accessToken
+  const path = req.nextUrl.pathname
 
-    const token = req.nextauth.token
-    const path = req.nextUrl.pathname
-
-    if (token?.role !== '00') {
-      if (ADMIN_APIS.some((item) => path.startsWith(item))) {
-        // 如果没有访问接口的权限返回 401
-        return sendJson({ code: 401, msg: '无权限' })
-      }
-
-      if (ADMIN_PAGES.some((item) => path.startsWith(item))) {
-        // 如果用户没有权限访问管理页面，重定向到404页面
-        const url = req.nextUrl.clone()
-        url.pathname = '/404'
-        return NextResponse.rewrite(url)
-      }
+  if (token?.role !== '00') {
+    if (ADMIN_APIS.some((item) => path.startsWith(item))) {
+      // 如果没有访问接口的权限返回 401
+      return sendJson({ code: 401, msg: '无权限' })
     }
-  },
-  {
-    callbacks: {
-      authorized: function () {
-        // 这里返回 false 会到登录页面可以做额外的鉴权
-        return true
-      }
+
+    if (ADMIN_PAGES.some((item) => path.startsWith(item))) {
+      // 如果用户没有权限访问管理页面，重定向到404页面
+      const url = req.nextUrl.clone()
+      url.pathname = '/404'
+      return Response.redirect(url)
     }
   }
-)
+})
 
 export const config = {
-  matcher: [
-    // 匹配页面路由
-    '/((?!_next/static|_next/image|.*\\.png$).*)',
-    // 匹配 API 路由
-    '/api/:path*'
-  ]
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
 }
