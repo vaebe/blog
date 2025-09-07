@@ -1,5 +1,5 @@
 import { sendJson } from '@/lib/utils'
-import { prisma } from '@/prisma'
+import { prisma } from '@/lib/prisma'
 
 // 添加留言
 export async function POST(req: Request) {

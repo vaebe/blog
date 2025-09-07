@@ -1,5 +1,5 @@
 import { sendJson } from '@/lib/utils'
-import { prisma } from '@/prisma'
+import { prisma } from '@/lib/prisma'
 
 // 这里获取数据仍设置为 api 接口的原因是可以使用 nextjs 的缓存功能
 export async function GET(req: Request) {

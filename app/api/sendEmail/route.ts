@@ -1,5 +1,5 @@
 import { sendJson, emailRegex } from '@/lib/utils'
-import { prisma } from '@/prisma'
+import { prisma } from '@/lib/prisma'
 import nodemailer from 'nodemailer'
 
 // 发送邮件

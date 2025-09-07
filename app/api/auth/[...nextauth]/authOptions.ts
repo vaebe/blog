@@ -3,7 +3,7 @@ import GitHubProvider from 'next-auth/providers/github'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import EmailProvider from 'next-auth/providers/email'
 import { PrismaAdapter } from '@auth/prisma-adapter'
-import { prisma } from '@/prisma/index'
+import { prisma } from '@/lib/prisma'
 import { AnyObject } from '@/types'
 import { generateUUID } from '@/lib/utils'
 

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { prisma } from '@/prisma'
+import { prisma } from '@/lib/prisma'
 import { AnyObject } from '@/types'
 import { fetchJuejinUserArticles } from '@/lib/juejin/fetch-user-articles'
 
