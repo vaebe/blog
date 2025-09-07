@@ -48,7 +48,7 @@ export async function getArticles(index: number) {
   const info = await fetchJuejinUserArticles(index)
 
   for (const item of info.data) {
-    addArticle(item)
+    await addArticle(item)
 
     syncArticleNameList.push(item.article_info.title)
   }
