@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { ApiRes } from './utils'
-import { prisma } from '@/prisma'
+import { prisma } from '@/lib/prisma'
 import { generateUUID } from '@/lib/utils'
 import type { CacheData } from '@prisma/client'
 
