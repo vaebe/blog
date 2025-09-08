@@ -1,20 +1,32 @@
-import { sendJson, emailRegex } from '@/lib/utils'
+'use server'
+
 import { prisma } from '@/lib/prisma'
 import nodemailer from 'nodemailer'
+import { z } from 'zod'
+import type { ApiRes } from '@/lib/utils'
+
+const SendEmailSchema = z.object({
+  toEmail: z.email({ message: '邮箱格式不正确！' }),
+  subject: z.string().optional(),
+  text: z.string().optional(),
+  html: z.string().optional()
+})
 
 // 发送邮件
-export async function POST(req: Request) {
+export async function sendEmail(props: z.infer<typeof SendEmailSchema>): Promise<ApiRes> {
   try {
-    const body = await req.json()
-    const { toEmail, subject, text, html } = body
+    const parsed = SendEmailSchema.safeParse(props)
 
-    // 检查邮箱格式是否正确
-    if (!emailRegex.test(toEmail)) {
-      return sendJson({ code: -1, msg: '邮箱格式不正确' })
+    if (!parsed.success) {
+      // 当解析失败时，返回第一个错误信息
+      const errorMessage = parsed.error.issues[0].message
+      return { code: 400, data: null, msg: errorMessage }
     }
 
+    const { toEmail, subject, text, html } = parsed.data
+
     if (!subject || !(text || html)) {
-      return sendJson({ code: -1, msg: '参数不正确' })
+      return { code: -1, msg: '参数不正确' }
     }
 
     // 先查询邮箱是否已经存在
@@ -25,7 +37,7 @@ export async function POST(req: Request) {
     })
 
     if (existingEmail) {
-      return sendJson({ code: -1, msg: '邮箱已订阅' })
+      return { code: -1, msg: '邮箱已订阅' }
     }
 
     const transporter = nodemailer.createTransport({
@@ -56,8 +68,8 @@ export async function POST(req: Request) {
       }
     })
 
-    return sendJson({ msg: '邮件发送成功' })
+    return { code: 0, msg: '邮件发送成功' }
   } catch (error) {
-    return sendJson({ code: -1, msg: `发送邮件失败：${error}` })
+    return { code: -1, msg: `发送邮件失败：${error}` }
   }
 }
