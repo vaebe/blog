@@ -4,19 +4,19 @@ import './editor.scss'
 import plugins from './plugins'
 import { Editor } from '@bytemd/react'
 import zh_Hans from 'bytemd/locales/zh_Hans.json'
-import { imagekitUploadFile } from '@/lib/imagekit'
+import { uploadFile } from '@/app/actions/image-kit'
 import { toast } from 'sonner'
 
 async function uploadImages(files: File[]) {
   const resultData: Record<'url' | 'alt' | 'title', string>[] = []
 
   for (const item of files) {
-    const res = await imagekitUploadFile({ file: item, fileName: item.name })
+    const res = await uploadFile({ file: item, fileName: item.name })
 
     if (res?.code === 0) {
       console.log('res', res)
       resultData.push({
-        url: res?.data.url,
+        url: res!.data?.url ?? '',
         alt: item.name,
         title: item.name
       })

@@ -31,7 +31,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { imagekitUploadFile } from '@/lib/imagekit'
+import { uploadFile } from '@/app/actions/image-kit'
 import { PublishArticleInfo } from '@/types'
 
 const CATEGORIES = ['后端', '前端', 'Android', 'iOS', '人工智能', '阅读'] as const
@@ -76,7 +76,7 @@ export function PublishDialog({ onPublish, children, articleInfo }: PublishDialo
       const file = event.target.files?.[0]
       if (!file) return
 
-      const res = await imagekitUploadFile({ file, fileName: file.name })
+      const res = await uploadFile({ file, fileName: file.name })
 
       if (res?.code === 0 && res.data?.url) {
         setValue('coverImg', res.data.url)
