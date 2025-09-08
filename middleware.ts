@@ -4,14 +4,7 @@ import { sendJson } from '@/lib/utils'
 
 const ADMIN_PAGES = ['/article/add', '/article/edit']
 
-const ADMIN_APIS = [
-  '/api/articles/delete',
-  '/api/articles/add',
-  '/api/articles/update',
-  '/api/user',
-  '/api/imagekit/getFileInfoByHash',
-  '/api/imagekit/getToken'
-]
+const ADMIN_APIS = ['/api/articles/delete', '/api/articles/add', '/api/articles/update']
 
 export default withAuth(
   function middleware(req) {
