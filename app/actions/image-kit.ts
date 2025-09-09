@@ -58,9 +58,13 @@ export async function getFileInfoByHash(
   }
 }
 
-export function generateToken(payload: Record<string, string>): ApiRes<string> {
+export async function generateToken(payload: Record<string, string>): Promise<ApiRes<string>> {
   try {
     const privateKey = process.env.IMAGEKIT_PRIVATE_KEY ?? ''
+
+    if (!privateKey) {
+      return { code: -1, msg: 'IMAGEKIT_PRIVATE_KEY 不存在创建 token 失败!' }
+    }
 
     const token = jwt.sign(payload.uploadPayload, privateKey, {
       expiresIn: 60, // token 过期时间最大 3600 秒
@@ -88,42 +92,45 @@ export async function uploadFile({
   file,
   fileName
 }: ImagekitUploadFileOpts): Promise<ApiRes<ImagekitUploadFileRes | undefined>> {
-  const fileHash = await getFileHash(file)
-  const res = await getFileInfoByHash(fileHash)
-  if (res.code !== 0) {
-    return { ...res, data: undefined }
+  try {
+    const fileHash = await getFileHash(file)
+
+    const exist = await getFileInfoByHash(fileHash)
+
+    if (exist.code === 0 && exist.data?.length) {
+      return { code: 0, data: exist.data[0], msg: '上传文件成功！' }
+    }
+
+    const payload = {
+      fileName,
+      customMetadata: JSON.stringify({ md5: fileHash }),
+      folder: `/blog/${dayjs().format('YYYY-MM-DD')}`
+    }
+
+    const tokenRes = await generateToken(payload)
+    if (tokenRes.code !== 0) {
+      return { ...tokenRes, data: undefined }
+    }
+
+    const formData = new FormData()
+    Object.entries({ ...payload, file, token: tokenRes.data }).forEach(([key, value]) =>
+      formData.append(key, value as Blob | string)
+    )
+
+    const uploadRes = await fetch('https://upload.imagekit.io/api/v2/files/upload', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (!uploadRes.ok) {
+      return { code: -1, msg: '上传文件失败！' }
+    }
+
+    const data = await uploadRes.json()
+
+    return { code: 0, data, msg: '上传成功！' }
+  } catch (error) {
+    console.log(error)
+    return { code: 0, data: undefined, msg: '上传异常！' }
   }
-
-  if (res.data?.length) {
-    return { code: 0, data: res.data[0], msg: '上传文件成功！' }
-  }
-
-  const payload = {
-    fileName,
-    customMetadata: JSON.stringify({ md5: fileHash }),
-    folder: `/blog/${dayjs().format('YYYY-MM-DD')}`
-  }
-
-  const tokenRes = generateToken(payload)
-  if (tokenRes.code !== 0) {
-    return { ...tokenRes, data: undefined }
-  }
-
-  const formData = new FormData()
-  Object.entries({ ...payload, file, token: tokenRes.data }).forEach(([key, value]) =>
-    formData.append(key, value as Blob | string)
-  )
-
-  const uploadRes = await fetch('https://upload.imagekit.io/api/v2/files/upload', {
-    method: 'POST',
-    body: formData
-  })
-
-  if (!uploadRes.ok) {
-    return { code: -1, msg: '上传文件失败！' }
-  }
-
-  const data = await uploadRes.json()
-
-  return { code: 0, data, msg: '上传成功！' }
 }
