@@ -3,7 +3,7 @@
 import { BytemdEditor } from '@/components/bytemd/editor'
 import { useImmer } from 'use-immer'
 import { PublishArticleInfo } from '@/types'
-import { HeaderComponent } from '@/app/article/Header'
+import { LayoutHeader } from '@/app/article/components/header'
 
 export default function PublishArticle() {
   const [articleInfo, updateArticleInfo] = useImmer<PublishArticleInfo>({
@@ -17,11 +17,11 @@ export default function PublishArticle() {
 
   return (
     <div className="h-[100vh] overflow-hidden">
-      <HeaderComponent
+      <LayoutHeader
         articleInfo={articleInfo}
         updateArticleInfo={updateArticleInfo}
         publishButName="新增"
-      ></HeaderComponent>
+      ></LayoutHeader>
 
       <BytemdEditor
         content={articleInfo.content}
