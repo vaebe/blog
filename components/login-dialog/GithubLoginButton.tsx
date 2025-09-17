@@ -23,7 +23,8 @@ function GithubLoginButton({ setIsLoading }: Props) {
       onClick={handleGithubLogin}
     >
       <Icon icon="mdi:github" className="h-6! w-6!" />
-      <span>Github 登录</span>
+
+      <span className="mx-2">Github</span>
     </Button>
   )
 }

@@ -6,7 +6,6 @@ import { Icon } from '@iconify/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
-// import { EmailLoginButton } from './EmailLoginButton'
 
 interface Props {
   setIsLoading: (status: boolean) => void
@@ -48,23 +47,6 @@ const LoginForm = ({ setIsLoading, closeDialog }: Props) => {
     }
   }
 
-  // function handleEmailLogin() {
-  //   if (!account) {
-  //     toast(`请输入邮箱!`)
-  //     return
-  //   }
-
-  //   setIsLoading(true)
-
-  //   signIn('email', {
-  //     email: account,
-  //     callbackUrl: '/auth/verify-request?provider=email'
-  //   }).catch((error) => {
-  //     setIsLoading(false)
-  //     toast(`登录失败： ${error}`)
-  //   })
-  // }
-
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -100,11 +82,9 @@ const LoginForm = ({ setIsLoading, closeDialog }: Props) => {
           </div>
         </div>
         <Button className="w-full cursor-pointer" type="submit">
-          账号密码登录
+          账号密码
         </Button>
       </form>
-
-      {/* <EmailLoginButton onClick={handleEmailLogin}></EmailLoginButton> */}
     </>
   )
 }
