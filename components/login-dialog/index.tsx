@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { FullScreenLoading } from '@/components/screen-loading'
 import { LoginForm } from './LoginForm'
 import { GithubLoginButton } from './GithubLoginButton'
 import {
@@ -11,10 +10,22 @@ import {
   DialogHeader,
   DialogDescription
 } from '@/components/ui/dialog'
+import { Icon } from '@iconify/react'
 
 interface Props {
   children: React.ReactNode
   onClose?: () => void
+}
+
+function LoginTips() {
+  return (
+    <div className="flex items-center justify-center">
+      <span className="bg-gradient-to-r from-indigo-400 via-pink-500 to-yellow-400 gradient-anim bg-clip-text text-transparent font-medium">
+        正在登录中
+      </span>
+      <Icon icon="eos-icons:three-dots-loading" className="h-6! w-6!"></Icon>
+    </div>
+  )
 }
 
 const LoginDialog = ({ onClose, children }: Props) => {
@@ -39,10 +50,11 @@ const LoginDialog = ({ onClose, children }: Props) => {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>登录</DialogTitle>
-            <DialogDescription>请选择下方任意一种方式登录</DialogDescription>
-          </DialogHeader>
 
-          <FullScreenLoading isLoading={isLoading} message="正在登录..."></FullScreenLoading>
+            <DialogDescription className=" text-center">
+              {isLoading ? <LoginTips></LoginTips> : '请选择下方任意一种方式登录'}
+            </DialogDescription>
+          </DialogHeader>
 
           <LoginForm setIsLoading={setIsLoading} closeDialog={closeDialog} />
 
