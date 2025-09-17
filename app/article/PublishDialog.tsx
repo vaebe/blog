@@ -147,7 +147,7 @@ export function PublishDialog({ onPublish, children, articleInfo }: PublishDialo
                       htmlFor="coverImgInput"
                       className="flex gap-4 items-center border rounded-md cursor-pointer hover:bg-muted transition"
                     >
-                      <div className="w-full min-h-[262px] h-auto border border-dashed rounded bg-muted/30 flex items-center justify-center overflow-hidden">
+                      <div className="w-full h-[262px] border border-dashed rounded bg-muted/30 flex items-center justify-center overflow-hidden">
                         {coverImg ? (
                           <Image
                             src={coverImg}
