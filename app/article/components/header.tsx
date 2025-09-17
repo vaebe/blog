@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { AnyObject, PublishArticleInfo } from '@/types'
-import { PublishDialog } from '@/app/article/PublishDialog'
+import { PublishDialog } from '@/app/article/components/publish-dialog'
 import { useRouter, usePathname } from 'next/navigation'
 import { toast } from 'sonner'
 import { Updater } from 'use-immer'
+import { ApiRes } from '@/lib/utils'
 
 const SubmitArticleConfig = {
   add: {
@@ -21,15 +22,15 @@ const SubmitArticleConfig = {
   }
 }
 
-async function submitArticle(info: PublishArticleInfo, type: 'add' | 'update') {
+async function submitArticle(info: PublishArticleInfo, type: 'add' | 'update'): Promise<ApiRes> {
   if (!info.title) {
     toast('文章标题不能为空!')
-    return
+    return { code: -1, msg: '文章标题不能为空!' }
   }
 
   if (!info.content) {
     toast('文章内容不能为空!')
-    return
+    return { code: -1, msg: '文章内容不能为空!' }
   }
 
   const config = SubmitArticleConfig[type]
@@ -45,13 +46,15 @@ async function submitArticle(info: PublishArticleInfo, type: 'add' | 'update') {
 
     if (res.code === 0) {
       toast(config.successMsg)
-      return 'success'
+      return { code: 0, msg: config.successMsg }
     } else {
       toast(config.errorMsg)
+      return { code: 500, msg: config.errorMsg }
     }
   } catch (error) {
     console.error(error)
     toast(config.errorMsg)
+    return { code: 500, msg: config.errorMsg }
   }
 }
 
@@ -61,21 +64,21 @@ interface HeaderProps {
   updateArticleInfo: Updater<PublishArticleInfo>
 }
 
-function HeaderComponent({ publishButName, articleInfo, updateArticleInfo }: HeaderProps) {
+function LayoutHeader({ publishButName, articleInfo, updateArticleInfo }: HeaderProps) {
   const pathName = usePathname()
 
   const router = useRouter()
 
-  function onPublish(info: AnyObject) {
-    const api = pathName.includes('edit')
-      ? submitArticle({ ...articleInfo, ...info }, 'update')
-      : submitArticle({ ...articleInfo, ...info }, 'add')
+  async function onPublish(info: AnyObject) {
+    const res = pathName.includes('edit')
+      ? await submitArticle({ ...articleInfo, ...info }, 'update')
+      : await submitArticle({ ...articleInfo, ...info }, 'add')
 
-    api.then((res) => {
-      if (res === 'success') {
-        router.push('/article/list')
-      }
-    })
+    if (res.code == 0) {
+      router.push('/article/list')
+    }
+
+    return res
   }
 
   return (
@@ -98,5 +101,4 @@ function HeaderComponent({ publishButName, articleInfo, updateArticleInfo }: Hea
   )
 }
 
-export { HeaderComponent }
-export default HeaderComponent
+export { LayoutHeader }
