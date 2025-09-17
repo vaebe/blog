@@ -66,7 +66,7 @@ export async function generateToken(payload: Record<string, string>): Promise<Ap
       return { code: -1, msg: 'IMAGEKIT_PRIVATE_KEY 不存在创建 token 失败!' }
     }
 
-    const token = jwt.sign(payload.uploadPayload, privateKey, {
+    const token = jwt.sign(payload, privateKey, {
       expiresIn: 60, // token 过期时间最大 3600 秒
       header: {
         alg: 'HS256',
@@ -95,7 +95,11 @@ export async function uploadFile({
   try {
     const fileHash = await getFileHash(file)
 
+    console.log(fileHash)
+
     const exist = await getFileInfoByHash(fileHash)
+
+    console.log('exist', exist)
 
     if (exist.code === 0 && exist.data?.length) {
       return { code: 0, data: exist.data[0], msg: '上传文件成功！' }
@@ -108,6 +112,8 @@ export async function uploadFile({
     }
 
     const tokenRes = await generateToken(payload)
+    console.log('tokenRes', tokenRes)
+
     if (tokenRes.code !== 0) {
       return { ...tokenRes, data: undefined }
     }
@@ -121,6 +127,8 @@ export async function uploadFile({
       method: 'POST',
       body: formData
     })
+
+    console.log('uploadRes', uploadRes)
 
     if (!uploadRes.ok) {
       return { code: -1, msg: '上传文件失败！' }
