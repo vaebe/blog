@@ -2,6 +2,7 @@
   "name": "blog",
   "version": "0.2.0",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "postbuild": "next-sitemap",
