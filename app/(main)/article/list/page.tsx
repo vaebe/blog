@@ -1,4 +1,4 @@
-import { Article } from '@prisma/client'
+import { Article } from '@/generated/prisma/client'
 import { Card } from '@/components/ui/card'
 import Link from 'next/link'
 import { Eye, ThumbsUp, Star } from 'lucide-react'

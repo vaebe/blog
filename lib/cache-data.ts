@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type { ApiRes } from './utils'
 import { prisma } from '@/lib/prisma'
 import { generateUUID } from '@/lib/utils'
-import type { CacheData } from '@prisma/client'
+import type { CacheData } from '@/generated/prisma/client'
 
 const createCacheDataSchema = z.object({
   key: z.string().min(1, { message: '缓存数据的 key 不能为空！' }),

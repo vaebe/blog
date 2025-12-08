@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from 'clsx'
 import { NextResponse } from 'next/server'
 import { twMerge } from 'tailwind-merge'
-import { Article } from '@prisma/client'
+import { Article } from '@/generated/prisma/client'
 import { v4 as uuidv4 } from 'uuid'
 
 export function cn(...inputs: ClassValue[]) {

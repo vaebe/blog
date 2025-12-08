@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, use } from 'react'
-import { Article } from '@prisma/client'
+import { Article } from '@/generated/prisma/client'
 import { toast } from 'sonner'
 import { getReadingTime } from '@/lib/getReadingTime'
 import { Anchor } from './anchor/index'

@@ -1,5 +1,5 @@
 import RSS from 'rss'
-import { Article } from '@prisma/client'
+import { Article } from '@/generated/prisma/client'
 
 export async function GET() {
   const NEXT_PUBLIC_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? ''

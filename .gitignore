@@ -39,3 +39,6 @@ next-env.d.ts
 # sitemap
 robots.txt
 sitemap.xml
+
+# 生成的文件
+generated

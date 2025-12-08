@@ -1,4 +1,4 @@
-import { Message } from '@prisma/client'
+import { Message } from '@/generated/prisma/client'
 
 declare global {
   // 扩展 fetch Response 字段

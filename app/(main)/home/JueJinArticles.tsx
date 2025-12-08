@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react'
 import { ContentCard } from './ContentCard'
 import Link from 'next/link'
-import { Article } from '@prisma/client'
+import { Article } from '@/generated/prisma/client'
 import { TimeInSeconds } from '@/lib/enums'
 import dayjs from 'dayjs'
 
