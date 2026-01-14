@@ -158,6 +158,9 @@ importers:
       rss:
         specifier: ^1.2.2
         version: 1.2.2
+      sensitive-word-tool:
+        specifier: ^1.1.10
+        version: 1.1.10
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -4322,6 +4325,9 @@ packages:
     resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
     engines: {node: '>=10'}
     hasBin: true
+
+  sensitive-word-tool@1.1.10:
+    resolution: {integrity: sha512-pa9ZGi/A0O95CMxFc8qgJTdL/JH0M3y/HW3vdYNb9bE1tdCn0pAiLlGL2BCXzt+SMbRe19JnBFZiY1zAYtKrPg==}
 
   seq-queue@0.0.5:
     resolution: {integrity: sha512-hr3Wtp/GZIc/6DAGPDcV4/9WoZhjrkXsi5B/07QgX8tsdc6ilr7BFM6PM6rbdAX1kFSDYeZGLipIZZKyQP0O5Q==}
@@ -9624,6 +9630,8 @@ snapshots:
 
   semver@7.7.3:
     optional: true
+
+  sensitive-word-tool@1.1.10: {}
 
   seq-queue@0.0.5: {}
 
