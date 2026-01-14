@@ -30,6 +30,7 @@ export async function GET(req: Request) {
       data: { syncArticleNameList, gitHubPinnedReposToCacheRes, githubUserInfoToCacheRes }
     })
   } catch (error) {
-    return sendJson({ code: -1, msg: `同步数据失败：${error}` })
+    console.error('同步数据失败:', error)
+    return sendJson({ code: -1, msg: '同步数据失败，请稍后重试' })
   }
 }

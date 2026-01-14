@@ -19,6 +19,7 @@ export async function GET(req: Request) {
 
     return sendJson({ data: cacheData })
   } catch (error) {
-    return sendJson({ code: -1, msg: `获取缓存数据失败：${error}` })
+    console.error('获取缓存数据失败:', error)
+    return sendJson({ code: -1, msg: '获取缓存数据失败，请稍后重试' })
   }
 }

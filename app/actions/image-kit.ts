@@ -95,11 +95,7 @@ export async function uploadFile({
   try {
     const fileHash = await getFileHash(file)
 
-    console.log(fileHash)
-
     const exist = await getFileInfoByHash(fileHash)
-
-    console.log('exist', exist)
 
     if (exist.code === 0 && exist.data?.length) {
       return { code: 0, data: exist.data[0], msg: '上传文件成功！' }
@@ -112,7 +108,6 @@ export async function uploadFile({
     }
 
     const tokenRes = await generateToken(payload)
-    console.log('tokenRes', tokenRes)
 
     if (tokenRes.code !== 0) {
       return { ...tokenRes, data: undefined }
@@ -127,8 +122,6 @@ export async function uploadFile({
       method: 'POST',
       body: formData
     })
-
-    console.log('uploadRes', uploadRes)
 
     if (!uploadRes.ok) {
       return { code: -1, msg: '上传文件失败！' }
