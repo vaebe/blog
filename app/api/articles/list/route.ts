@@ -1,15 +1,14 @@
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
+import { parsePaginationParams, calculatePaginationResult } from '@/lib/pagination'
 
 export async function GET(req: Request) {
   try {
-    // 从 URL 获取查询参数
     const { searchParams } = new URL(req.url)
-    const page = parseInt(searchParams.get('page') || '1')
-    const pageSize = parseInt(searchParams.get('pageSize') || '10')
     const searchTerm = searchParams.get('searchTerm') || ''
 
-    const skip = (page - 1) * pageSize
+    // 解析分页参数
+    const { page, pageSize, skip } = parsePaginationParams(searchParams)
 
     // 查询带有分页和模糊检索的文章
     const articles = await prisma.article.findMany({
@@ -19,7 +18,7 @@ export async function GET(req: Request) {
         }
       },
       orderBy: { createdAt: 'desc' },
-      skip: skip,
+      skip,
       take: pageSize
     })
 
@@ -32,12 +31,15 @@ export async function GET(req: Request) {
       }
     })
 
+    // 计算分页结果
+    const pagination = calculatePaginationResult(totalArticles, page, pageSize)
+
     return sendJson({
       data: {
         articles,
-        totalArticles,
-        currentPage: page,
-        totalPages: Math.ceil(totalArticles / pageSize)
+        totalArticles: pagination.total,
+        currentPage: pagination.currentPage,
+        totalPages: pagination.totalPages
       }
     })
   } catch (error) {

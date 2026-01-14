@@ -1,6 +1,7 @@
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
 import { containsSensitiveWord } from '@/lib/sensitive-words'
+import { parsePaginationParams, calculatePaginationResult } from '@/lib/pagination'
 
 // 添加留言
 export async function POST(req: Request) {
@@ -36,10 +37,9 @@ export async function POST(req: Request) {
 // 查询留言列表
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
-  const page = parseInt(searchParams.get('page') || '1')
-  const pageSize = parseInt(searchParams.get('pageSize') || '10')
 
-  const skip = (page - 1) * pageSize
+  // 解析分页参数
+  const { page, pageSize, skip } = parsePaginationParams(searchParams)
 
   try {
     const list = await prisma.message.findMany({
@@ -55,18 +55,21 @@ export async function GET(req: Request) {
       orderBy: {
         createdAt: 'desc'
       },
-      skip: skip,
+      skip,
       take: pageSize
     })
 
     const total = await prisma.message.count()
 
+    // 计算分页结果
+    const pagination = calculatePaginationResult(total, page, pageSize)
+
     return sendJson({
       data: {
         list,
-        total,
-        currentPage: page,
-        totalPages: Math.ceil(total / pageSize)
+        total: pagination.total,
+        currentPage: pagination.currentPage,
+        totalPages: pagination.totalPages
       }
     })
   } catch (error) {
