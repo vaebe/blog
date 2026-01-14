@@ -5,7 +5,7 @@ import EmailProvider from 'next-auth/providers/email'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from '@/lib/prisma'
 import { AnyObject } from '@/types'
-import { generateUUID } from '@/lib/utils'
+import { generateUUID, hashPassword } from '@/lib/utils'
 
 const AUTH_GITHUB_CLIENT_ID = process.env.AUTH_GITHUB_CLIENT_ID
 const AUTH_GITHUB_CLIENT_SECRET = process.env.AUTH_GITHUB_CLIENT_SECRET
@@ -44,20 +44,30 @@ export const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
+        if (!credentials?.account || !credentials?.password) {
+          return null
+        }
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials?.account, password: credentials?.password }
+          where: { email: credentials.account }
         })
 
-        if (!user) {
+        if (!user || !user.password) {
           return null
-        } else {
-          return {
-            id: user.id,
-            name: user?.name,
-            email: user?.email,
-            image: user?.image,
-            role: user.role
-          }
+        }
+
+        const hashedInput = hashPassword(credentials.password)
+
+        if (hashedInput !== user.password) {
+          return null
+        }
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          role: user.role
         }
       }
     }),

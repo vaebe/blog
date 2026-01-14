@@ -1,7 +1,11 @@
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
+import { requireAdmin } from '@/lib/auth'
 
 export async function DELETE(req: Request) {
+  const { error } = await requireAdmin()
+  if (error) return error
+
   try {
     const { id } = await req.json()
 

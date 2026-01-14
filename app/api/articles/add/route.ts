@@ -1,7 +1,11 @@
 import { sendJson, generateUUID } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
+import { requireAdmin } from '@/lib/auth'
 
 export async function POST(req: Request) {
+  const { error, session } = await requireAdmin()
+  if (error) return error
+
   try {
     const body = await req.json()
     const { title, content, classify, coverImg, summary } = body
@@ -16,11 +20,12 @@ export async function POST(req: Request) {
         summary,
         status: '01',
         source: '00',
-        userId: 1 // 示例，通常从认证信息中获取用户ID
+        userId: parseInt(session!.user.id)
       }
     })
     return sendJson({ data: newArticle })
   } catch (error) {
-    sendJson({ code: -1, msg: `创建文章失败：${error}` })
+    console.error(error)
+    return sendJson({ code: -1, msg: '创建文章失败，请稍后重试' })
   }
 }

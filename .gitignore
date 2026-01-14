@@ -42,3 +42,4 @@ sitemap.xml
 
 # 生成的文件
 generated
+.claude

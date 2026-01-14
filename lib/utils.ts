@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { twMerge } from 'tailwind-merge'
 import { Article } from '@/generated/prisma/client'
 import { v4 as uuidv4 } from 'uuid'
+import { createHash } from 'crypto'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -51,4 +52,9 @@ export function getJumpArticleDetailsUrl(info: Article) {
 
 export function generateUUID() {
   return uuidv4().replaceAll('-', '')
+}
+
+// 使用 SHA-256 哈希密码
+export function hashPassword(password: string): string {
+  return createHash('sha256').update(password).digest('hex')
 }
