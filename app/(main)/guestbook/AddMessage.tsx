@@ -18,7 +18,7 @@ const MessageInput = ({ message, onChange }: MessageInputProps) => {
   return (
     <textarea
       className="block w-full shrink-0 resize-none border-0 bg-transparent p-2 md:p-4 text-sm leading-6 text-zinc-800 placeholder-zinc-400 outline-none transition-[height] will-change-[height] focus:outline-none focus:ring-0 dark:text-zinc-200 dark:placeholder-zinc-500"
-      placeholder="请输入您的留言"
+      placeholder="请文明留言，禁止发布敏感内容"
       rows={6}
       value={message}
       onChange={(e) => onChange(e.target.value)}

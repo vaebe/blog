@@ -1,5 +1,6 @@
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
+import { containsSensitiveWord } from '@/config/sensitive-words'
 
 // 添加留言
 export async function POST(req: Request) {
@@ -13,6 +14,11 @@ export async function POST(req: Request) {
 
     if (!userEmail) {
       return sendJson({ code: -1, msg: '用户邮箱不能为空!' })
+    }
+
+    // 检测敏感词
+    if (containsSensitiveWord(content)) {
+      return sendJson({ code: -1, msg: '留言内容包含敏感词，请修改后重试!' })
     }
 
     const message = await prisma.message.create({
