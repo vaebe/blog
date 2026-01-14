@@ -1320,7 +1320,7 @@ export const SENSITIVE_WORDS: string[] = [
  */
 export function containsSensitiveWord(text: string): boolean {
   const lowerText = text.toLowerCase()
-  return SENSITIVE_WORDS.some(word => lowerText.includes(word.toLowerCase()))
+  return SENSITIVE_WORDS.some((word) => lowerText.includes(word.toLowerCase()))
 }
 
 /**
@@ -1330,5 +1330,5 @@ export function containsSensitiveWord(text: string): boolean {
  */
 export function getSensitiveWords(text: string): string[] {
   const lowerText = text.toLowerCase()
-  return SENSITIVE_WORDS.filter(word => lowerText.includes(word.toLowerCase()))
+  return SENSITIVE_WORDS.filter((word) => lowerText.includes(word.toLowerCase()))
 }

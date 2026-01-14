@@ -23,7 +23,7 @@ export function FormCoverUpload({ control }: { control: Control<FormValues> }) {
         setValue('coverImg', res.data.url)
         toast.success('封面上传成功')
       } else {
-        toast.error('图片上传失败')
+        toast.error(res?.msg || '图片上传失败')
       }
     } catch {
       toast.error('上传图片失败，请稍后重试')
@@ -60,12 +60,16 @@ export function FormCoverUpload({ control }: { control: Control<FormValues> }) {
             <input
               id="coverImgInput"
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/svg+xml,image/bmp,image/tiff"
               className="hidden"
               onChange={handleImageUpload}
             />
           </label>
-          <p className="text-xs text-muted-foreground mt-1">建议尺寸: 192×128 px（仅在首页展示）</p>
+          <div className="text-xs text-muted-foreground mt-1 space-y-1">
+            <p>支持格式：jpg、png、gif、webp、svg、bmp、tiff</p>
+            <p>文件大小：最大 5MB</p>
+            <p>建议尺寸：192×128 px（仅在首页展示）</p>
+          </div>
         </FormItem>
       )}
     />

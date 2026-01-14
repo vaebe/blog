@@ -1,6 +1,6 @@
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
-import { containsSensitiveWord } from '@/config/sensitive-words'
+import { containsSensitiveWord } from '@/lib/sensitive-words'
 
 // 添加留言
 export async function POST(req: Request) {

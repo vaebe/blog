@@ -4,6 +4,13 @@ import { ApiRes } from '@/lib/utils'
 import jwt from 'jsonwebtoken'
 import { getFileHash } from '@/lib/utils'
 import dayjs from 'dayjs'
+import {
+  isAllowedImageType,
+  isAllowedImageExtension,
+  isFileSizeValid,
+  getReadableFileSize,
+  MAX_FILE_SIZE
+} from '@/lib/upload'
 
 interface ImagekitUploadFileRes {
   fileId: string
@@ -93,6 +100,32 @@ export async function uploadFile({
   fileName
 }: ImagekitUploadFileOpts): Promise<ApiRes<ImagekitUploadFileRes | undefined>> {
   try {
+    // 验证文件类型
+    if (!isAllowedImageType(file)) {
+      return {
+        code: -1,
+        msg: `不支持的文件类型 "${file.type}"，仅支持图片格式（jpg、png、gif、webp、svg、bmp、tiff）`
+      }
+    }
+
+    // 验证文件扩展名
+    if (!isAllowedImageExtension(fileName)) {
+      return {
+        code: -1,
+        msg: `不支持的文件扩展名，仅支持图片格式（jpg、png、gif、webp、svg、bmp、tiff）`
+      }
+    }
+
+    // 验证文件大小
+    if (!isFileSizeValid(file)) {
+      const readableSize = getReadableFileSize(file.size)
+      const maxSize = getReadableFileSize(MAX_FILE_SIZE)
+      return {
+        code: -1,
+        msg: `文件大小 ${readableSize} 超过限制，最大支持 ${maxSize}`
+      }
+    }
+
     const fileHash = await getFileHash(file)
 
     const exist = await getFileInfoByHash(fileHash)
@@ -131,7 +164,7 @@ export async function uploadFile({
 
     return { code: 0, data, msg: '上传成功！' }
   } catch (error) {
-    console.log(error)
-    return { code: 0, data: undefined, msg: '上传异常！' }
+    console.error(error)
+    return { code: -1, data: undefined, msg: '上传异常！' }
   }
 }
