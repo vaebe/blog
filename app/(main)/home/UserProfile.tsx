@@ -116,7 +116,7 @@ const UserInfo = ({ githubUserInfo }: { githubUserInfo?: GithubUserInfo }) => (
     <Image
       src={githubUserInfo?.avatar_url ?? userIcon}
       alt={`${githubUserInfo?.login}'s avatar`}
-      className="rounded-lg border-1 border-white dark:border-gray-800 shadow"
+      className="rounded-lg border border-white dark:border-gray-800 shadow"
       width={128}
       height={128}
       priority
