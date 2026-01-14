@@ -9,7 +9,8 @@ import {
   isAllowedImageExtension,
   isFileSizeValid,
   getReadableFileSize,
-  MAX_FILE_SIZE
+  MAX_FILE_SIZE,
+  MIN_FILE_SIZE
 } from '@/lib/upload'
 
 interface ImagekitUploadFileRes {
@@ -119,10 +120,18 @@ export async function uploadFile({
     // 验证文件大小
     if (!isFileSizeValid(file)) {
       const readableSize = getReadableFileSize(file.size)
-      const maxSize = getReadableFileSize(MAX_FILE_SIZE)
-      return {
-        code: -1,
-        msg: `文件大小 ${readableSize} 超过限制，最大支持 ${maxSize}`
+      if (file.size < MIN_FILE_SIZE) {
+        const minSize = getReadableFileSize(MIN_FILE_SIZE)
+        return {
+          code: -1,
+          msg: `文件太小，最小支持 ${minSize}`
+        }
+      } else {
+        const maxSize = getReadableFileSize(MAX_FILE_SIZE)
+        return {
+          code: -1,
+          msg: `文件大小 ${readableSize} 超过限制，最大支持 ${maxSize}`
+        }
       }
     }
 
