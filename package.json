@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",
-    "prepare": "npx simple-git-hooks"
+    "prepare": "npx simple-git-hooks",
+    "skills:install": "npx skills experimental_install"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
