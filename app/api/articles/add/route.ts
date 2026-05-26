@@ -1,6 +1,8 @@
+import { revalidateTag } from 'next/cache'
 import { sendJson, generateUUID } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
+import { ARTICLES_CACHE_TAG } from '@/lib/articles'
 
 export async function POST(req: Request) {
   const { error, session } = await requireAdmin()
@@ -23,6 +25,8 @@ export async function POST(req: Request) {
         userId: parseInt(session!.user.id)
       }
     })
+    revalidateTag(ARTICLES_CACHE_TAG, 'max')
+
     return sendJson({ data: newArticle })
   } catch (error) {
     console.error(error)

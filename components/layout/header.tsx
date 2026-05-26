@@ -43,14 +43,14 @@ function UserAvatar({ session }: { session: Session }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="flex items-center space-x-2 cursor-pointer">
+        <button type="button" className="flex items-center space-x-2 cursor-pointer">
           <Avatar className="w-8 h-8">
             <AvatarImage src={session?.user?.image ?? ''} alt="user" />
             <AvatarFallback>{session?.user?.name ?? 'll'}</AvatarFallback>
           </Avatar>
 
           <span>{session?.user?.name ?? 'll'}</span>
-        </div>
+        </button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56">
@@ -59,7 +59,7 @@ function UserAvatar({ session }: { session: Session }) {
         <DropdownMenuSeparator />
 
         {session?.user?.role === '00' && (
-          <Link href="/article/add" target="_blank">
+          <Link href="/article/add" target="_blank" rel="noopener noreferrer">
             <DropdownMenuItem className="cursor-pointer">
               <div className="flex items-center">
                 <Icon icon="lucide:feather" className="w-5 h-5 mx-2" />
@@ -83,12 +83,15 @@ function UserAvatar({ session }: { session: Session }) {
 export default function LayoutHeader() {
   const { data: session, status } = useSession()
   const [scrolled, setScrolled] = useState(false)
+  // 登录态依赖客户端 session，挂载后再渲染，避免与 SSR 不一致导致 hydration 报错
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     const handleScroll = () => {
       setScrolled(window.scrollY > 10)
     }
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -104,16 +107,19 @@ export default function LayoutHeader() {
         <NavList />
 
         <div className="flex items-center space-x-4">
-          {status === 'unauthenticated' && (
+          {mounted && status === 'unauthenticated' && (
             <LoginDialog>
-              <div className="flex items-center cursor-pointer space-x-2 px-3 py-1 rounded-full bg-white dark:bg-gray-800 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 shadow-sm hover:shadow-md">
+              <button
+                type="button"
+                className="flex items-center cursor-pointer space-x-2 px-3 py-1 rounded-full bg-white dark:bg-gray-800 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 shadow-sm hover:shadow-md"
+              >
                 <Icon icon="ri:aed-line" className="mr-2 w-5 h-5" />
                 登录
-              </div>
+              </button>
             </LoginDialog>
           )}
 
-          {status === 'authenticated' && <UserAvatar session={session} />}
+          {mounted && status === 'authenticated' && <UserAvatar session={session} />}
         </div>
       </div>
     </header>

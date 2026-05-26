@@ -68,8 +68,13 @@ function EmailSubscription() {
 
   return (
     <div className="flex items-center">
+      <label htmlFor="subscription-email" className="sr-only">
+        邮箱地址
+      </label>
       <Input
+        id="subscription-email"
         type="email"
+        autoComplete="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="输入您的邮箱"

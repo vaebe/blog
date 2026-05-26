@@ -1,6 +1,8 @@
+import { revalidateTag } from 'next/cache'
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
+import { ARTICLES_CACHE_TAG } from '@/lib/articles'
 
 export async function DELETE(req: Request) {
   const { error } = await requireAdmin()
@@ -12,6 +14,8 @@ export async function DELETE(req: Request) {
     await prisma.article.delete({
       where: { id }
     })
+
+    revalidateTag(ARTICLES_CACHE_TAG, 'max')
 
     return sendJson({ msg: 'success' })
   } catch (error) {

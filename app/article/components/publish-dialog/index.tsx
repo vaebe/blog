@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import {
   Dialog,
+  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -30,24 +31,22 @@ export function PublishDialog({ children, articleInfo, onPublish }: PublishDialo
   }
 
   return (
-    <>
-      <div onClick={() => setIsOpen(true)}>{children}</div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[520px]">
-          <DialogHeader>
-            <DialogTitle>发布文章</DialogTitle>
-            <DialogDescription>请填写必要信息以完成发布</DialogDescription>
-          </DialogHeader>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="sm:max-w-[520px]">
+        <DialogHeader>
+          <DialogTitle>发布文章</DialogTitle>
+          <DialogDescription>请填写必要信息以完成发布</DialogDescription>
+        </DialogHeader>
 
-          <PublishForm
-            articleInfo={articleInfo}
-            onPublish={(data) => {
-              publishArticle(data)
-            }}
-            onCancel={() => setIsOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
-    </>
+        <PublishForm
+          articleInfo={articleInfo}
+          onPublish={(data) => {
+            publishArticle(data)
+          }}
+          onCancel={() => setIsOpen(false)}
+        />
+      </DialogContent>
+    </Dialog>
   )
 }

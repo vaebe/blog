@@ -52,6 +52,9 @@ const LoginForm = ({ setIsLoading, closeDialog }: Props) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           <div className="relative rounded-md shadow-sm">
+            <label htmlFor="account" className="sr-only">
+              用户名
+            </label>
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Icon icon="mdi:account" className="h-5 w-5 text-gray-400" />
             </div>
@@ -59,6 +62,7 @@ const LoginForm = ({ setIsLoading, closeDialog }: Props) => {
               id="account"
               name="account"
               type="text"
+              autoComplete="username"
               className="pl-10 block w-full"
               placeholder="请输入用户名"
               value={account}
@@ -67,6 +71,9 @@ const LoginForm = ({ setIsLoading, closeDialog }: Props) => {
           </div>
 
           <div className="relative rounded-md shadow-sm">
+            <label htmlFor="password" className="sr-only">
+              密码
+            </label>
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Icon icon="mdi:lock" className="h-5 w-5 text-gray-400" />
             </div>
@@ -74,6 +81,7 @@ const LoginForm = ({ setIsLoading, closeDialog }: Props) => {
               id="password"
               name="password"
               type="password"
+              autoComplete="current-password"
               className="pl-10 block w-full"
               placeholder="请输入密码"
               value={password}

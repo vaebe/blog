@@ -1,14 +1,19 @@
 import { z } from 'zod'
+import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
 import type { ApiRes } from './utils'
 import { prisma } from '@/lib/prisma'
 import { generateUUID } from '@/lib/utils'
-import type { CacheData } from '@/generated/prisma/client'
 
 const createCacheDataSchema = z.object({
   key: z.string().min(1, { message: '缓存数据的 key 不能为空！' }),
   data: z.string().min(1, { message: '缓存数据不能为空' }),
   desc: z.string().optional()
 })
+
+// 单条缓存数据对应的 tag，写入后用 revalidateTag 失效读取缓存
+function cacheDataTag(key: string) {
+  return `cache-data-${key}`
+}
 
 export async function createCacheData(
   props: z.infer<typeof createCacheDataSchema>
@@ -40,6 +45,9 @@ export async function createCacheData(
       }
     })
 
+    // 数据更新后失效对应 key 的读取缓存
+    revalidateTag(cacheDataTag(key), 'max')
+
     return { code: 0, msg: '创建缓存数据成功！', data: res }
   } catch (error) {
     return { code: -1, msg: `创建缓存数据失败：${error}` }
@@ -48,46 +56,28 @@ export async function createCacheData(
 
 interface GetCacheDataProps {
   key: string
-  next?: NextFetchRequestConfig
 }
 
-// 不向外暴露此方法
-async function getCacheData(props: GetCacheDataProps): Promise<ApiRes<CacheData>> {
+// 直接查 Prisma 并用 Cache Components 缓存，替代原先 fetch 自身 /api/cache-data 的写法
+async function getCacheData(key: string) {
+  'use cache'
+  cacheTag(cacheDataTag(key))
+  cacheLife('hours')
+
+  return prisma.cacheData.findUnique({
+    where: { key }
+  })
+}
+
+export async function getCacheDataByKey<T>(props: GetCacheDataProps): Promise<ApiRes<T>> {
   try {
     if (!props.key) {
       return { code: 400, msg: '缓存数据的 key 不能为空！' }
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL}/api/cache-data?key=${props.key}`,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        next: props.next
-      }
-    )
+    const cacheData = await getCacheData(props.key)
 
-    if (!response.ok) {
-      const errorMessage = await response.text()
-      return { code: -1, msg: `获取缓存数据失败: ${response.statusText} - ${errorMessage}` }
-    }
-
-    return response.json()
-  } catch (error) {
-    return { code: -1, msg: `获取缓存数据失败：${error}` }
-  }
-}
-
-export async function getCacheDataByKey<T>(props: GetCacheDataProps): Promise<ApiRes<T>> {
-  try {
-    const res = await getCacheData(props)
-
-    if (res.code !== 0) {
-      return { code: -1, msg: '获取缓存数据失败' }
-    }
-
-    const raw = res.data?.data
+    const raw = cacheData?.data
     if (!raw) {
       return { code: 0, msg: '缓存数据为空' }
     }

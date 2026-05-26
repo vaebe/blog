@@ -30,7 +30,7 @@ export function ThemeSwitch() {
           >
             <Icon
               icon={themes.find((t) => t.value === theme)?.icon || themes[0].icon}
-              className="w-5 h-5 text-white dark:text-black"
+              className="w-5 h-5 text-primary-foreground"
             />
           </Button>
         </DropdownMenuTrigger>

@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react'
 import { ContentCard } from './ContentCard'
 import Link from 'next/link'
 import { Article } from '@/generated/prisma/client'
-import { TimeInSeconds } from '@/lib/enums'
+import { getAllArticles } from '@/lib/articles'
 import dayjs from 'dayjs'
 
 function NoFound() {
@@ -51,20 +51,13 @@ function ArticleList({ articles }: { articles: Article[] }) {
   )
 }
 
-async function getJueJinArticles() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/articles/all`, {
-      next: { revalidate: TimeInSeconds.oneHour }
-    })
-    const json = await res.json()
-    return json.code === 0 ? json.data : []
-  } catch {
-    return []
-  }
-}
-
 export async function JueJinArticles() {
-  const list = (await getJueJinArticles()) as Article[]
+  let list: Article[] = []
+  try {
+    list = (await getAllArticles()) as Article[]
+  } catch {
+    list = []
+  }
 
   // 先安收藏数排序获取前六个，然后根据创建时间排序
   const articles = list

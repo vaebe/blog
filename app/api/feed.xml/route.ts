@@ -1,5 +1,5 @@
 import RSS from 'rss'
-import { Article } from '@/generated/prisma/client'
+import { getAllArticles } from '@/lib/articles'
 
 export async function GET() {
   const NEXT_PUBLIC_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? ''
@@ -14,21 +14,15 @@ export async function GET() {
     image_url: `${NEXT_PUBLIC_SITE_URL}/og/opengraph-image.png` // 放一个叫 opengraph-image.png 的1200x630尺寸的图片到你的 app 目录下即可
   })
 
-  const res = await fetch(`${NEXT_PUBLIC_SITE_URL}/api/articles/all`)
-
-  if (!res.ok) throw new Error('Network response was not ok')
-
-  const data = await res.json()
-
-  if (data.code !== 0) {
-    return new Response(feed.xml(), {
-      headers: {
-        'content-type': 'application/xml'
-      }
-    })
+  let articles: Awaited<ReturnType<typeof getAllArticles>> = []
+  try {
+    articles = await getAllArticles()
+  } catch {
+    // 数据获取失败时返回空 feed，避免阻塞构建/请求
+    articles = []
   }
 
-  data.data.forEach((post: Article) => {
+  articles.forEach((post) => {
     feed.item({
       title: post.title, // 文章名
       guid: post.id, // 文章 ID

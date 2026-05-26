@@ -42,24 +42,26 @@ export async function GET(req: Request) {
   const { page, pageSize, skip } = parsePaginationParams(searchParams)
 
   try {
-    const list = await prisma.message.findMany({
-      include: {
-        author: {
-          select: {
-            name: true,
-            email: true,
-            image: true
+    // 留言列表与总数相互独立，并行查询
+    const [list, total] = await Promise.all([
+      prisma.message.findMany({
+        include: {
+          author: {
+            select: {
+              name: true,
+              email: true,
+              image: true
+            }
           }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      },
-      skip,
-      take: pageSize
-    })
-
-    const total = await prisma.message.count()
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        skip,
+        take: pageSize
+      }),
+      prisma.message.count()
+    ])
 
     // 计算分页结果
     const pagination = calculatePaginationResult(total, page, pageSize)

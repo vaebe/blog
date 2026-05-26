@@ -5,6 +5,7 @@ import { LoginForm } from './LoginForm'
 import { GithubLoginButton } from './GithubLoginButton'
 import {
   Dialog,
+  DialogTrigger,
   DialogContent,
   DialogTitle,
   DialogHeader,
@@ -33,37 +34,36 @@ const LoginDialog = ({ onClose, children }: Props) => {
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
-  function openDialog() {
-    setIsOpen(true)
+  function handleOpenChange(open: boolean) {
+    setIsOpen(open)
+    if (!open) onClose?.()
   }
 
   function closeDialog() {
-    setIsOpen(false)
-    onClose?.()
+    handleOpenChange(false)
   }
 
   return (
-    <>
-      <div onClick={openDialog}>{children}</div>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {/* 使用 Radix Trigger，自动获得键盘可达性、焦点管理与 aria 属性 */}
+      <DialogTrigger asChild>{children}</DialogTrigger>
 
-      <Dialog open={isOpen} onOpenChange={closeDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>登录</DialogTitle>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>登录</DialogTitle>
 
-            <DialogDescription className=" text-center">
-              {isLoading ? <LoginTips></LoginTips> : '请选择下方任意一种方式登录'}
-            </DialogDescription>
-          </DialogHeader>
+          <DialogDescription className=" text-center">
+            {isLoading ? <LoginTips></LoginTips> : '请选择下方任意一种方式登录'}
+          </DialogDescription>
+        </DialogHeader>
 
-          <LoginForm setIsLoading={setIsLoading} closeDialog={closeDialog} />
+        <LoginForm setIsLoading={setIsLoading} closeDialog={closeDialog} />
 
-          <div className="w-full my-1 h-[1px] bg-gray-300 dark:bg-gray-600"></div>
+        <div className="w-full my-1 h-[1px] bg-gray-300 dark:bg-gray-600"></div>
 
-          <GithubLoginButton setIsLoading={setIsLoading} />
-        </DialogContent>
-      </Dialog>
-    </>
+        <GithubLoginButton setIsLoading={setIsLoading} />
+      </DialogContent>
+    </Dialog>
   )
 }
 

@@ -10,26 +10,22 @@ export async function GET(req: Request) {
     // 解析分页参数
     const { page, pageSize, skip } = parsePaginationParams(searchParams)
 
-    // 查询带有分页和模糊检索的文章
-    const articles = await prisma.article.findMany({
-      where: {
-        title: {
-          contains: searchTerm
-        }
-      },
-      orderBy: { createdAt: 'desc' },
-      skip,
-      take: pageSize
-    })
-
-    // 获取文章总数，用于前端分页
-    const totalArticles = await prisma.article.count({
-      where: {
-        title: {
-          contains: searchTerm
-        }
+    const where = {
+      title: {
+        contains: searchTerm
       }
-    })
+    }
+
+    // 文章列表与总数相互独立，并行查询
+    const [articles, totalArticles] = await Promise.all([
+      prisma.article.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: pageSize
+      }),
+      prisma.article.count({ where })
+    ])
 
     // 计算分页结果
     const pagination = calculatePaginationResult(totalArticles, page, pageSize)

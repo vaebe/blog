@@ -7,7 +7,6 @@ import { GithubUserInfoCacheDataKey } from '@/lib/github/user-info'
 import { getCacheDataByKey } from '@/lib/cache-data'
 import type { JuejinUserInfo } from '@/lib/juejin/fetch-user-info'
 import { fetchJuejinUserInfo } from '@/lib/juejin/fetch-user-info'
-import { TimeInSeconds } from '@/lib/enums'
 
 // 统计项组件
 const StatItem = ({ icon, label, value }: { icon: string; label: string; value?: number }) => (
@@ -120,6 +119,7 @@ const UserInfo = ({ githubUserInfo }: { githubUserInfo?: GithubUserInfo }) => (
       width={128}
       height={128}
       priority
+      unoptimized
     />
     <div>
       <h2 className="text-3xl font-bold text-center md:text-left text-gray-800 dark:text-white">
@@ -134,8 +134,7 @@ export async function UserProfile() {
   let githubUserInfo: GithubUserInfo | undefined
   try {
     const res = await getCacheDataByKey<GithubUserInfo>({
-      key: GithubUserInfoCacheDataKey,
-      next: { revalidate: TimeInSeconds.oneHour }
+      key: GithubUserInfoCacheDataKey
     })
     if (res.code === 0) {
       githubUserInfo = res.data

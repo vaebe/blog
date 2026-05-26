@@ -1,7 +1,10 @@
+import { revalidateTag } from 'next/cache'
 import { sendJson } from '@/lib/utils'
 import { getArticles } from './juejin-data'
 import { saveGitHubPinnedReposToCache } from '@/lib/github/pinned-repos'
 import { saveGithubUserInfoToCache } from '@/lib/github/user-info'
+import { ARTICLES_CACHE_TAG } from '@/lib/articles'
+
 export async function GET(req: Request) {
   const apiKey = req.headers.get('x-api-key')
   const expectedApiKey = process.env.GITHUB_REPOSITORY_API_KEY
@@ -12,17 +15,17 @@ export async function GET(req: Request) {
   }
 
   try {
-    console.log('开始缓存 GitHub 用户信息...')
-    const githubUserInfoToCacheRes = await saveGithubUserInfoToCache()
-    console.log(githubUserInfoToCacheRes, '/r/n')
+    // 三个同步任务相互独立，并行执行
+    console.log('开始并行同步 GitHub 用户信息 / 置顶仓库 / 掘金文章...')
+    const [githubUserInfoToCacheRes, gitHubPinnedReposToCacheRes, syncArticleNameList] =
+      await Promise.all([
+        saveGithubUserInfoToCache(),
+        saveGitHubPinnedReposToCache(),
+        getArticles(0)
+      ])
 
-    console.log('开始同步 GitHub 置顶仓库...')
-    const gitHubPinnedReposToCacheRes = await saveGitHubPinnedReposToCache()
-    console.log(gitHubPinnedReposToCacheRes, '/r/n')
-
-    console.log('开始同步掘金文章...')
-    const syncArticleNameList = await getArticles(0)
-    console.log(syncArticleNameList, '/r/n')
+    // 掘金文章已写入文章表，失效文章列表缓存
+    revalidateTag(ARTICLES_CACHE_TAG, 'max')
 
     return sendJson({
       code: 0,

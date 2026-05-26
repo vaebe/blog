@@ -1,6 +1,8 @@
+import { revalidateTag } from 'next/cache'
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
+import { ARTICLES_CACHE_TAG } from '@/lib/articles'
 
 export async function PUT(req: Request) {
   const { error } = await requireAdmin()
@@ -21,6 +23,8 @@ export async function PUT(req: Request) {
         status
       }
     })
+
+    revalidateTag(ARTICLES_CACHE_TAG, 'max')
 
     return sendJson({ data: updatedArticle })
   } catch (error) {

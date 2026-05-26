@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Eye, ThumbsUp, Star } from 'lucide-react'
 import { getJumpArticleDetailsUrl } from '@/lib/utils'
 import { NoFound } from '@/components/no-found'
-import { TimeInSeconds } from '@/lib/enums'
+import { getAllArticles } from '@/lib/articles'
 
 type GroupedArticles = Record<string, Article[]>
 
@@ -79,20 +79,8 @@ const groupArticlesByYear = (articles: Article[]): GroupedArticles => {
 
 async function getArticles() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/articles/all`, {
-      next: { revalidate: TimeInSeconds.oneHour } // 缓存 1小时 or 使用 cache: 'no-store' 不缓存
-    })
-
-    if (!res.ok) {
-      throw new Error('Failed to fetch articles')
-    }
-
-    const data = await res.json()
-    if (data.code !== 0) {
-      throw new Error(data.message || '获取全部文章失败!')
-    }
-
-    return groupArticlesByYear(data.data ?? [])
+    const articles = await getAllArticles()
+    return groupArticlesByYear(articles ?? [])
   } catch (error) {
     console.error('Failed to fetch articles:', error)
     throw error

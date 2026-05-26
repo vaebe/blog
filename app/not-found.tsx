@@ -10,7 +10,7 @@ export default function NotFound() {
 
         <p className="my-4 text-lg">这里曾经或许有些什么，但是现在它不见了！</p>
 
-        <div className="animate-bounce">
+        <div className="animate-bounce motion-reduce:animate-none">
           <svg className="mx-auto h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"

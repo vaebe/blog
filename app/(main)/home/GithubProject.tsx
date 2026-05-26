@@ -4,7 +4,6 @@ import Link from 'next/link'
 import type { GithubPinnedRepoInfo } from '@/lib/github/pinned-repos'
 import { GitHubPinnedReposCacheDataKey } from '@/lib/github/pinned-repos'
 import { getCacheDataByKey } from '@/lib/cache-data'
-import { TimeInSeconds } from '@/lib/enums'
 
 function NoFound() {
   return (
@@ -56,8 +55,7 @@ export async function GithubProject() {
 
   try {
     const res = await getCacheDataByKey<GithubPinnedRepoInfo[]>({
-      key: GitHubPinnedReposCacheDataKey,
-      next: { revalidate: TimeInSeconds.oneHour }
+      key: GitHubPinnedReposCacheDataKey
     })
 
     if (res.code === 0 && res.data) {

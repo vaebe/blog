@@ -16,7 +16,7 @@ export function BaseLoading({ isLoading, size = 24, className }: LoadingProps) {
     <div className={cn('flex items-center justify-center py-4', className)}>
       <Icon
         icon="eos-icons:loading"
-        className="animate-spin text-primary"
+        className="animate-spin motion-reduce:animate-none text-primary"
         width={size}
         height={size}
       />
