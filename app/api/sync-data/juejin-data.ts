@@ -23,7 +23,6 @@ async function addArticle(info: AnyObject) {
     summary: brief_content,
     status: '',
     source: '01',
-    userId: 1,
     views: view_count,
     likes: digg_count,
     favorites: collect_count,

@@ -1,13 +1,13 @@
 'use client'
 
 import { Icon } from '@iconify/react'
-import { signOut, useSession } from 'next-auth/react'
+import { authClient } from '@/lib/auth/client'
+import { useCurrentUser } from '@/lib/use-current-user'
 import { routerList } from '@/lib/routers'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { BlogLogo } from '@/components/blog-logo'
-import { Session } from 'next-auth'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,26 +39,32 @@ function NavList() {
   )
 }
 
-function UserAvatar({ session }: { session: Session }) {
+interface CurrentUser {
+  name: string | null
+  email: string | null
+  image: string | null
+}
+
+function UserAvatar({ user, isAdmin }: { user: CurrentUser; isAdmin: boolean }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button type="button" className="flex items-center space-x-2 cursor-pointer">
           <Avatar className="w-8 h-8">
-            <AvatarImage src={session?.user?.image ?? ''} alt="user" />
-            <AvatarFallback>{session?.user?.name ?? 'll'}</AvatarFallback>
+            <AvatarImage src={user?.image ?? ''} alt="user" />
+            <AvatarFallback>{user?.name ?? 'll'}</AvatarFallback>
           </Avatar>
 
-          <span>{session?.user?.name ?? 'll'}</span>
+          <span>{user?.name ?? 'll'}</span>
         </button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>{session?.user.email}</DropdownMenuLabel>
+        <DropdownMenuLabel>{user?.email}</DropdownMenuLabel>
 
         <DropdownMenuSeparator />
 
-        {session?.user?.role === '00' && (
+        {isAdmin && (
           <Link href="/article/add" target="_blank" rel="noopener noreferrer">
             <DropdownMenuItem className="cursor-pointer">
               <div className="flex items-center">
@@ -69,7 +75,7 @@ function UserAvatar({ session }: { session: Session }) {
           </Link>
         )}
 
-        <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
+        <DropdownMenuItem className="cursor-pointer" onClick={() => authClient.signOut()}>
           <div className="flex items-center">
             <Icon icon="lucide:log-out" className="w-5 h-5 mx-2" />
             <span>退出登录</span>
@@ -81,7 +87,7 @@ function UserAvatar({ session }: { session: Session }) {
 }
 
 export default function LayoutHeader() {
-  const { data: session, status } = useSession()
+  const { user, isAuthenticated, isAdmin } = useCurrentUser()
   const [scrolled, setScrolled] = useState(false)
   // 登录态依赖客户端 session，挂载后再渲染，避免与 SSR 不一致导致 hydration 报错
   const [mounted, setMounted] = useState(false)
@@ -107,7 +113,7 @@ export default function LayoutHeader() {
         <NavList />
 
         <div className="flex items-center space-x-4">
-          {mounted && status === 'unauthenticated' && (
+          {mounted && !isAuthenticated && (
             <LoginDialog>
               <button
                 type="button"
@@ -119,7 +125,7 @@ export default function LayoutHeader() {
             </LoginDialog>
           )}
 
-          {mounted && status === 'authenticated' && <UserAvatar session={session} />}
+          {mounted && isAuthenticated && user && <UserAvatar user={user} isAdmin={isAdmin} />}
         </div>
       </div>
     </header>

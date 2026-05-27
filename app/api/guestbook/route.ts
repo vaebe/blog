@@ -1,20 +1,23 @@
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
+import { getAuthSession } from '@/lib/auth'
 import { containsSensitiveWord } from '@/lib/sensitive-words'
 import { parsePaginationParams, calculatePaginationResult } from '@/lib/pagination'
 
 // 添加留言
 export async function POST(req: Request) {
   try {
+    // 作者以服务端会话为准，避免信任客户端传入的邮箱
+    const session = await getAuthSession()
+    if (!session?.user) {
+      return sendJson({ code: 401, msg: '请先登录' })
+    }
+
     const body = await req.json()
-    const { content, userEmail } = body
+    const { content } = body
 
     if (!content) {
       return sendJson({ code: -1, msg: '留言内容不能为空!' })
-    }
-
-    if (!userEmail) {
-      return sendJson({ code: -1, msg: '用户邮箱不能为空!' })
     }
 
     // 检测敏感词
@@ -25,7 +28,7 @@ export async function POST(req: Request) {
     const message = await prisma.message.create({
       data: {
         content,
-        author: { connect: { email: userEmail } }
+        author: { connect: { id: session.user.id } }
       }
     })
     return sendJson({ data: message })

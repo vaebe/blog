@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { useSession } from 'next-auth/react'
+import { useCurrentUser } from '@/lib/use-current-user'
 import { Icon } from '@iconify/react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { GuestbookMessage } from '@/types'
@@ -39,6 +39,7 @@ const MessagePreview = ({ message }: { message: string }) => {
 interface MessageControlsProps {
   messageLength: number
   messageView: boolean
+  sending: boolean
   onToggleView: () => void
   onSendMsg: () => void
 }
@@ -46,6 +47,7 @@ interface MessageControlsProps {
 function MessageControls({
   messageLength,
   messageView,
+  sending,
   onToggleView,
   onSendMsg
 }: MessageControlsProps) {
@@ -74,13 +76,18 @@ function MessageControls({
               <button
                 type="button"
                 onClick={onSendMsg}
+                disabled={sending}
                 aria-label="发送"
-                className="cursor-pointer"
+                aria-busy={sending}
+                className={`cursor-pointer ${sending ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                <Icon icon="streamline:send-email" width="20px" />
+                <Icon
+                  icon={sending ? 'eos-icons:three-dots-loading' : 'streamline:send-email'}
+                  width="20px"
+                />
               </button>
             </TooltipTrigger>
-            <TooltipContent>发送</TooltipContent>
+            <TooltipContent>{sending ? '发送中…' : '发送'}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>
@@ -95,37 +102,55 @@ interface AddMessageProps {
 function AddMessage({ setMessages }: AddMessageProps) {
   const [messageView, setMessageView] = useState(false)
   const [message, setMessage] = useState('')
-  const { data: session, status } = useSession()
+  const [sending, setSending] = useState(false)
+  const { user, isAuthenticated } = useCurrentUser()
 
   const sendMsg = async () => {
+    // 防止快速重复点击导致重复提交
+    if (sending) {
+      return
+    }
+
     if (!message.trim()) {
       toast('留言内容不能为空!')
       return
     }
 
-    const res = await fetch('/api/guestbook', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        content: message,
-        userEmail: session?.user?.email
-      })
-    }).then((res) => res.json())
+    setSending(true)
+    try {
+      const res = await fetch('/api/guestbook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: message
+        })
+      }).then((res) => res.json())
 
-    if (res.code !== 0) {
-      toast(res.msg)
-      return
+      if (res.code !== 0) {
+        toast(res.msg)
+        return
+      }
+
+      toast('留言成功!')
+
+      setMessageView(false)
+
+      setMessages((oldData) => [
+        {
+          ...res.data,
+          author: { name: user?.name, email: user?.email, image: user?.image }
+        },
+        ...oldData
+      ])
+
+      setMessage('')
+    } catch {
+      toast('留言失败，请稍后重试')
+    } finally {
+      setSending(false)
     }
-
-    toast('留言成功!')
-
-    setMessageView(false)
-
-    setMessages((oldData) => [{ ...res.data, author: session?.user }, ...oldData])
-
-    setMessage('')
   }
 
   function messageChange(value: string) {
@@ -138,7 +163,7 @@ function AddMessage({ setMessages }: AddMessageProps) {
 
   return (
     <div className="mt-1 mb-14">
-      {status === 'authenticated' ? (
+      {isAuthenticated ? (
         <div className="group relative w-full rounded-xl p-2 bg-white dark:bg-black bg-opacity-5 shadow-xl shadow-zinc-500/10 ring-2 ring-zinc-200/30 transition-opacity">
           {messageView ? (
             <MessagePreview message={message} />
@@ -149,6 +174,7 @@ function AddMessage({ setMessages }: AddMessageProps) {
           <MessageControls
             messageLength={message.length}
             messageView={messageView}
+            sending={sending}
             onToggleView={() => setMessageView(!messageView)}
             onSendMsg={sendMsg}
           />

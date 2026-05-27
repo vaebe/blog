@@ -44,3 +44,6 @@ sitemap.xml
 generated
 .claude
 .agents
+
+# 数据库导出（含敏感数据，勿提交）
+/blog-*.sql

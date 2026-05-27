@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { LoginForm } from './LoginForm'
-import { GithubLoginButton } from './GithubLoginButton'
+import { GoogleLoginButton } from './GoogleLoginButton'
 import {
   Dialog,
   DialogTrigger,
@@ -61,7 +61,7 @@ const LoginDialog = ({ onClose, children }: Props) => {
 
         <div className="w-full my-1 h-[1px] bg-gray-300 dark:bg-gray-600"></div>
 
-        <GithubLoginButton setIsLoading={setIsLoading} />
+        <GoogleLoginButton setIsLoading={setIsLoading} />
       </DialogContent>
     </Dialog>
   )

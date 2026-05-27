@@ -1,47 +1,11 @@
-import { withAuth } from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
-import { sendJson } from '@/lib/utils'
+import { auth } from '@/lib/auth/server'
 
-const ADMIN_PAGES = ['/article/add', '/article/edit']
-
-const ADMIN_APIS = ['/api/articles/delete', '/api/articles/add', '/api/articles/update']
-
-export default withAuth(
-  function middleware(req) {
-    console.log('request:', req.method, req.url)
-
-    const token = req.nextauth.token
-    const path = req.nextUrl.pathname
-
-    if (token?.role !== '00') {
-      if (ADMIN_APIS.some((item) => path.startsWith(item))) {
-        // 如果没有访问接口的权限返回 401
-        return sendJson({ code: 401, msg: '无权限' })
-      }
-
-      if (ADMIN_PAGES.some((item) => path.startsWith(item))) {
-        // 如果用户没有权限访问管理页面，重定向到404页面
-        const url = req.nextUrl.clone()
-        url.pathname = '/404'
-        return NextResponse.rewrite(url)
-      }
-    }
-  },
-  {
-    callbacks: {
-      authorized: function () {
-        // 这里返回 false 会到登录页面可以做额外的鉴权
-        return true
-      }
-    }
-  }
-)
+// Neon Auth 中间件：仅对管理页面要求「已登录」，未登录跳转首页。
+// 管理员（role==='00'）判定下沉到服务端：
+//   - 管理接口 /api/articles/{add,update,delete} 由各自的 requireAdmin() 校验并返回 401/403；
+//   - 管理页面的非管理员拦截由客户端 <RequireAdmin> 处理（数据安全由接口保证）。
+export default auth.middleware({ loginUrl: '/' })
 
 export const config = {
-  matcher: [
-    // 匹配页面路由
-    '/((?!_next/static|_next/image|.*\\.png$).*)',
-    // 匹配 API 路由
-    '/api/:path*'
-  ]
+  matcher: ['/article/add/:path*', '/article/edit/:path*']
 }

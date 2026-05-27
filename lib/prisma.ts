@@ -1,14 +1,10 @@
 import 'dotenv/config'
-import { PrismaMariaDb } from '@prisma/adapter-mariadb'
+import { PrismaNeon } from '@prisma/adapter-neon'
 import { PrismaClient } from '../generated/prisma/client'
 
-const adapter = new PrismaMariaDb({
-  host: process.env.DATABASE_HOST,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
-  port: parseInt(process.env.DATABASE_PORT || '3306'),
-  connectionLimit: 10
+// 使用连接池（pooled）连接，适合 serverless 环境
+const adapter = new PrismaNeon({
+  connectionString: process.env.DATABASE_URL
 })
 
 const prismaClientSingleton = () => {

@@ -22,7 +22,7 @@ export async function POST(req: Request) {
         summary,
         status: '01',
         source: '00',
-        userId: parseInt(session!.user.id)
+        userId: session!.user.id
       }
     })
     revalidateTag(ARTICLES_CACHE_TAG, 'max')

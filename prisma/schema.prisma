@@ -4,115 +4,49 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
 }
 
 model Article {
   id         String    @id @unique
-  userId     Int
-  title      String    @db.Text
-  content    String    @db.LongText
-  classify   String?   @db.Text
-  coverImg   String?   @db.Text
-  summary    String    @db.Text
-  source     String?   @db.Text // 00 博客创建 01 掘金同步
+  userId     String?   @db.Uuid // = Profile.id (= neon_auth.user.id)；掘金同步文章无本地作者，可为空
+  title      String
+  content    String
+  classify   String?
+  coverImg   String?
+  summary    String
+  source     String? // 00 博客创建 01 掘金同步
   views      Int       @default(1)
   likes      Int       @default(1)
   favorites  Int       @default(1)
   showNumber Int       @default(1)
-  status     String    @db.Text
+  status     String
   createdAt  DateTime  @default(now())
   updatedAt  DateTime? @updatedAt
   deletedAt  DateTime?
   isDeleted  Int?      @default(0)
 
+  author Profile? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
   @@map("article")
 }
 
-model User {
-  id            String          @id @default(cuid())
-  name          String?
-  username      String?         @unique
-  email         String?         @unique
-  password      String?         @db.Text
-  role          String?         @default("01")
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  // Optional for WebAuthn support
-  Authenticator Authenticator[]
-  // 留言
-  messages      Message[]
+// =============================== 用户档案 ===============================
+// 鉴权由 Neon Auth 接管，用户身份存于 neon_auth.user（不在 Prisma 管理范围）。
+// profiles 是应用侧镜像：承载自定义 role，并作为 Article/Message 的外键目标。
+// 由数据库触发器在 neon_auth.user 插入时自动同步（见 prisma/neon-auth-profiles-sync.sql）。
+model Profile {
+  id        String    @id @db.Uuid // = neon_auth.user.id
+  role      String    @default("01") // 00 管理员 01 普通用户
+  name      String?
+  email     String?
+  image     String?
+  articles  Article[]
+  messages  Message[]
+  createdAt DateTime  @default(now())
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("user")
-}
-
-model Account {
-  id                       String  @id @default(cuid())
-  userId                   String  @unique
-  type                     String
-  provider                 String
-  providerAccountId        String
-  refresh_token            String? @db.Text
-  access_token             String? @db.Text
-  expires_at               Int?
-  token_type               String?
-  scope                    String?
-  id_token                 String? @db.Text
-  session_state            String?
-  refresh_token_expires_in Int?
-  user                     User?   @relation(fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([provider, providerAccountId])
-  @@index([userId])
-  @@map("account")
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-  @@map("session")
-}
-
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_token")
-}
-
-// Optional for WebAuthn support
-model Authenticator {
-  credentialID         String  @unique
-  userId               String
-  providerAccountId    String
-  credentialPublicKey  String
-  counter              Int
-  credentialDeviceType String
-  credentialBackedUp   Boolean
-  transports           String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([userId, credentialID])
-  @@map("authenticator")
+  @@map("profiles")
 }
 
 // =============================== 留言板 ===============================
@@ -123,9 +57,10 @@ model Message {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime? // 删除时间
 
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId String
+  author   Profile @relation(fields: [authorId], references: [id])
+  authorId String  @db.Uuid
 
+  @@index([authorId])
   @@map("message")
 }
 
@@ -144,8 +79,8 @@ model Subscriber {
 model CacheData {
   id        String    @id @default(cuid())
   key       String    @unique // 存储数据的 key
-  data      String    @db.LongText // 存储的数据 文本 或 json 字符串
-  desc      String    @db.Text // 存储数据的描述
+  data      String // 存储的数据 文本 或 json 字符串
+  desc      String // 存储数据的描述
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime? // 删除时间

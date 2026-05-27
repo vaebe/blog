@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { useCurrentUser } from '@/lib/use-current-user'
 import { toast } from 'sonner'
 
 interface RequireAdminProps {
@@ -10,25 +10,28 @@ interface RequireAdminProps {
 }
 
 export function RequireAdmin({ children }: RequireAdminProps) {
-  const { data: session, status } = useSession()
+  const { isAuthenticated, isAdmin, isLoading } = useCurrentUser()
   const router = useRouter()
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (isLoading) {
+      return
+    }
+
+    if (!isAuthenticated) {
       toast.error('请先登录')
       router.push('/')
       return
     }
 
-    if (status === 'authenticated' && session?.user?.role !== '00') {
+    if (!isAdmin) {
       toast.error('无权限访问')
       router.push('/')
-      return
     }
-  }, [status, session, router])
+  }, [isLoading, isAuthenticated, isAdmin, router])
 
   // 加载中或未授权时不显示内容
-  if (status === 'loading' || status === 'unauthenticated') {
+  if (isLoading || !isAuthenticated) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
@@ -40,7 +43,7 @@ export function RequireAdmin({ children }: RequireAdminProps) {
   }
 
   // 已授权但不是管理员
-  if (status === 'authenticated' && session?.user?.role !== '00') {
+  if (!isAdmin) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
