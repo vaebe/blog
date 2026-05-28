@@ -4,28 +4,17 @@ import { Button } from '@/components/ui/button'
 
 export default function NotFound() {
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center px-4">
       <div className="text-center">
-        <h1 className="text-6xl font-semibol">404</h1>
+        <h1 className="font-display text-[8rem] leading-none md:text-[11rem]">404</h1>
 
-        <p className="my-4 text-lg">这里曾经或许有些什么，但是现在它不见了！</p>
+        <p className="mt-2 text-lg text-muted-foreground">
+          这里曾经或许有些什么，但现在它不见了。
+        </p>
 
-        <div className="animate-bounce motion-reduce:animate-none">
-          <svg className="mx-auto h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-            />
-          </svg>
-        </div>
-
-        <p className="my-4">不过无需担心，点击下方按钮可以返回首页</p>
-
-        <Link href="/">
-          <Button>
-            <Icon icon="flowbite:home-outline" className="w-5 h-5 mr-2"></Icon>
+        <Link href="/" className="mt-8 inline-block">
+          <Button className="rounded-full px-6">
+            <Icon icon="flowbite:home-outline" className="mr-2 h-5 w-5" />
             返回首页
           </Button>
         </Link>

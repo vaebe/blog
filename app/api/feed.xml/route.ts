@@ -7,7 +7,7 @@ export async function GET() {
   const feed = new RSS({
     title: 'vaebe blog | 开发者',
     description:
-      '我是 Vaebe，一名全栈开发者，专注于前端技术。我的主要技术栈是 Vue 及其全家桶，目前也在使用 React 来构建项目，比如这个博客，它使用 Next.js。',
+      '我是 Vaebe，一名全栈开发者，专注于前端技术。我的主要技术栈是 Vue 全家桶，目前也在使用 React 与 Next.js 构建现代 Web 应用。近年来也在持续探索 AI 应用开发，包括大模型接入、AI SDK、Agent 工作流以及 AI 与前端结合的实践方向。',
     site_url: NEXT_PUBLIC_SITE_URL ?? '',
     feed_url: `${NEXT_PUBLIC_SITE_URL}/feed.xml`,
     language: 'zh-CN', // 网站语言代码

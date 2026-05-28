@@ -1,52 +1,112 @@
-import { ContentCard } from './ContentCard'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { GithubPinnedRepoInfo } from '@/lib/github/pinned-repos'
 import { GitHubPinnedReposCacheDataKey } from '@/lib/github/pinned-repos'
 import { getCacheDataByKey } from '@/lib/cache-data'
 
 function NoFound() {
-  return (
-    <div className="text-center text-gray-500 dark:text-gray-400 py-8">No repositories found.</div>
-  )
+  return <div className="text-center text-muted-foreground py-8">No repositories found.</div>
 }
 
-function ProjectInfo({ repos }: { repos: GithubPinnedRepoInfo[] }) {
+// 自绘的富信息项目卡：复刻 GitHub 社交卡的密度(头像/owner/repo/描述/数据/语言条),
+// 头像走 github.com/{owner}.png(稳定),按语言色上色 —— 精致且零破图。
+// featured = 在 bento 里占 2x2 的大卡，头像/标题/描述更大。
+function ProjectCard({
+  repo,
+  featured = false,
+  className = ''
+}: {
+  repo: GithubPinnedRepoInfo
+  featured?: boolean
+  className?: string
+}) {
+  const color = repo.primaryLanguage?.color ?? '#ff4500'
+  const owner = repo.url.replace(/^https?:\/\/github\.com\//, '').split('/')[0]
+  const avatarSize = featured ? 128 : 80
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {repos.map((repo) => (
-        <div
-          key={repo.id}
-          className="hover:bg-black/10 dark:hover:bg-white/10 rounded p-2 transition duration-300 ease-in-out"
-        >
-          <Link href={repo.url} target="_blank" rel="noopener noreferrer">
-            <h3 className="text-lg font-semibold mb-2 transition duration-300">{repo.name}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
-              {repo.description || 'No description available'}
-            </p>
-            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 space-x-4">
-              <span className="flex items-center">
-                <Icon icon="mdi:star" className="w-4 h-4 mr-1 text-yellow-500" />
-                {repo.stargazerCount}
-              </span>
-              <span className="flex items-center">
-                <Icon icon="mdi:source-fork" className="w-4 h-4 mr-1 text-green-500" />
-                {repo.forkCount}
-              </span>
-              {repo.primaryLanguage && (
-                <span className="flex items-center">
-                  <span
-                    className="w-3 h-3 rounded-full mr-1"
-                    style={{ backgroundColor: repo.primaryLanguage.color }}
-                  ></span>
-                  {repo.primaryLanguage.name}
-                </span>
-              )}
+    <Link
+      href={repo.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 ${featured ? 'p-7' : 'p-5'} ${className}`}
+    >
+      {/* 语言色微光 + 角落淡化的代码符号 */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `radial-gradient(120% 120% at 100% 0%, color-mix(in oklab, ${color} 12%, transparent), transparent 55%)`
+        }}
+      />
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute -right-3 -top-5 font-display font-extrabold leading-none opacity-[0.06] ${featured ? 'text-[8rem]' : 'text-[5rem]'}`}
+        style={{ color }}
+      >
+        {'</>'}
+      </span>
+
+      <div className="relative">
+        {/* 头像 + owner / repo */}
+        <div className={`flex items-center ${featured ? 'gap-4' : 'gap-3'}`}>
+          <Image
+            src={`https://github.com/${owner}.png?size=${avatarSize}`}
+            alt={`${owner} avatar`}
+            width={avatarSize}
+            height={avatarSize}
+            unoptimized
+            className={`shrink-0 rounded-full ring-1 ring-border ${featured ? 'h-16 w-16' : 'h-11 w-11'}`}
+          />
+          <div className="min-w-0">
+            <div className="truncate text-xs text-muted-foreground">{owner} /</div>
+            <div
+              className={`truncate font-display font-bold leading-tight transition-colors group-hover:text-primary ${featured ? 'text-3xl' : 'text-lg'}`}
+            >
+              {repo.name}
             </div>
-          </Link>
+          </div>
         </div>
-      ))}
-    </div>
+
+        {/* 描述 */}
+        <p
+          className={`mt-4 text-sm leading-relaxed text-muted-foreground ${featured ? 'line-clamp-5 min-h-[7rem] md:text-base' : 'line-clamp-2 min-h-[2.5rem]'}`}
+        >
+          {repo.description || '暂无描述'}
+        </p>
+      </div>
+
+      {/* 数据行（推到底部） */}
+      <div className="relative mt-auto pt-5">
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          {repo.primaryLanguage && (
+            <span className="flex items-center">
+              <span
+                className="mr-1.5 h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: color }}
+              />
+              {repo.primaryLanguage.name}
+            </span>
+          )}
+          <span className="flex items-center">
+            <Icon icon="mdi:star" className="mr-1 h-4 w-4" />
+            {repo.stargazerCount}
+          </span>
+          <span className="flex items-center">
+            <Icon icon="mdi:source-fork" className="mr-1 h-4 w-4" />
+            {repo.forkCount}
+          </span>
+        </div>
+      </div>
+
+      {/* 底部语言色条（GitHub 语言条的感觉） */}
+      <span
+        aria-hidden
+        className="absolute bottom-0 left-0 h-1 w-full opacity-60"
+        style={{ backgroundColor: color }}
+      />
+    </Link>
   )
 }
 
@@ -66,8 +126,22 @@ export async function GithubProject() {
   }
 
   return (
-    <ContentCard title="GitHub">
-      {repos.length === 0 ? <NoFound /> : <ProjectInfo repos={repos} />}
-    </ContentCard>
+    <section>
+      <h2 className="mb-7 text-2xl font-semibold tracking-tight">精选项目</h2>
+      {repos.length === 0 ? (
+        <NoFound />
+      ) : (
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3 md:auto-rows-[260px]">
+          {repos.map((repo, i) => (
+            <ProjectCard
+              key={repo.id}
+              repo={repo}
+              featured={i === 0}
+              className={i === 0 ? 'md:col-span-2 md:row-span-2' : ''}
+            />
+          ))}
+        </div>
+      )}
+    </section>
   )
 }

@@ -11,6 +11,22 @@ interface CurrentUser {
   role: string | null
 }
 
+// 模块级缓存：同一个 userId 下复用同一个 /api/me promise，
+// 避免 Header / AddMessage 等多个组件同时挂载时发起多次相同请求。
+let mePromiseCache: { userId: string; promise: Promise<string | null> } | null = null
+
+function fetchMeRole(userId: string): Promise<string | null> {
+  if (mePromiseCache?.userId === userId) {
+    return mePromiseCache.promise
+  }
+  const promise = fetch('/api/me')
+    .then((res) => res.json())
+    .then((res) => (res?.data?.role ?? null) as string | null)
+    .catch(() => null)
+  mePromiseCache = { userId, promise }
+  return promise
+}
+
 // 统一的客户端登录态：Neon Auth 会话 + profiles.role。
 // role 不在会话里，需经 /api/me 获取（仅登录后请求一次）。
 export function useCurrentUser() {
@@ -23,18 +39,15 @@ export function useCurrentUser() {
   useEffect(() => {
     if (!userId) {
       setRole(null)
+      mePromiseCache = null
       return
     }
 
     let active = true
     setRoleLoading(true)
-    fetch('/api/me')
-      .then((res) => res.json())
-      .then((res) => {
-        if (active) setRole(res?.data?.role ?? null)
-      })
-      .catch(() => {
-        if (active) setRole(null)
+    fetchMeRole(userId)
+      .then((r) => {
+        if (active) setRole(r)
       })
       .finally(() => {
         if (active) setRoleLoading(false)

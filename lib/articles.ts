@@ -14,3 +14,12 @@ export async function getAllArticles() {
     orderBy: { createdAt: 'desc' }
   })
 }
+
+// 单篇文章详情；按 id 拆 tag，写操作时通过 revalidateTag('article-<id>') 失效
+export async function getArticleById(id: string) {
+  'use cache'
+  cacheTag(ARTICLES_CACHE_TAG, `article-${id}`)
+  cacheLife('hours')
+
+  return prisma.article.findUnique({ where: { id } })
+}

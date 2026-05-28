@@ -1,44 +1,37 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import dayjs from 'dayjs'
 import { GuestbookMessage } from '@/types'
 import { BytemdViewer } from '@/components/bytemd/viewer'
-import { Card } from '@/components/ui/card'
-import { toast } from 'sonner'
 
 interface MessagesListProps {
-  list: Array<GuestbookMessage>
-  setMessages: Dispatch<SetStateAction<GuestbookMessage[]>>
+  list: GuestbookMessage[]
+  loading?: boolean
 }
 
-export function MessagesList({ list, setMessages }: MessagesListProps) {
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const getMessages = async () => {
-      try {
-        const res = await fetch(`/api/guestbook?page=1&pageSize=9999`).then((res) => res.json())
-
-        if (res.code === 0) {
-          setMessages(res.data.list)
-        }
-      } catch (error) {
-        toast('获取留言列表失败！')
-        console.error('Failed to fetch messages', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    getMessages()
-  }, [setMessages])
-
+export function MessagesList({ list, loading = false }: MessagesListProps) {
   if (loading) {
-    return <div className="text-center">正在获取留言...</div>
+    return (
+      <div className="divide-y divide-border border-y border-border">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="flex items-start gap-3 py-6 motion-reduce:animate-none">
+            <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+            <div className="flex-1 space-y-2">
+              <div className="h-4 w-32 animate-pulse rounded bg-muted" />
+              <div className="h-3 w-full animate-pulse rounded bg-muted" />
+              <div className="h-3 w-2/3 animate-pulse rounded bg-muted" />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (list.length === 0) {
+    return <p className="py-12 text-center text-muted-foreground">还没有留言，来抢沙发吧 👀</p>
   }
 
   return (
-    <div className="space-y-4">
+    <div className="divide-y divide-border border-y border-border">
       {list.map((message) => (
         <MessagesListItem info={message} key={message.id} />
       ))}
@@ -47,22 +40,26 @@ export function MessagesList({ list, setMessages }: MessagesListProps) {
 }
 
 export function MessagesListItem({ info }: { info: GuestbookMessage }) {
+  const name = info?.author?.name ?? '未知'
+  const initial = Array.from(name)[0]?.toUpperCase() ?? '?'
   return (
-    <Card className="px-4">
-      <div className="flex space-x-4">
-        <Avatar>
-          <AvatarImage src={info?.author?.image} alt="用户头像" />
-          <AvatarFallback>{info?.author?.name}</AvatarFallback>
+    <div className="py-6">
+      <div className="flex items-center gap-3">
+        <Avatar className="h-9 w-9 ring-1 ring-border">
+          <AvatarImage src={info?.author?.image} alt={name} />
+          <AvatarFallback className="text-xs">{initial}</AvatarFallback>
         </Avatar>
-        <p>
-          <span className="mr-2 text-lg font-medium">{info?.author?.name ?? '未知'}</span>
-          <span className="text-gray-500 text-xs">
+        <div className="flex items-baseline gap-2">
+          <span className="font-medium">{name}</span>
+          <span className="text-xs text-muted-foreground">
             {dayjs(info.createdAt).locale('zh-cn').fromNow()}
           </span>
-        </p>
+        </div>
       </div>
 
-      <BytemdViewer content={info.content}></BytemdViewer>
-    </Card>
+      <div className="mt-3 sm:pl-12">
+        <BytemdViewer content={info.content}></BytemdViewer>
+      </div>
+    </div>
   )
 }

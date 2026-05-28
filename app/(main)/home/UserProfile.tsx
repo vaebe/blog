@@ -1,156 +1,55 @@
-import { Icon } from '@iconify/react'
-import Link from 'next/link'
-import Image from 'next/image'
-import userIcon from '@/public/user-icon.png'
 import type { GithubUserInfo } from '@/lib/github/user-info'
 import { GithubUserInfoCacheDataKey } from '@/lib/github/user-info'
 import { getCacheDataByKey } from '@/lib/cache-data'
 import type { JuejinUserInfo } from '@/lib/juejin/fetch-user-info'
 import { fetchJuejinUserInfo } from '@/lib/juejin/fetch-user-info'
-
-// 统计项组件
-const StatItem = ({ icon, label, value }: { icon: string; label: string; value?: number }) => (
-  <div className="inline-flex items-center space-x-2">
-    <Icon icon={icon} className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-    <span className="text-gray-600 dark:text-gray-300">{label}:</span>
-    <span className="font-semibold">{value ?? '-'}</span>
-  </div>
-)
-
-// 社交媒体链接配置
-const SOCIAL_LINKS = {
-  juejin: {
-    url: 'https://juejin.cn/user/712139266339694',
-    icon: 'simple-icons:juejin',
-    label: '掘金'
-  },
-  github: {
-    url: 'https://github.com/vaebe',
-    icon: 'mdi:github',
-    label: 'GitHub'
-  }
-} as const
-
-interface SocialStatsSectionProps {
-  platform: keyof typeof SOCIAL_LINKS
-  stats: { icon: string; label: string; value?: number }[]
-}
-
-// 社交媒体统计区块
-const SocialStatsSection = ({ platform, stats }: SocialStatsSectionProps) => (
-  <div className="flex flex-col items-center lg:items-start space-y-4">
-    <Link
-      href={SOCIAL_LINKS[platform].url}
-      className="flex justify-center lg:justify-items-start"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <h3 className="inline-flex items-center text-xl font-semibold text-gray-800 dark:text-white hover:text-blue-500 dark:hover:text-blue-400">
-        <Icon icon={SOCIAL_LINKS[platform].icon} className="mr-2" />
-        {SOCIAL_LINKS[platform].label}
-      </h3>
-    </Link>
-    <div className="flex flex-col items-center space-y-2 sm:flex-row sm:items-center sm:space-x-4 sm:space-y-0">
-      {stats.map((stat, index) => (
-        <StatItem key={index} {...stat} />
-      ))}
-    </div>
-  </div>
-)
-
-function GitHubSocialStatsSection({ info }: { info?: GithubUserInfo }) {
-  return (
-    <SocialStatsSection
-      platform="github"
-      stats={[
-        {
-          icon: 'mdi:source-repository',
-          label: '仓库',
-          value: info?.public_repos
-        },
-        { icon: 'mdi:account-group', label: '关注者', value: info?.followers },
-        {
-          icon: 'mdi:account-multiple',
-          label: '正在关注',
-          value: info?.following
-        }
-      ]}
-    />
-  )
-}
-
-async function JuejinSocialStatsSection() {
-  let info: JuejinUserInfo | undefined
-
-  try {
-    info = await fetchJuejinUserInfo()
-  } catch {
-    info = undefined
-  }
-
-  return (
-    <SocialStatsSection
-      platform="juejin"
-      stats={[
-        {
-          icon: 'mdi:file-document-outline',
-          label: '文章',
-          value: info?.post_article_count
-        },
-        { icon: 'mdi:thumb-up', label: '获赞', value: info?.got_digg_count },
-        { icon: 'mdi:eye', label: '阅读量', value: info?.got_view_count }
-      ]}
-    />
-  )
-}
+import { Hero } from '@/components/hero/hero'
 
 const Userdescription = `
-我是 Vaebe，我的主要技术栈是 Vue 全家桶，目前也在使用 React 来构建项目，比如这个博客它使用 Next.js。
-我会将自己的实践过程以文章的形式分享在掘金上，并在 GitHub上参与开源项目，不断提升自己的编程技能。
-欢迎访问我的掘金主页和 GitHub主页，了解更多关于我的信息！`
-
-// 主要用户信息组件
-const UserInfo = ({ githubUserInfo }: { githubUserInfo?: GithubUserInfo }) => (
-  <div className="flex flex-col items-center md:flex-row md:items-center md:space-x-6">
-    <Image
-      src={githubUserInfo?.avatar_url ?? userIcon}
-      alt={`${githubUserInfo?.login}'s avatar`}
-      className="rounded-lg border border-white dark:border-gray-800 shadow"
-      width={128}
-      height={128}
-      priority
-      unoptimized
-    />
-    <div>
-      <h2 className="text-3xl font-bold text-center md:text-left text-gray-800 dark:text-white">
-        {githubUserInfo?.login ?? 'Loading...'}
-      </h2>
-      <p className="text-gray-600 dark:text-gray-300 mt-1">{Userdescription}</p>
-    </div>
-  </div>
-)
+主要技术栈是 Vue 全家桶，目前也在使用 React 与 Next.js 构建现代 Web 应用。
+近年来也在持续探索 AI 应用开发，包括大模型接入、AI SDK、Agent 工作流以及 AI 与前端结合的实践方向。
+我会将自己的开发实践与踩坑经验整理成文章分享在掘金，同时积极参与 GitHub 开源项目。
+欢迎访问我的掘金主页和 GitHub 主页，了解更多关于我的信息！`
 
 export async function UserProfile() {
-  let githubUserInfo: GithubUserInfo | undefined
-  try {
-    const res = await getCacheDataByKey<GithubUserInfo>({
-      key: GithubUserInfoCacheDataKey
-    })
-    if (res.code === 0) {
-      githubUserInfo = res.data
+  // 两个数据源相互独立，并行获取以避免顺序 await 形成的瀑布请求
+  const [githubRes, juejinRes] = await Promise.all([
+    getCacheDataByKey<GithubUserInfo>({ key: GithubUserInfoCacheDataKey }).catch(() => null),
+    fetchJuejinUserInfo().catch(() => null)
+  ])
+
+  const githubUserInfo: GithubUserInfo | undefined =
+    githubRes?.code === 0 ? githubRes.data : undefined
+  const juejinInfo: JuejinUserInfo | undefined = juejinRes ?? undefined
+
+  // 关键数字收进 Hero 指标条，按来源分组：掘金 / GitHub
+  const statGroups = [
+    {
+      platform: '掘金',
+      icon: 'simple-icons:juejin',
+      items: [
+        { label: '阅读量', value: juejinInfo?.got_view_count },
+        { label: '获赞', value: juejinInfo?.got_digg_count },
+        { label: '文章', value: juejinInfo?.post_article_count }
+      ]
+    },
+    {
+      platform: 'GitHub',
+      icon: 'mdi:github',
+      items: [
+        { label: '仓库', value: githubUserInfo?.public_repos },
+        { label: '关注者', value: githubUserInfo?.followers },
+        { label: '正在关注', value: githubUserInfo?.following }
+      ]
     }
-  } catch {
-    githubUserInfo = undefined
-  }
+  ]
 
   return (
-    <div key="content" className="space-y-8">
-      <UserInfo githubUserInfo={githubUserInfo} />
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <JuejinSocialStatsSection></JuejinSocialStatsSection>
-        <GitHubSocialStatsSection info={githubUserInfo}></GitHubSocialStatsSection>
-      </div>
-    </div>
+    <Hero
+      login={githubUserInfo?.login}
+      avatarUrl={githubUserInfo?.avatar_url}
+      description={Userdescription}
+      statGroups={statGroups}
+    />
   )
 }

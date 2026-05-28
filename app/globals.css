@@ -5,138 +5,146 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* 正文走 Geist，并补齐中文回退；展示字 Instrument Serif 仅用于拉丁/数字点缀 */
+  --font-sans:
+    var(--font-geist-sans), 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', ui-sans-serif,
+    system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', monospace;
+  --font-display:
+    var(--font-bricolage), 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', ui-sans-serif,
+    sans-serif;
 }
 
 :root {
-  --radius: 0.625rem;
+  /* 信号橙：暖纸白 + 真墨黑 + 信号橙(Committed 强调色，承重于链接/操作/重点) */
+  --radius: 0.75rem;
 
-  --background: oklch(1 0 0);
+  --background: oklch(0.985 0.007 75);
 
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.22 0.012 55);
 
-  --card: oklch(1 0 0);
+  --card: oklch(0.995 0.005 75);
 
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.22 0.012 55);
 
-  --popover: oklch(1 0 0);
+  --popover: oklch(0.995 0.005 75);
 
-  --popover-foreground: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.22 0.012 55);
 
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(0.66 0.21 42);
 
-  --primary-foreground: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.99 0.012 75);
 
-  --secondary: oklch(0.97 0 0);
+  --secondary: oklch(0.955 0.01 70);
 
-  --secondary-foreground: oklch(0.205 0 0);
+  --secondary-foreground: oklch(0.28 0.012 55);
 
-  --muted: oklch(0.97 0 0);
+  --muted: oklch(0.955 0.01 70);
 
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(0.5 0.018 55);
 
-  --accent: oklch(0.97 0 0);
+  --accent: oklch(0.95 0.035 55);
 
-  --accent-foreground: oklch(0.205 0 0);
+  --accent-foreground: oklch(0.42 0.14 42);
 
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(0.52 0.2 22);
 
-  --border: oklch(0.922 0 0);
+  --border: oklch(0.9 0.012 65);
 
-  --input: oklch(0.922 0 0);
+  --input: oklch(0.9 0.012 65);
 
-  --ring: oklch(0.708 0 0);
+  --ring: oklch(0.66 0.21 42);
 
-  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-1: oklch(0.66 0.21 42);
 
-  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-2: oklch(0.75 0.15 60);
 
-  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-3: oklch(0.55 0.12 35);
 
-  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-4: oklch(0.6 0.02 55);
 
-  --chart-5: oklch(0.769 0.188 70.08);
+  --chart-5: oklch(0.4 0.03 50);
 
-  --sidebar: oklch(0.985 0 0);
+  --sidebar: oklch(0.98 0.006 75);
 
-  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-foreground: oklch(0.22 0.012 55);
 
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary: oklch(0.66 0.21 42);
 
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.99 0.012 75);
 
-  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent: oklch(0.95 0.035 55);
 
-  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent-foreground: oklch(0.42 0.14 42);
 
-  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-border: oklch(0.9 0.012 65);
 
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: oklch(0.66 0.21 42);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  /* 暖近黑底 + 暖近白字 + 信号橙(暗底上更亮一点),层次靠发丝描边 + 轻阴影 */
+  --background: oklch(0.18 0.01 50);
 
-  --foreground: oklch(0.985 0 0);
+  --foreground: oklch(0.95 0.008 75);
 
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.22 0.01 50);
 
-  --card-foreground: oklch(0.985 0 0);
+  --card-foreground: oklch(0.95 0.008 75);
 
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.22 0.01 50);
 
-  --popover-foreground: oklch(0.985 0 0);
+  --popover-foreground: oklch(0.95 0.008 75);
 
-  --primary: oklch(0.922 0 0);
+  --primary: oklch(0.7 0.2 45);
 
-  --primary-foreground: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.99 0.012 75);
 
-  --secondary: oklch(0.269 0 0);
+  --secondary: oklch(0.26 0.01 50);
 
-  --secondary-foreground: oklch(0.985 0 0);
+  --secondary-foreground: oklch(0.95 0.008 75);
 
-  --muted: oklch(0.269 0 0);
+  --muted: oklch(0.26 0.01 50);
 
-  --muted-foreground: oklch(0.708 0 0);
+  --muted-foreground: oklch(0.7 0.015 70);
 
-  --accent: oklch(0.269 0 0);
+  --accent: oklch(0.3 0.05 45);
 
-  --accent-foreground: oklch(0.985 0 0);
+  --accent-foreground: oklch(0.85 0.1 55);
 
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: oklch(0.62 0.2 22);
 
-  --border: oklch(1 0 0 / 10%);
+  --border: oklch(0.99 0.01 75 / 10%);
 
-  --input: oklch(1 0 0 / 15%);
+  --input: oklch(0.99 0.01 75 / 14%);
 
-  --ring: oklch(0.556 0 0);
+  --ring: oklch(0.7 0.2 45);
 
-  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-1: oklch(0.7 0.2 45);
 
-  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-2: oklch(0.78 0.15 65);
 
-  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-3: oklch(0.62 0.13 35);
 
-  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-4: oklch(0.6 0.02 60);
 
-  --chart-5: oklch(0.645 0.246 16.439);
+  --chart-5: oklch(0.45 0.03 55);
 
-  --sidebar: oklch(0.205 0 0);
+  --sidebar: oklch(0.22 0.01 50);
 
-  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.95 0.008 75);
 
-  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary: oklch(0.7 0.2 45);
 
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.99 0.012 75);
 
-  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent: oklch(0.3 0.05 45);
 
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-accent-foreground: oklch(0.85 0.1 55);
 
-  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-border: oklch(0.99 0.01 75 / 10%);
 
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.7 0.2 45);
 }
 
 @theme inline {
@@ -218,7 +226,109 @@
 
   body {
     @apply bg-background text-foreground;
+    /* 顶部光晕保持通透；两团极淡的冷/暖光斑给毛玻璃"可折射的内容"，不破坏明亮感 */
+    background-image:
+      radial-gradient(ellipse 100% 55% at 50% -18%, oklch(1 0 0 / 70%), transparent 70%),
+      radial-gradient(24% 24% at 82% 14%, oklch(0.7 0.13 45 / 8%), transparent 60%),
+      radial-gradient(21% 21% at 14% 82%, oklch(0.62 0.06 60 / 5%), transparent 60%),
+      linear-gradient(to right, color-mix(in oklab, var(--foreground) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 5%, transparent) 1px, transparent 1px);
+    background-size:
+      auto,
+      auto,
+      auto,
+      56px 56px,
+      56px 56px;
+    background-attachment: fixed;
+    font-feature-settings: 'cv01', 'ss01';
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.003em;
   }
+
+  .dark body {
+    background-image:
+      radial-gradient(ellipse 100% 55% at 50% -18%, oklch(0.99 0.002 95 / 7%), transparent 70%),
+      radial-gradient(24% 24% at 82% 14%, oklch(0.7 0.16 45 / 14%), transparent 60%),
+      radial-gradient(21% 21% at 14% 82%, oklch(0.62 0.08 60 / 8%), transparent 60%),
+      linear-gradient(to right, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px);
+  }
+
+  /* 标题收紧字距，更利落、更高级 */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: oklch(0.2 0.004 95 / 14%);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* 展示字工具类：用于姓名、年份等拉丁/数字大标题点缀 */
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* 高级感软阴影：极淡、弥散、分层，替代生硬的 shadow-md */
+.shadow-soft {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 4%),
+    0 6px 16px -8px oklch(0 0 0 / 8%);
+}
+
+.shadow-soft-lg {
+  box-shadow:
+    0 2px 4px oklch(0 0 0 / 4%),
+    0 16px 40px -16px oklch(0 0 0 / 14%);
+}
+
+.dark .shadow-soft {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 30%),
+    0 6px 16px -8px oklch(0 0 0 / 45%);
+}
+
+.dark .shadow-soft-lg {
+  box-shadow:
+    0 2px 4px oklch(0 0 0 / 35%),
+    0 16px 40px -16px oklch(0 0 0 / 55%);
+}
+
+/* 毛玻璃材质：半透明 + 背景虚化 + 顶部高光边。
+   顶部 inset 高光是区分"Apple 玻璃"与"廉价玻璃"的关键细节 */
+.glass {
+  background-color: oklch(1 0 0 / 60%);
+  backdrop-filter: blur(16px) saturate(1.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  border: 1px solid oklch(1 0 0 / 50%);
+  box-shadow:
+    inset 0 1px 0 0 oklch(1 0 0 / 70%),
+    0 1px 2px oklch(0 0 0 / 4%),
+    0 14px 36px -18px oklch(0 0 0 / 14%);
+}
+
+.dark .glass {
+  background-color: oklch(0.24 0.004 95 / 50%);
+  border: 1px solid oklch(1 0 0 / 10%);
+  box-shadow:
+    inset 0 1px 0 0 oklch(1 0 0 / 8%),
+    0 1px 2px oklch(0 0 0 / 30%),
+    0 14px 36px -18px oklch(0 0 0 / 50%);
+}
+
+/* 悬浮层（命令面板等）更强的虚化 */
+.glass-strong {
+  backdrop-filter: blur(28px) saturate(1.8);
+  -webkit-backdrop-filter: blur(28px) saturate(1.8);
 }
 
 /* Chrome, Edge, Safari 和其他 WebKit 内核的浏览器 */
@@ -232,7 +342,6 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-
 
 @keyframes gradient-x {
   0% {
@@ -251,4 +360,27 @@
 .gradient-anim {
   background-size: 200% 200%;
   animation: gradient-x 3s ease infinite;
+}
+
+/* 技术栈跑马灯：内容复制一份，平移 -50% 实现无缝循环 */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* View Transitions：关闭默认交叉淡入，让主题切换的圆形 clip-path 干净呈现 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* 新主题始终叠在上层，以扩散圆形把旧主题"擦开"，明暗双向一致 */
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
 }

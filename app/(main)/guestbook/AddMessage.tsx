@@ -18,7 +18,7 @@ const MessageInput = ({ message, onChange }: MessageInputProps) => {
   return (
     <textarea
       aria-label="留言内容"
-      className="block w-full shrink-0 resize-none border-0 bg-transparent p-2 md:p-4 text-sm leading-6 text-zinc-800 placeholder-zinc-400 outline-none transition-[height] will-change-[height] focus:outline-none focus:ring-0 dark:text-zinc-200 dark:placeholder-zinc-500"
+      className="block w-full shrink-0 resize-none border-0 bg-transparent p-2 md:p-4 text-sm leading-6 text-foreground placeholder:text-muted-foreground outline-none transition-[height] will-change-[height] focus:outline-none focus:ring-0"
       placeholder="请文明留言，禁止发布敏感内容"
       rows={6}
       value={message}
@@ -52,10 +52,10 @@ function MessageControls({
   onSendMsg
 }: MessageControlsProps) {
   return (
-    <div className="flex justify-between items-center mt-2 px-2">
-      <p className="text-xs text-zinc-500">支持 Markdown 格式</p>
-      <div className="flex items-center justify-end">
-        <p className="text-xs text-zinc-500">{messageLength} / 1000</p>
+    <div className="mt-2 flex items-center justify-between border-t border-border/60 px-2 pt-2.5">
+      <p className="text-xs text-muted-foreground">支持 Markdown 格式</p>
+      <div className="flex items-center justify-end gap-4">
+        <p className="text-xs text-muted-foreground">{messageLength} / 1000</p>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -63,9 +63,9 @@ function MessageControls({
                 type="button"
                 onClick={onToggleView}
                 aria-label={messageView ? '关闭预览' : '预览一下'}
-                className="cursor-pointer mx-4"
+                className="cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
               >
-                <Icon icon={messageView ? 'carbon:view-off' : 'carbon:view'} width="24px" />
+                <Icon icon={messageView ? 'carbon:view-off' : 'carbon:view'} width="22px" />
               </button>
             </TooltipTrigger>
             <TooltipContent>{messageView ? '关闭预览' : '预览一下'}</TooltipContent>
@@ -79,7 +79,7 @@ function MessageControls({
                 disabled={sending}
                 aria-label="发送"
                 aria-busy={sending}
-                className={`cursor-pointer ${sending ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`text-muted-foreground transition-colors hover:text-foreground ${sending ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
               >
                 <Icon
                   icon={sending ? 'eos-icons:three-dots-loading' : 'streamline:send-email'}
@@ -162,9 +162,9 @@ function AddMessage({ setMessages }: AddMessageProps) {
   }
 
   return (
-    <div className="mt-1 mb-14">
+    <div className="mb-14 mt-1">
       {isAuthenticated ? (
-        <div className="group relative w-full rounded-xl p-2 bg-white dark:bg-black bg-opacity-5 shadow-xl shadow-zinc-500/10 ring-2 ring-zinc-200/30 transition-opacity">
+        <div className="group relative w-full rounded-2xl border border-border bg-card p-2 shadow-soft transition-colors focus-within:border-primary/50">
           {messageView ? (
             <MessagePreview message={message} />
           ) : (
@@ -181,7 +181,7 @@ function AddMessage({ setMessages }: AddMessageProps) {
         </div>
       ) : (
         <LoginDialog>
-          <Button className="my-4 cursor-pointer">
+          <Button className="my-4 cursor-pointer rounded-full px-5">
             <Icon icon="memory:user" className="mr-2" width="20px" />
             登录后才可以留言！
           </Button>

@@ -1,61 +1,102 @@
-'use client'
-
-import { useEffect, useState, use } from 'react'
+import { notFound } from 'next/navigation'
 import { Article } from '@/generated/prisma/client'
-import { toast } from 'sonner'
+import { getArticleById } from '@/lib/articles'
 import { getReadingTime } from '@/lib/getReadingTime'
 import { Anchor } from './anchor/index'
 import { BytemdViewer } from '@/components/bytemd/viewer'
 import { Icon } from '@iconify/react'
+import Link from 'next/link'
 
-export function ArticleDetail({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params)
-  const [article, setArticle] = useState<Article>()
-  const [readingTime, setReadingTime] = useState<number>(0)
+function MetaItem({ icon, children }: { icon: string; children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <Icon icon={icon} className="h-4 w-4" />
+      {children}
+    </span>
+  )
+}
 
-  useEffect(() => {
-    async function fetchArticleDetails() {
-      const res = await fetch(`/api/articles/details?id=${id}`).then((res) => res.json())
-      if (res.code !== 0) {
-        toast('获取文章详情失败!')
-        return null
-      }
-      return res.data
-    }
+interface ArticleDetailProps {
+  params: Promise<{ id: string }>
+}
 
-    async function getData() {
-      const articleData = await fetchArticleDetails()
-      if (!articleData) return
+export async function ArticleDetail({ params }: ArticleDetailProps) {
+  const { id } = await params
 
-      setArticle(articleData)
-      setReadingTime(getReadingTime(articleData.content).minutes)
-    }
+  let article: Article | null = null
+  try {
+    article = await getArticleById(id)
+  } catch {
+    article = null
+  }
 
-    getData()
-  }, [id])
+  if (!article) {
+    notFound()
+  }
+
+  const date = new Date(article.createdAt).toLocaleDateString()
+  const hasContent = !!article.content?.trim()
+  const readingTime = hasContent ? getReadingTime(article.content ?? '').minutes : 0
 
   return (
-    <div className="max-w-4xl mx-auto my-2">
-      <div className="space-y-4 border-b pb-4">
-        <h1 className="text-2xl font-bold">{article?.title}</h1>
-        <div className="text-gray-500 flex items-center">
-          <Icon icon="ri:time-line" /> 阅读时间: {readingTime} 分钟
+    <article className="mx-auto max-w-5xl px-4 py-6">
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-12">
+        {/* 主栏：标题 / 元信息 / 导读 / 正文 */}
+        <div className="min-w-0">
+          <header>
+            <h1 className="text-3xl font-bold leading-tight tracking-tight md:text-[2.5rem]">
+              {article.title}
+            </h1>
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+              <MetaItem icon="ri:calendar-line">{date}</MetaItem>
+              {readingTime > 0 && <MetaItem icon="ri:time-line">{readingTime} 分钟阅读</MetaItem>}
+              <MetaItem icon="ri:eye-line">{article.views}</MetaItem>
+              <MetaItem icon="ri:thumb-up-line">{article.likes}</MetaItem>
+            </div>
+          </header>
+
+          {article.summary && (
+            <div className="mt-8 rounded-2xl border border-border bg-accent/40 p-5">
+              <p className="mb-1.5 text-sm font-semibold text-primary">导读</p>
+              <p className="leading-relaxed text-muted-foreground">{article.summary}</p>
+            </div>
+          )}
+
+          {hasContent ? (
+            <div className="mt-8 min-w-0 rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-8">
+              <BytemdViewer content={article.content ?? ''} />
+            </div>
+          ) : (
+            <div className="mt-8 rounded-2xl border border-border bg-card p-10 text-center shadow-soft">
+              {article.source !== '00' ? (
+                <>
+                  <p className="text-muted-foreground">本文同步自掘金，完整内容请前往原文阅读。</p>
+                  <Link
+                    href={`https://juejin.cn/post/${id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm text-primary-foreground transition-transform hover:scale-[1.03]"
+                  >
+                    <Icon icon="simple-icons:juejin" className="h-4 w-4" /> 去掘金读全文
+                  </Link>
+                </>
+              ) : (
+                <p className="text-muted-foreground">本文暂无正文内容。</p>
+              )}
+            </div>
+          )}
         </div>
-      </div>
 
-      <div className=" mt-4 bg-black/5 dark:bg-white/10 p-2 rounded-md">
-        <h2 className="text-lg mb-2 text-gray-600 dark:text-gray-300">导读:</h2>
-        <p className="text-gray-500 dark:text-gray-400">{article?.summary}</p>
+        {/* 侧栏：粘性目录（有正文才显示） */}
+        {hasContent && (
+          <aside className="hidden lg:block">
+            <div className="sticky top-24 rounded-2xl border border-border bg-card p-5 shadow-soft">
+              <p className="mb-3 text-sm font-semibold text-foreground">目录</p>
+              <Anchor content={article.content || ''} />
+            </div>
+          </aside>
+        )}
       </div>
-
-      <div className="bg-black/5 dark:bg-white/10 p-2 rounded-md my-4">
-        <h3 className="text-lg font-semibold mb-4">章节目录</h3>
-        <Anchor content={article?.content || ''}></Anchor>
-      </div>
-
-      <div className="bg-black/5 dark:bg-white/10 p-2 rounded-md">
-        <BytemdViewer content={article?.content ?? ''} />
-      </div>
-    </div>
+    </article>
   )
 }

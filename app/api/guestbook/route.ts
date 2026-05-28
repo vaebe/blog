@@ -1,8 +1,10 @@
+import { revalidateTag } from 'next/cache'
 import { sendJson } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
 import { getAuthSession } from '@/lib/auth'
 import { containsSensitiveWord } from '@/lib/sensitive-words'
 import { parsePaginationParams, calculatePaginationResult } from '@/lib/pagination'
+import { GUESTBOOK_CACHE_TAG } from '@/app/(main)/guestbook/constants'
 
 // 添加留言
 export async function POST(req: Request) {
@@ -31,6 +33,10 @@ export async function POST(req: Request) {
         author: { connect: { id: session.user.id } }
       }
     })
+
+    // 失效 RSC 留言初始数据缓存，确保下次刷新看到最新留言
+    revalidateTag(GUESTBOOK_CACHE_TAG, 'max')
+
     return sendJson({ data: message })
   } catch {
     return sendJson({ code: -1, msg: '添加留言失败!' })

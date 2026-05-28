@@ -1,43 +1,26 @@
 import { Article } from '@/generated/prisma/client'
-import { Card } from '@/components/ui/card'
-import Link from 'next/link'
-import { Eye, ThumbsUp, Star } from 'lucide-react'
 import { getJumpArticleDetailsUrl } from '@/lib/utils'
 import { NoFound } from '@/components/no-found'
 import { getAllArticles } from '@/lib/articles'
+import { ArticleRow } from '@/components/article/article-row'
 
 type GroupedArticles = Record<string, Article[]>
 
-const ArticleInfo = ({ info }: { info: Article }) => {
+function ArticleListRow({ info }: { info: Article }) {
   const date = new Date(info.createdAt).toLocaleDateString()
-
   return (
-    <Link href={getJumpArticleDetailsUrl(info)} target="_blank">
-      <h3 className="text-lg font-medium">{info.title}</h3>
-
-      <p className="my-4">{info.summary}</p>
-
-      <div className="flex items-center justify-between text-sm text-muted-foreground ">
-        <div className="flex items-center space-x-4">
-          <p className=" flex items-center">
-            <ThumbsUp className="w-4 h-4 mr-1" aria-hidden="true" />
-            <span>{info.likes}</span>
-          </p>
-
-          <p className="flex items-center">
-            <Star className="w-4 h-4 mr-1" aria-hidden="true" />
-            <span>{info.favorites}</span>
-          </p>
-
-          <p className=" flex items-center">
-            <Eye className="w-4 h-4 mr-1" aria-hidden="true" />
-            <span>{info.views}</span>
-          </p>
-        </div>
-
-        <time dateTime={info.createdAt.toString()}>{date}</time>
-      </div>
-    </Link>
+    <ArticleRow
+      href={getJumpArticleDetailsUrl(info)}
+      title={info.title}
+      summary={info.summary}
+      meta={[
+        <time key="date" dateTime={info.createdAt.toString()}>
+          {date}
+        </time>,
+        <span key="views">{info.views.toLocaleString()} 阅读</span>,
+        <span key="likes">{info.likes.toLocaleString()} 赞</span>
+      ]}
+    />
   )
 }
 
@@ -46,35 +29,32 @@ const ArticleList = ({ articleInfo }: { articleInfo: GroupedArticles }) => (
     {Object.entries(articleInfo)
       .sort(([a], [b]) => Number(b) - Number(a))
       .map(([year, articles]) => (
-        <div key={year}>
-          <div className="my-8 flex items-center">
-            <h2 className="text-3xl font-bold">{year}</h2>
-            <p className="ml-4 text-lg text-black/50 dark:text-white/50">
-              {articles.length ?? 0} 篇
-            </p>
+        <section key={year} className="mt-16 first:mt-0">
+          <div className="mb-6 flex items-baseline gap-4">
+            <h2 className="font-display text-5xl font-bold leading-none text-primary md:text-6xl">
+              {year}
+            </h2>
+            <p className="text-sm text-muted-foreground">{articles.length} 篇</p>
           </div>
 
-          <div className="space-y-4">
+          <div className="divide-y divide-border border-y border-border">
             {articles.map((article) => (
-              <Card
-                key={article.id}
-                className="hover:bg-accen rounded-lg transition-colors duration-200 p-4"
-              >
-                <ArticleInfo info={article} />
-              </Card>
+              <ArticleListRow key={article.id} info={article} />
             ))}
           </div>
-        </div>
+        </section>
       ))}
   </>
 )
 
 const groupArticlesByYear = (articles: Article[]): GroupedArticles => {
-  return articles.reduce((acc: GroupedArticles, article: Article) => {
+  // push 而非展开，避免每篇文章都重建数组形成的 O(n²) 开销
+  const grouped: GroupedArticles = {}
+  for (const article of articles) {
     const year = new Date(article.createdAt).getFullYear().toString()
-    acc[year] = [...(acc[year] || []), article]
-    return acc
-  }, {})
+    ;(grouped[year] ??= []).push(article)
+  }
+  return grouped
 }
 
 async function getArticles() {
@@ -94,8 +74,8 @@ export default async function ArticlesPage() {
     articles = await getArticles()
   } catch (error) {
     return (
-      <div className="max-w-4xl mx-auto px-2">
-        <div className="text-center py-10">
+      <div className="mx-auto max-w-5xl px-4 py-4">
+        <div className="py-10 text-center">
           <p className="text-xl text-destructive">
             {error instanceof Error ? error.message : '获取全部文章失败!'}
           </p>
@@ -104,8 +84,17 @@ export default async function ArticlesPage() {
     )
   }
 
+  const totalCount = Object.values(articles).reduce((acc, arr) => acc + arr.length, 0)
+
   return (
-    <div className="max-w-4xl mx-auto px-2">
+    <div className="mx-auto max-w-5xl px-4 py-4">
+      <header className="mb-14">
+        <h1 className="text-5xl font-bold leading-none tracking-tight md:text-6xl">文章</h1>
+        <p className="mt-4 text-muted-foreground">
+          共 <span className="font-semibold text-foreground">{totalCount}</span> 篇,大多发表在掘金。
+        </p>
+      </header>
+
       {Object.keys(articles).length > 0 ? <ArticleList articleInfo={articles} /> : <NoFound />}
     </div>
   )
