@@ -21,8 +21,8 @@
 | 标题锚点 | 用 `rehype-slug` 生成稳定 heading id,供 TOC / 锚点跳转 / 阅读进度使用 |
 | 留言板渲染 | 复用同一渲染器,经 `rehype-sanitize` 净化,移除 bytemd 依赖 |
 | 服务端校验 | `add` / `update` 接口在写库前校验:空标题 / 空正文 / 敏感词,命中即拒绝(前端再做一次友好提示) |
-| 保留能力 | GFM(表格、任务列表、删除线等)、代码块语法高亮、图片上传 |
-| 不实现 | 数学公式、Mermaid、脚注、frontmatter、gemoji |
+| 保留能力 | GFM(表格、任务列表、删除线等)、代码块语法高亮、图片上传、gemoji(`:smile:` → 😄) |
+| 不实现 | 数学公式、Mermaid、脚注、frontmatter |
 | 掘金同步文章(`source=01`) | 行为不变:详情页展示跳转掘金按钮,不渲染正文 |
 
 ## 选型理由(为何 @uiw 而非 md-editor-rt / TipTap)
@@ -35,7 +35,7 @@
 
 ## 范围约束(YAGNI)
 
-- **不**实现数学、Mermaid、脚注、frontmatter、gemoji。
+- **不**实现数学、Mermaid、脚注、frontmatter。
 - **不**改 `content` 字段类型,**不**写数据迁移脚本(存储仍是 Markdown)。
 - **不**做协作编辑、版本历史、后端草稿(草稿仅落 localStorage)。
 
@@ -47,7 +47,7 @@
 
 | 文件 | 职责 |
 |---|---|
-| `lib/markdown/plugins.ts` | 导出共享的 `remarkPlugins`(`remark-gfm`)与 `rehypePlugins`(`rehype-slug`、`rehype-sanitize`)。被编辑器预览与 `MarkdownContent` 同时引用,确保结构一致 |
+| `lib/markdown/plugins.ts` | 导出共享的 `remarkPlugins`(`remark-gfm`、`remark-gemoji`)与 `rehypePlugins`(`rehype-slug`、`rehype-sanitize`)。被编辑器预览与 `MarkdownContent` 同时引用,确保结构一致 |
 | `lib/markdown/markdown-content.tsx` | `<MarkdownContent source={md} />`,内部用 `@uiw/react-markdown-preview` 的 `MarkdownPreview` + 上述插件;Server Component 友好,SSR 出 `.wmde-markdown` HTML |
 
 **核心设计点:** 所有 Markdown → HTML 的渲染只有这一处实现,保证「编辑预览 == 文章查看 == 留言板」三处一致,且渲染层独立于编辑器组件,未来可单独演进。
@@ -131,6 +131,7 @@ export function MarkdownEditor(props: MarkdownEditorProps): JSX.Element
 - `@uiw/react-md-editor`
 - `@uiw/react-markdown-preview`(统一渲染器)
 - `remark-gfm`
+- `remark-gemoji`(`:smile:` 短码转 emoji)
 - `rehype-slug`(稳定标题锚点)
 - `rehype-sanitize`(XSS 防护)
 - `medium-zoom`(图片放大)
