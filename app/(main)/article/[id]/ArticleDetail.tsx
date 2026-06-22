@@ -3,7 +3,7 @@ import { Article } from '@/generated/prisma/client'
 import { getArticleById } from '@/lib/articles'
 import { getReadingTime } from '@/lib/getReadingTime'
 import { Anchor } from './anchor/index'
-import { BytemdViewer } from '@/components/bytemd/viewer'
+import { MarkdownContent } from '@/lib/markdown/markdown-content'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
 
@@ -64,7 +64,7 @@ export async function ArticleDetail({ params }: ArticleDetailProps) {
 
           {hasContent ? (
             <div className="mt-8 min-w-0 rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-8">
-              <BytemdViewer content={article.content ?? ''} />
+              <div className="wmde-markdown-var"><MarkdownContent source={article.content ?? ''} /></div>
             </div>
           ) : (
             <div className="mt-8 rounded-2xl border border-border bg-card p-10 text-center shadow-soft">
