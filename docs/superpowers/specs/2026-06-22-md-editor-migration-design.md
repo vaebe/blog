@@ -18,8 +18,10 @@
 | 存储格式 | **维持 Markdown 源文**(`content String` 不变,无 schema 变更、无数据迁移) |
 | 唯一渲染器 | `@uiw/react-markdown-preview`(即编辑器预览内部所用渲染器):编辑预览 / 文章查看 / 留言板**三处复用同一渲染器 + 同一份插件配置**,达成像素级一致 |
 | 查看页渲染 | 在 Server Component 内 SSR 出 HTML,利于 SEO / 首屏;样式采用渲染器自带的 `.wmde-markdown` 皮肤 |
+| 代码高亮 | **内置**,由渲染器自带的 `rehype-prism-plus`(Prism)提供,**无需额外高亮插件**;高亮主题随 `markdown.css` 一并引入 |
 | 标题锚点 | 用 `rehype-slug` 生成稳定 heading id,供 TOC / 锚点跳转 / 阅读进度使用 |
-| 留言板渲染 | 复用同一渲染器,经 `rehype-sanitize` 净化,移除 bytemd 依赖 |
+| XSS 净化 | **仅留言板**(公开不可信内容)经 `rehype-sanitize`;**文章为管理员可信内容,不做 sanitize**,以免剥掉 Prism 高亮 / slug 锚点 / 自定义样式的 class/id |
+| 留言板渲染 | 复用同一渲染器并加 `rehype-sanitize`,移除 bytemd 依赖 |
 | 服务端校验 | `add` / `update` 接口在写库前校验:空标题 / 空正文 / 敏感词,命中即拒绝(前端再做一次友好提示) |
 | 保留能力 | GFM(表格、任务列表、删除线等)、代码块语法高亮、图片上传、gemoji(`:smile:` → 😄) |
 | 不实现 | 数学公式、Mermaid、脚注、frontmatter |
@@ -47,14 +49,16 @@
 
 | 文件 | 职责 |
 |---|---|
-| `lib/markdown/plugins.ts` | 导出共享的 `remarkPlugins`(`remark-gfm`、`remark-gemoji`)与 `rehypePlugins`(`rehype-slug`、`rehype-sanitize`)。被编辑器预览与 `MarkdownContent` 同时引用,确保结构一致 |
-| `lib/markdown/markdown-content.tsx` | `<MarkdownContent source={md} />`,内部用 `@uiw/react-markdown-preview` 的 `MarkdownPreview` + 上述插件;Server Component 友好,SSR 出 `.wmde-markdown` HTML |
+| `lib/markdown/plugins.ts` | 导出共享的 `remarkPlugins`(`remark-gfm`、`remark-gemoji`)与 `rehypePlugins`(`rehype-slug`)。被编辑器 `previewOptions` 与 `MarkdownContent` 同时引用,确保结构一致。**不含** sanitize(避免破坏高亮/锚点) |
+| `lib/markdown/markdown-content.tsx` | `<MarkdownContent source={md} sanitize={false} />`,内部用 `@uiw/react-markdown-preview` 的 `MarkdownPreview` + 共享插件;`sanitize` 为 `true` 时额外追加 `rehype-sanitize`(留言板用);Server Component 友好,SSR 出 `.wmde-markdown` HTML |
 
 **核心设计点:** 所有 Markdown → HTML 的渲染只有这一处实现,保证「编辑预览 == 文章查看 == 留言板」三处一致,且渲染层独立于编辑器组件,未来可单独演进。
 
-**代码高亮:** 由 `@uiw/react-markdown-preview` 内置语法高亮提供(沿用 `highlight.js` 风格),无需额外接 rehype 高亮插件。
+**代码高亮:** 由渲染器内置的 `rehype-prism-plus`(Prism)提供,**无需额外接高亮插件**;高亮主题样式随 `@uiw/react-markdown-preview/markdown.css` 引入。
 
-**安全:** 文章内容由管理员产出,留言由公开用户产出;统一经 `rehype-sanitize` 防 XSS,留言板尤其需要。
+**样式 / CSS:** 应用需引入 `@uiw/react-md-editor/markdown-editor.css` 与 `@uiw/react-markdown-preview/markdown.css`(可在全局或各组件顶部 import)。
+
+**安全:** 文章为管理员可信内容,**不**做 sanitize(否则会剥掉高亮 / 锚点 / 自定义样式所需的 class/id);留言为公开不可信内容,`MarkdownContent` 传 `sanitize` 经 `rehype-sanitize` 防 XSS。
 
 ---
 
@@ -64,7 +68,7 @@
 
 | 文件 | 职责 | 依赖 |
 |---|---|---|
-| `components/editor/markdown-editor.tsx` | `<MarkdownEditor>` 客户端组件:封装 `@uiw/react-md-editor` 的 `MDEditor`,`value`/`onChange` 受控;`previewOptions` 传入 `lib/markdown/plugins.ts` 的同一份插件;暗色模式适配(`next-themes`,通过容器 `data-color-mode`);用 `next/dynamic` 动态导入避免进入初始包 | `lib/markdown/plugins.ts` |
+| `components/editor/markdown-editor.tsx` | `<MarkdownEditor>` 客户端组件:封装 `@uiw/react-md-editor` 的 `MDEditor`(须 `next/dynamic` + `{ ssr:false }` 动态导入);`value`/`onChange` 受控;`previewOptions` 传入 `lib/markdown/plugins.ts` 的同一份插件;引入两份 CSS;暗色模式通过外层容器 `data-color-mode={theme}`(`next-themes`) | `lib/markdown/plugins.ts` |
 | `components/editor/use-image-upload.ts` | 图片上传工具:接管编辑器的 `onPaste` / `onDrop`,调用现有 `app/actions/image-kit.ts` 的 `uploadFile`,成功后把 `![alt](url)` 插入光标处;失败 toast(`sonner`) | `uploadFile` |
 
 **接口(供模块 4 使用):**
@@ -76,7 +80,9 @@ interface MarkdownEditorProps {
 export function MarkdownEditor(props: MarkdownEditorProps): JSX.Element
 ```
 
-**图片上传:** 复用 ImageKit 上传(含 MD5 去重、JWT、按日期分目录),保持现有体验。
+**图片上传:** `@uiw/react-md-editor` **无内置上传**,自行在 `onPaste`/`onDrop` 拦截文件,调用 `uploadFile` 后把 `![alt](url)` 写入光标处。复用 ImageKit 上传(含 MD5 去重、JWT、按日期分目录)。
+
+**Next 16 / Turbopack 注意:** 文档示例的 `next-remove-imports` 是 webpack 老方案,本项目用 Turbopack;实现时先验证「App Router 客户端组件内直接 import 两份 CSS + dynamic ssr:false」是否可正常构建,若可行则**不引入** `next-remove-imports`。
 
 ---
 
@@ -109,7 +115,7 @@ export function MarkdownEditor(props: MarkdownEditorProps): JSX.Element
 
 ## 模块 5:留言板渲染替换 + 交互 / UX 优化
 
-- **留言板**(`app/(main)/guestbook/MessagesList.tsx`):`BytemdViewer` → `<MarkdownContent>`,经 `rehype-sanitize` 净化,移除 bytemd 依赖。
+- **留言板**(`app/(main)/guestbook/MessagesList.tsx`):`BytemdViewer` → `<MarkdownContent sanitize />`,经 `rehype-sanitize` 净化,移除 bytemd 依赖。
 - 发布对话框(`app/article/components/publish-dialog`)逻辑保留,与新 `ArticleEditorForm` 对接;校验、loading、错误提示统一。
 - 编辑器空状态 placeholder 引导;暗色模式适配;全流程 `sonner` toast 反馈。
 
@@ -128,19 +134,22 @@ export function MarkdownEditor(props: MarkdownEditorProps): JSX.Element
 ## 依赖变更
 
 **新增:**
-- `@uiw/react-md-editor`
-- `@uiw/react-markdown-preview`(统一渲染器)
+- `@uiw/react-md-editor`(编辑器;代码高亮 `rehype-prism-plus` 已内置,无需另装)
+- `@uiw/react-markdown-preview`(统一渲染器,查看页/留言板用)
 - `remark-gfm`
 - `remark-gemoji`(`:smile:` 短码转 emoji)
 - `rehype-slug`(稳定标题锚点)
-- `rehype-sanitize`(XSS 防护)
+- `rehype-sanitize`(仅留言板 XSS 防护)
 - `medium-zoom`(图片放大)
 
 **移除:**
 - `bytemd`、`@bytemd/react`、所有 `@bytemd/plugin-*`
 - `juejin-markdown-themes`(确认仅编辑器使用后移除)
+- `highlight.js` 与 `@bytemd/plugin-highlight-ssr`(新方案改用 Prism,确认无其它引用后移除其主题 CSS)
 
-**保留 / 复用:** `highlight.js`(主题 CSS,如仍被引用)、`app/actions/image-kit.ts`、`lib/sensitive-words.ts`、`lib/getReadingTime.ts`、`sonner`、`next-themes`。
+**新增 CSS 引入:** `@uiw/react-md-editor/markdown-editor.css`、`@uiw/react-markdown-preview/markdown.css`。
+
+**保留 / 复用:** `app/actions/image-kit.ts`、`lib/sensitive-words.ts`、`lib/getReadingTime.ts`、`sonner`、`next-themes`。
 
 ---
 
