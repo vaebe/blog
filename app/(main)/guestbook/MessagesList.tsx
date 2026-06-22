@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import dayjs from 'dayjs'
 import { GuestbookMessage } from '@/types'
-import { BytemdViewer } from '@/components/bytemd/viewer'
+import { MarkdownContent } from '@/lib/markdown/markdown-content'
 
 interface MessagesListProps {
   list: GuestbookMessage[]
@@ -58,7 +58,7 @@ export function MessagesListItem({ info }: { info: GuestbookMessage }) {
       </div>
 
       <div className="mt-3 sm:pl-12">
-        <BytemdViewer content={info.content}></BytemdViewer>
+        <MarkdownContent source={info.content} sanitize />
       </div>
     </div>
   )
