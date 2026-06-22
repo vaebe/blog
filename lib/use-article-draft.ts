@@ -12,12 +12,13 @@ export function useArticleDraft(
   apply: (d: PublishArticleInfo) => void
 ): void {
   const key = draftKey(id)
-  const restored = useRef(false)
+  const restoredKey = useRef<string | null>(null)
 
   // 进入时尝试恢复
   useEffect(() => {
-    if (restored.current) return
-    restored.current = true
+    if (typeof window === 'undefined') return
+    if (restoredKey.current === key) return
+    restoredKey.current = key
     try {
       const raw = localStorage.getItem(key)
       if (!raw) return
@@ -34,6 +35,7 @@ export function useArticleDraft(
 
   // 防抖保存
   useEffect(() => {
+    if (typeof window === 'undefined') return
     const t = setTimeout(() => {
       try {
         localStorage.setItem(key, JSON.stringify(info))
