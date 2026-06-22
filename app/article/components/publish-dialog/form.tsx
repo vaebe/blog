@@ -11,6 +11,7 @@ import { PublishArticleInfo } from '@/types'
 import { FormCategoryField } from './form-category-field'
 import { FormCoverUpload } from './form-cover-upload'
 import { FormSummaryField } from './form-summary-field'
+import { summarize, extractFirstImageUrl } from '@/lib/markdown/extract'
 
 const formSchema = z.object({
   classify: z.string().min(1, '请选择分类'),
@@ -31,7 +32,12 @@ export function PublishForm({ articleInfo, onPublish, onCancel }: PublishFormPro
   const { handleSubmit, reset } = form
 
   useEffect(() => {
-    if (articleInfo) reset(articleInfo)
+    if (!articleInfo) return
+    reset({
+      classify: articleInfo.classify,
+      summary: articleInfo.summary || summarize(articleInfo.content),
+      coverImg: articleInfo.coverImg || extractFirstImageUrl(articleInfo.content) || ''
+    })
   }, [articleInfo, reset])
 
   return (
