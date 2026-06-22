@@ -6,6 +6,7 @@ import { LayoutHeader } from '@/app/article/components/header'
 import { RequireAdmin } from '@/components/auth/require-admin'
 import { MarkdownEditor } from '@/components/editor/markdown-editor'
 import { useArticleDraft } from '@/lib/use-article-draft'
+import { useUnsavedGuard } from '@/lib/use-unsaved-guard'
 
 interface ArticleEditorFormProps {
   initial: PublishArticleInfo
@@ -16,6 +17,10 @@ export function ArticleEditorForm({ initial, publishButName }: ArticleEditorForm
   const [articleInfo, updateArticleInfo] = useImmer<PublishArticleInfo>(initial)
 
   useArticleDraft(initial.id, articleInfo, (d) => updateArticleInfo(() => d))
+
+  const dirty =
+    articleInfo.title !== initial.title || articleInfo.content !== initial.content
+  useUnsavedGuard(dirty)
 
   return (
     <RequireAdmin>
