@@ -22,7 +22,8 @@ export function ContentEnhancers() {
       btn.className =
         'absolute right-2 top-2 rounded bg-black/40 px-2 py-0.5 text-xs text-white hover:bg-black/60'
       const onClick = () => {
-        void navigator.clipboard.writeText(pre.innerText).then(() => toast('已复制'))
+        const code = pre.querySelector('code')
+        void navigator.clipboard.writeText((code ?? pre).innerText).then(() => toast('已复制'))
       }
       btn.addEventListener('click', onClick)
       el.appendChild(btn)
