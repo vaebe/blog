@@ -6,6 +6,8 @@ import { Anchor } from './anchor/index'
 import { MarkdownContent } from '@/lib/markdown/markdown-content'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
+import { ReadingProgress } from './reading-progress'
+import { ContentEnhancers } from './content-enhancers'
 
 function MetaItem({ icon, children }: { icon: string; children: React.ReactNode }) {
   return (
@@ -40,6 +42,7 @@ export async function ArticleDetail({ params }: ArticleDetailProps) {
 
   return (
     <article className="mx-auto max-w-5xl px-4 py-6">
+      {hasContent && <ReadingProgress />}
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-12">
         {/* 主栏：标题 / 元信息 / 导读 / 正文 */}
         <div className="min-w-0">
@@ -66,7 +69,9 @@ export async function ArticleDetail({ params }: ArticleDetailProps) {
             <div className="mt-8 min-w-0 rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-8">
               <div className="wmde-markdown-var"><MarkdownContent source={article.content ?? ''} /></div>
             </div>
-          ) : (
+          ) : null}
+          {hasContent && <ContentEnhancers />}
+          {!hasContent && (
             <div className="mt-8 rounded-2xl border border-border bg-card p-10 text-center shadow-soft">
               {article.source !== '00' ? (
                 <>
