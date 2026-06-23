@@ -23,6 +23,12 @@ function fetchMeRole(userId: string): Promise<string | null> {
     .then((res) => res.json())
     .then((res) => (res?.data?.role ?? null) as string | null)
     .catch(() => null)
+  // 失败/无角色时清空缓存，使后续调用可重试，避免“粘性 null”导致一直非管理员。
+  promise.then((role) => {
+    if (role === null && mePromiseCache?.userId === userId) {
+      mePromiseCache = null
+    }
+  })
   mePromiseCache = { userId, promise }
   return promise
 }
@@ -31,32 +37,31 @@ function fetchMeRole(userId: string): Promise<string | null> {
 // role 不在会话里，需经 /api/me 获取（仅登录后请求一次）。
 export function useCurrentUser() {
   const { data, isPending } = authClient.useSession()
-  const [role, setRole] = useState<string | null>(null)
-  const [roleLoading, setRoleLoading] = useState(false)
+  // 记录“某个 userId 对应的角色已解析完成”的结果，避免竞态：
+  // 只有当 resolved.userId === 当前 userId 时，role 才被视为已就绪。
+  const [resolved, setResolved] = useState<{ userId: string; role: string | null } | null>(null)
 
   const userId = data?.user?.id
 
   useEffect(() => {
     if (!userId) {
-      setRole(null)
       mePromiseCache = null
       return
     }
 
     let active = true
-    setRoleLoading(true)
-    fetchMeRole(userId)
-      .then((r) => {
-        if (active) setRole(r)
-      })
-      .finally(() => {
-        if (active) setRoleLoading(false)
-      })
+    fetchMeRole(userId).then((r) => {
+      if (active) setResolved({ userId, role: r })
+    })
 
     return () => {
       active = false
     }
   }, [userId])
+
+  // 当前用户的角色是否已解析（解析结果须与当前 userId 匹配）。
+  const roleResolved = !!userId && resolved?.userId === userId
+  const role = roleResolved ? (resolved?.role ?? null) : null
 
   const user: CurrentUser | null = data?.user
     ? {
@@ -73,6 +78,8 @@ export function useCurrentUser() {
     role,
     isAuthenticated: !!data?.user,
     isAdmin: role === '00',
-    isLoading: isPending || roleLoading
+    // 会话加载中，或“已登录但该用户角色尚未解析完成”都算加载中，
+    // 避免 RequireAdmin 在 role 取回前误判非管理员而跳转。
+    isLoading: isPending || (!!userId && !roleResolved)
   }
 }
