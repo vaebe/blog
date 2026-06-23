@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -28,17 +27,18 @@ interface PublishFormProps {
 }
 
 export function PublishForm({ articleInfo, onPublish, onCancel }: PublishFormProps) {
-  const form = useForm<FormValues>({ resolver: zodResolver(formSchema) })
-  const { handleSubmit, reset } = form
-
-  useEffect(() => {
-    if (!articleInfo) return
-    reset({
-      classify: articleInfo.classify,
+  // 用 defaultValues 在挂载时直接初始化:发布对话框每次打开都会重新挂载本组件,
+  // 回填值始终最新。避免 reset() 写法下受控的 Radix Select 因字段注册时序问题
+  // 吸收不到值(原写法在编辑文章时「分类」不回填)。
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      classify: articleInfo.classify || '',
       summary: articleInfo.summary || summarize(articleInfo.content),
       coverImg: articleInfo.coverImg || extractFirstImageUrl(articleInfo.content) || ''
-    })
-  }, [articleInfo, reset])
+    }
+  })
+  const { handleSubmit } = form
 
   return (
     <Form {...form}>
