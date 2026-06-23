@@ -81,9 +81,13 @@ function LayoutHeader({ publishButName, articleInfo, updateArticleInfo }: Header
       ? await submitArticle({ ...articleInfo, ...info }, 'update')
       : await submitArticle({ ...articleInfo, ...info }, 'add')
 
-    if (res.code == 0) {
+    if (res.code === 0) {
       if (typeof window !== 'undefined') {
-        localStorage.removeItem(draftKey(articleInfo.id))
+        try {
+          localStorage.removeItem(draftKey(articleInfo.id))
+        } catch {
+          /* ignore */
+        }
       }
       router.push('/article/list')
     }
