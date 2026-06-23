@@ -3,6 +3,7 @@ import { sendJson } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
 import { ARTICLES_CACHE_TAG } from '@/lib/articles'
+import { validateArticleInput } from '@/lib/articles/validate'
 
 export async function PUT(req: Request) {
   const { error } = await requireAdmin()
@@ -11,6 +12,9 @@ export async function PUT(req: Request) {
   try {
     const body = await req.json()
     const { id, title, content, classify, coverImg, summary, status } = body
+
+    const valid = validateArticleInput({ title, content, summary })
+    if (!valid.ok) return sendJson({ code: -1, msg: valid.msg })
 
     const updatedArticle = await prisma.article.update({
       where: { id },

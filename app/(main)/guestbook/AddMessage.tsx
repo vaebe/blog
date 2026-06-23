@@ -6,7 +6,7 @@ import { Icon } from '@iconify/react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { GuestbookMessage } from '@/types'
 import { LoginDialog } from '@/components/login-dialog'
-import { BytemdViewer } from '@/components/bytemd/viewer'
+import { MarkdownContent } from '@/lib/markdown/markdown-content'
 
 interface MessageInputProps {
   message: string
@@ -31,7 +31,7 @@ const MessageInput = ({ message, onChange }: MessageInputProps) => {
 const MessagePreview = ({ message }: { message: string }) => {
   return (
     <div className="min-h-44">
-      <BytemdViewer content={message}></BytemdViewer>
+      <MarkdownContent source={message} sanitize />
     </div>
   )
 }

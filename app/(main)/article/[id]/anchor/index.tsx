@@ -26,7 +26,7 @@ export const Anchor: React.FC<AnchorProps> = ({ content }) => {
     const generateHeadings = () => {
       const elements: Heading[] = Array.from(
         document.querySelectorAll(
-          '.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4'
+          '.wmde-markdown h1, .wmde-markdown h2, .wmde-markdown h3, .wmde-markdown h4'
         )
       ).map((elem) => {
         const element = elem as HTMLElement
@@ -69,7 +69,7 @@ export const Anchor: React.FC<AnchorProps> = ({ content }) => {
       })
     }
 
-    const markdownBody = document.querySelector('.markdown-body')
+    const markdownBody = document.querySelector('.wmde-markdown')
     if (markdownBody) {
       mutationObserverRef.current = new MutationObserver(generateHeadings)
       mutationObserverRef.current.observe(markdownBody, { childList: true, subtree: true })

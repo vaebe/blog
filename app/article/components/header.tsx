@@ -6,6 +6,8 @@ import { useRouter, usePathname } from 'next/navigation'
 import { toast } from 'sonner'
 import { Updater } from 'use-immer'
 import { ApiRes } from '@/lib/utils'
+import { containsSensitiveWord } from '@/lib/sensitive-words'
+import { draftKey } from '@/lib/use-article-draft'
 
 const SubmitArticleConfig = {
   add: {
@@ -31,6 +33,11 @@ async function submitArticle(info: PublishArticleInfo, type: 'add' | 'update'): 
   if (!info.content) {
     toast('文章内容不能为空!')
     return { code: -1, msg: '文章内容不能为空!' }
+  }
+
+  if (containsSensitiveWord(`${info.title} ${info.content} ${info.summary}`)) {
+    toast('内容包含敏感词，请修改后再发布!')
+    return { code: -1, msg: '内容包含敏感词' }
   }
 
   const config = SubmitArticleConfig[type]
@@ -74,7 +81,14 @@ function LayoutHeader({ publishButName, articleInfo, updateArticleInfo }: Header
       ? await submitArticle({ ...articleInfo, ...info }, 'update')
       : await submitArticle({ ...articleInfo, ...info }, 'add')
 
-    if (res.code == 0) {
+    if (res.code === 0) {
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.removeItem(draftKey(articleInfo.id))
+        } catch {
+          /* ignore */
+        }
+      }
       router.push('/article/list')
     }
 
